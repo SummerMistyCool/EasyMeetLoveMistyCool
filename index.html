@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0">
     <title>易遇🩷雾凉</title>
     <style>
-        /* ================================================================
-           易遇🩷雾凉 v1.2.2 — 完整样式表
-           ================================================================ */
         :root {
             --paper-white: #f8f4e8;
             --moonlight-warm: #F7F4ED;
@@ -30,625 +27,186 @@
             --btn-icon-size: 38px;
             --input-height: 42px;
         }
-
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-        html, body {
-            height:100%; width:100%; overflow:hidden;
-            font-family:var(--font-serif); background:#f0ece2;
-            -webkit-user-select:none; user-select:none;
-            -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-        }
-
-        body {
-            max-width:480px; margin:0 auto; position:relative;
-            background:var(--paper-white); box-shadow:0 0 60px rgba(0,0,0,0.05);
-        }
-
-        body::before {
-            content:''; position:fixed; top:0; left:0; width:100%; height:100%;
-            pointer-events:none; z-index:0; opacity:0.35;
-            background-image:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-        }
-
-        body::after {
-            content:''; position:fixed; top:0; left:0; width:100%; height:100%;
-            pointer-events:none; z-index:0; opacity:0.25;
-            background:radial-gradient(ellipse at 20% 15%, rgba(210,195,170,0.04) 0%, transparent 55%),
-                       radial-gradient(ellipse at 75% 55%, rgba(185,175,200,0.04) 0%, transparent 55%),
-                       radial-gradient(ellipse at 50% 85%, rgba(200,190,175,0.03) 0%, transparent 50%);
-        }
-
+        html,body { height:100%; width:100%; overflow:hidden; font-family:var(--font-serif); background:#f0ece2; -webkit-user-select:none; user-select:none; -webkit-font-smoothing:antialiased; }
+        body { max-width:480px; margin:0 auto; position:relative; background:var(--paper-white); box-shadow:0 0 60px rgba(0,0,0,0.05); }
+        body::before { content:''; position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:0.35; background-image:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"); }
+        body::after { content:''; position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:0.25; background:radial-gradient(ellipse at 20% 15%, rgba(210,195,170,0.04) 0%, transparent 55%),radial-gradient(ellipse at 75% 55%, rgba(185,175,200,0.04) 0%, transparent 55%),radial-gradient(ellipse at 50% 85%, rgba(200,190,175,0.03) 0%, transparent 50%); }
         ::-webkit-scrollbar { width:0; height:0; }
-
-        /* ============ 视图容器 ============ */
-        .view {
-            position:absolute; top:0; left:0; width:100%; height:100%;
-            display:none; flex-direction:column; z-index:1; background:var(--paper-white);
-        }
+        .view { position:absolute; top:0; left:0; width:100%; height:100%; display:none; flex-direction:column; z-index:1; background:var(--paper-white); }
         .view.active { display:flex; }
         #chatView { display:flex; flex-direction:column; height:100%; }
-
-        /* ============ 聊天顶栏 ============ */
-        .chat-header {
-            padding:14px 16px 6px; text-align:center; flex-shrink:0;
-            position:relative; z-index:2; background:var(--paper-white);
-        }
-        .header-avatars {
-            display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:6px;
-        }
-        .header-avatar {
-            width:var(--avatar-size); height:var(--avatar-size); border-radius:7px;
-            object-fit:cover; background:var(--moonlight-warm); flex-shrink:0;
-            box-shadow:0 1px 2px var(--shadow-color);
-        }
-        .heart-chain {
-            display:flex; align-items:center; gap:1.5px; flex-shrink:0; padding:0 4px;
-        }
-        .heart-chain .heart {
-            font-size:13px; display:inline-block; color:var(--heart-pink); will-change:transform;
-        }
-
-        @keyframes hb-center {
-            0%,100%{transform:scale(1)} 50%{transform:scale(1.16)}
-        }
-        @keyframes hb-close {
-            0%,100%{transform:scale(1)} 50%{transform:scale(1.09)}
-        }
-        @keyframes hb-mid {
-            0%,100%{transform:scale(1)} 50%{transform:scale(1.05)}
-        }
-        @keyframes hb-outer {
-            0%,100%{transform:scale(1)} 50%{transform:scale(1.03)}
-        }
-
+        .chat-header { padding:14px 16px 6px; text-align:center; flex-shrink:0; position:relative; z-index:2; background:var(--paper-white); }
+        .header-avatars { display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:6px; }
+        .header-avatar { width:var(--avatar-size); height:var(--avatar-size); border-radius:7px; object-fit:cover; background:var(--moonlight-warm); flex-shrink:0; box-shadow:0 1px 2px var(--shadow-color); }
+        .heart-chain { display:flex; align-items:center; gap:1.5px; flex-shrink:0; padding:0 4px; }
+        .heart-chain .heart { font-size:13px; display:inline-block; color:var(--heart-pink); will-change:transform; }
+        @keyframes hb-center { 0%,100%{transform:scale(1)} 50%{transform:scale(1.16)} }
+        @keyframes hb-close { 0%,100%{transform:scale(1)} 50%{transform:scale(1.09)} }
+        @keyframes hb-mid { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+        @keyframes hb-outer { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
         .heart-chain .heart:nth-child(5){animation:hb-center 0.833s ease-in-out infinite}
-        .heart-chain .heart:nth-child(4),
-        .heart-chain .heart:nth-child(6){animation:hb-close 1s ease-in-out infinite;animation-delay:0.2s}
-        .heart-chain .heart:nth-child(3),
-        .heart-chain .heart:nth-child(7){animation:hb-mid 1.25s ease-in-out infinite;animation-delay:0.35s}
-        .heart-chain .heart:nth-child(2),
-        .heart-chain .heart:nth-child(8){animation:hb-outer 1.67s ease-in-out infinite;animation-delay:0.5s}
-        .heart-chain .heart:nth-child(1),
-        .heart-chain .heart:nth-child(9){animation:hb-outer 2s ease-in-out infinite;animation-delay:0.6s}
-
-        .header-nicknames {
-            font-size:13px; color:var(--light-ink); letter-spacing:1.5px; font-family:var(--font-serif);
-        }
-
-        /* ============ 状态栏 ============ */
-        .status-area {
-            padding:0 16px; text-align:center; flex-shrink:0; min-height:0; transition:all 0.3s ease;
-        }
+        .heart-chain .heart:nth-child(4),.heart-chain .heart:nth-child(6){animation:hb-close 1s ease-in-out infinite;animation-delay:0.2s}
+        .heart-chain .heart:nth-child(3),.heart-chain .heart:nth-child(7){animation:hb-mid 1.25s ease-in-out infinite;animation-delay:0.35s}
+        .heart-chain .heart:nth-child(2),.heart-chain .heart:nth-child(8){animation:hb-outer 1.67s ease-in-out infinite;animation-delay:0.5s}
+        .heart-chain .heart:nth-child(1),.heart-chain .heart:nth-child(9){animation:hb-outer 2s ease-in-out infinite;animation-delay:0.6s}
+        .header-nicknames { font-size:13px; color:var(--light-ink); letter-spacing:1.5px; font-family:var(--font-serif); }
+        .status-area { padding:0 16px; text-align:center; flex-shrink:0; min-height:0; transition:all 0.3s ease; }
         .his-status { font-size:12px; line-height:1.5; }
-
-        /* ============ 消息区域 ============ */
-        .messages-container {
-            flex:1; overflow-y:auto; padding:10px 16px; display:flex; flex-direction:column;
-            gap:18px; -webkit-overflow-scrolling:touch;
-        }
-        .message-row {
-            display:flex; align-items:flex-start; gap:8px; max-width:100%;
-        }
+        .messages-container { flex:1; overflow-y:auto; padding:10px 16px; display:flex; flex-direction:column; gap:18px; -webkit-overflow-scrolling:touch; }
+        .message-row { display:flex; align-items:flex-start; gap:8px; max-width:100%; }
         .message-row.mine { flex-direction:row-reverse; }
-        .message-avatar {
-            width:var(--avatar-size); height:var(--avatar-size); border-radius:7px;
-            object-fit:cover; flex-shrink:0; background:var(--moonlight-warm);
-            box-shadow:0 1px 2px var(--shadow-color);
-        }
+        .message-avatar { width:var(--avatar-size); height:var(--avatar-size); border-radius:7px; object-fit:cover; flex-shrink:0; background:var(--moonlight-warm); box-shadow:0 1px 2px var(--shadow-color); }
         .message-content { max-width:72%; display:flex; flex-direction:column; }
-        .message-bubble {
-            padding:10px 14px; border-radius:var(--radius-md); font-size:15px; line-height:1.65;
-            word-break:break-word; position:relative; box-shadow:0 1px 3px var(--shadow-color);
-            font-family:var(--font-serif);
-        }
-        .message-row.mine .message-bubble {
-            background:var(--moonlight-cool); border-bottom-right-radius:2px;
-        }
-        .message-row.theirs .message-bubble {
-            background:var(--moonlight-warm); border-bottom-left-radius:2px;
-        }
+        .message-bubble { padding:10px 14px; border-radius:var(--radius-md); font-size:15px; line-height:1.65; word-break:break-word; position:relative; box-shadow:0 1px 3px var(--shadow-color); font-family:var(--font-serif); }
+        .message-row.mine .message-bubble { background:var(--moonlight-cool); border-bottom-right-radius:2px; }
+        .message-row.theirs .message-bubble { background:var(--moonlight-warm); border-bottom-left-radius:2px; }
         .message-bubble img { max-width:200px; border-radius:4px; display:block; }
-
-        .quote-bar {
-            display:flex; align-items:flex-start; gap:6px; margin-bottom:4px; padding:6px 10px;
-            background:rgba(248,244,232,0.7); border-left:2px solid var(--cool-gray-blue);
-            border-radius:2px; font-size:13px; color:var(--lighter-ink); cursor:pointer;
-            word-break:break-word; line-height:1.4;
-        }
-
-        .message-meta {
-            font-size:11px; color:var(--lighter-ink); margin-top:3px; display:flex;
-            align-items:center; gap:4px; font-family:var(--font-serif);
-        }
+        .quote-bar { display:flex; align-items:flex-start; gap:6px; margin-bottom:4px; padding:6px 10px; background:rgba(248,244,232,0.7); border-left:2px solid var(--cool-gray-blue); border-radius:2px; font-size:13px; color:var(--lighter-ink); cursor:pointer; word-break:break-word; line-height:1.4; }
+        .message-meta { font-size:11px; color:var(--lighter-ink); margin-top:3px; display:flex; align-items:center; gap:4px; font-family:var(--font-serif); }
         .message-row.mine .message-meta { justify-content:flex-end; }
-        .check-mark {
-            font-family:'KaiTi','STKaiti','Noto Serif SC',serif; font-style:italic; font-size:12px;
-        }
+        .check-mark { font-family:'KaiTi','STKaiti','Noto Serif SC',serif; font-style:italic; font-size:12px; }
         .check-mark.read { opacity:1; color:var(--light-ink); }
         .check-mark.unread { opacity:0.45; }
         .quote-indicator { cursor:pointer; font-size:13px; color:var(--light-ink); }
-
-        .typing-indicator {
-            text-align:center; font-size:11px; color:var(--lighter-ink); padding:6px;
-            opacity:0; transition:opacity 0.35s ease; flex-shrink:0;
-            font-family:var(--font-serif); font-style:italic;
-        }
+        .typing-indicator { text-align:center; font-size:11px; color:var(--lighter-ink); padding:6px; opacity:0; transition:opacity 0.35s ease; flex-shrink:0; font-family:var(--font-serif); font-style:italic; }
         .typing-indicator.visible { opacity:0.7; }
-
-        /* ============ 底栏 ============ */
-        .chat-footer {
-            padding:8px 12px 14px; display:flex; align-items:center; gap:6px;
-            flex-shrink:0; background:var(--paper-white);
-        }
-        .input-wrapper {
-            flex:1; background:var(--moonlight-cool); border-radius:var(--radius-md);
-            box-shadow:inset 0 1px 2px var(--shadow-color); height:var(--input-height);
-            display:flex; align-items:center; padding:0 12px;
-        }
-        .chat-input {
-            flex:1; border:none; background:transparent; font-family:var(--font-serif);
-            font-size:15px; color:var(--ink-gray); outline:none; height:100%;
-            -webkit-user-select:text; user-select:text;
-        }
+        .chat-footer { padding:8px 12px 14px; display:flex; align-items:center; gap:6px; flex-shrink:0; background:var(--paper-white); }
+        .input-wrapper { flex:1; background:var(--moonlight-cool); border-radius:var(--radius-md); box-shadow:inset 0 1px 2px var(--shadow-color); height:var(--input-height); display:flex; align-items:center; padding:0 12px; }
+        .chat-input { flex:1; border:none; background:transparent; font-family:var(--font-serif); font-size:15px; color:var(--ink-gray); outline:none; height:100%; -webkit-user-select:text; user-select:text; }
         .chat-input::placeholder { color:var(--lighter-ink); font-size:13.5px; font-style:italic; }
-
-        .btn-smile {
-            width:var(--btn-icon-size); height:var(--btn-icon-size);
-            border:1.5px solid var(--lighter-ink); border-radius:50%; background:transparent;
-            cursor:pointer; flex-shrink:0; position:relative;
-            display:flex; align-items:center; justify-content:center;
-        }
+        .btn-smile { width:var(--btn-icon-size); height:var(--btn-icon-size); border:1.5px solid var(--lighter-ink); border-radius:50%; background:transparent; cursor:pointer; flex-shrink:0; position:relative; display:flex; align-items:center; justify-content:center; }
         .smile-face { width:17px; height:17px; position:relative; }
-        .smile-face::before,.smile-face::after {
-            content:''; position:absolute; width:3px; height:3px;
-            background:var(--lighter-ink); border-radius:50%; top:5px;
-        }
-        .smile-face::before { left:3px; }
-        .smile-face::after { right:3px; }
-        .smile-mouth {
-            position:absolute; bottom:2px; left:50%; transform:translateX(-50%);
-            width:10px; height:5px; border-bottom:1.5px solid var(--lighter-ink);
-            border-radius:0 0 10px 10px;
-        }
-
-        .btn-plus {
-            width:var(--btn-icon-size); height:var(--btn-icon-size); border-radius:50%;
-            background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color);
-            cursor:pointer; flex-shrink:0; display:flex; align-items:center;
-            justify-content:center; font-size:20px; color:var(--light-ink);
-            border:none; font-family:var(--font-serif);
-        }
-
-        .btn-send {
-            height:var(--btn-icon-size); padding:0 16px; border-radius:var(--radius-sm);
-            background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color);
-            cursor:pointer; flex-shrink:0; font-family:var(--font-serif); font-size:14px;
-            color:var(--ink-gray); border:none; opacity:0; pointer-events:none;
-            transition:opacity 0.2s ease, transform 0.15s ease; white-space:nowrap;
-        }
+        .smile-face::before,.smile-face::after { content:''; position:absolute; width:3px; height:3px; background:var(--lighter-ink); border-radius:50%; top:5px; }
+        .smile-face::before { left:3px; } .smile-face::after { right:3px; }
+        .smile-mouth { position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:10px; height:5px; border-bottom:1.5px solid var(--lighter-ink); border-radius:0 0 10px 10px; }
+        .btn-plus { width:var(--btn-icon-size); height:var(--btn-icon-size); border-radius:50%; background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color); cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--light-ink); border:none; font-family:var(--font-serif); }
+        .btn-send { height:var(--btn-icon-size); padding:0 16px; border-radius:var(--radius-sm); background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color); cursor:pointer; flex-shrink:0; font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); border:none; opacity:0; pointer-events:none; transition:opacity 0.2s ease, transform 0.15s ease; white-space:nowrap; }
         .btn-send.visible { opacity:1; pointer-events:auto; }
         .btn-send:active { transform:scale(0.95); }
-
-        /* ============ 弹窗遮罩 ============ */
-        .overlay {
-            position:fixed; top:0; left:0; width:100%; height:100%;
-            background:rgba(0,0,0,0.18); z-index:10; display:none;
-        }
+        .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.18); z-index:10; display:none; }
         .overlay.active { display:block; }
-
-        /* ============ ⊕ 弹窗 ============ */
-        .plus-popup {
-            position:fixed; bottom:0; left:50%; transform:translateX(-50%) translateY(100%);
-            max-width:480px; width:100%; background:var(--paper-white);
-            border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:15;
-            padding:20px 16px 30px; transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);
-            display:grid; grid-template-columns:1fr 1fr; gap:12px;
-        }
+        .plus-popup { position:fixed; bottom:0; left:50%; transform:translateX(-50%) translateY(100%); max-width:480px; width:100%; background:var(--paper-white); border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:15; padding:20px 16px 30px; transition:transform 0.32s cubic-bezier(0.4,0,0.2,1); display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .plus-popup.active { transform:translateX(-50%) translateY(0); }
-        .plus-card {
-            background:var(--milk-white); border-radius:var(--radius-md); padding:18px 12px;
-            text-align:center; cursor:pointer; box-shadow:0 1px 3px var(--shadow-color);
-            transition:transform 0.15s ease; display:flex; flex-direction:column;
-            align-items:center; gap:7px;
-        }
+        .plus-card { background:var(--milk-white); border-radius:var(--radius-md); padding:18px 12px; text-align:center; cursor:pointer; box-shadow:0 1px 3px var(--shadow-color); transition:transform 0.15s ease; display:flex; flex-direction:column; align-items:center; gap:7px; }
         .plus-card:active { transform:scale(0.96); }
         .plus-card .card-icon { font-size:28px; }
         .plus-card .card-label { font-size:13px; color:var(--light-ink); font-family:var(--font-serif); }
         .plus-card.full-width { grid-column:1/-1; }
-
-        /* ============ 表情面板 ============ */
-        .emoji-popup {
-            position:fixed; bottom:0; left:50%; transform:translateX(-50%) translateY(100%);
-            max-width:480px; width:100%; background:var(--paper-white);
-            border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:15;
-            padding:16px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
-            max-height:55vh; overflow-y:auto;
-        }
+        .emoji-popup { position:fixed; bottom:0; left:50%; transform:translateX(-50%) translateY(100%); max-width:480px; width:100%; background:var(--paper-white); border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:15; padding:16px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); max-height:55vh; overflow-y:auto; }
         .emoji-popup.active { transform:translateX(-50%) translateY(0); }
         .emoji-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
-        .emoji-item {
-            aspect-ratio:1; background:var(--milk-white); border-radius:var(--radius-sm);
-            display:flex; align-items:center; justify-content:center; cursor:pointer;
-            overflow:hidden; box-shadow:0 1px 2px var(--shadow-color);
-        }
+        .emoji-item { aspect-ratio:1; background:var(--milk-white); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; box-shadow:0 1px 2px var(--shadow-color); }
         .emoji-item img { width:100%; height:100%; object-fit:cover; }
-        .emoji-add {
-            aspect-ratio:1; background:var(--moonlight-warm); border-radius:var(--radius-sm);
-            display:flex; align-items:center; justify-content:center; cursor:pointer;
-            font-size:26px; color:var(--lighter-ink); border:1.5px dashed var(--lighter-ink);
-        }
-
-        /* ============ 通用提示框 ============ */
-        .toast-overlay {
-            position:fixed; top:0; left:0; width:100%; height:100%;
-            z-index:19; display:none; background:rgba(0,0,0,0.14);
-        }
+        .emoji-add { aspect-ratio:1; background:var(--moonlight-warm); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:26px; color:var(--lighter-ink); border:1.5px dashed var(--lighter-ink); }
+        .toast-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:19; display:none; background:rgba(0,0,0,0.14); }
         .toast-overlay.active { display:block; }
-        .toast-popup {
-            position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-            background:var(--toast-bg); border-radius:var(--radius-lg); padding:26px 30px;
-            z-index:20; text-align:center; box-shadow:0 6px 24px rgba(139,129,120,0.18);
-            display:none; flex-direction:column; align-items:center; gap:10px; min-width:230px;
-        }
+        .toast-popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--toast-bg); border-radius:var(--radius-lg); padding:26px 30px; z-index:20; text-align:center; box-shadow:0 6px 24px rgba(139,129,120,0.18); display:none; flex-direction:column; align-items:center; gap:10px; min-width:230px; }
         .toast-popup.active { display:flex; }
         .toast-heart { font-size:30px; }
-        .toast-text {
-            font-size:14px; color:var(--ink-gray); font-family:var(--font-serif);
-            line-height:1.6; white-space:pre-line;
-        }
-        .toast-btn {
-            margin-top:8px; padding:9px 30px; border-radius:22px; border:none;
-            cursor:pointer; font-family:var(--font-serif); font-size:14px; color:#fff;
-            background:var(--btn-green); box-shadow:0 2px 8px var(--btn-green-shadow);
-            transition:transform 0.15s ease;
-        }
+        .toast-text { font-size:14px; color:var(--ink-gray); font-family:var(--font-serif); line-height:1.6; white-space:pre-line; }
+        .toast-btn { margin-top:8px; padding:9px 30px; border-radius:22px; border:none; cursor:pointer; font-family:var(--font-serif); font-size:14px; color:#fff; background:var(--btn-green); box-shadow:0 2px 8px var(--btn-green-shadow); transition:transform 0.15s ease; }
         .toast-btn:active { transform:scale(0.95); }
-        .toast-btn.cancel {
-            background:#c8c0b8; box-shadow:0 2px 8px rgba(180,170,160,0.3);
-        }
+        .toast-btn.cancel { background:#c8c0b8; box-shadow:0 2px 8px rgba(180,170,160,0.3); }
         .toast-buttons { display:flex; gap:10px; margin-top:6px; }
-
-        /* ============ 全屏页面通用 ============ */
-        .fullscreen-page {
-            position:absolute; top:0; left:0; width:100%; height:100%;
-            z-index:5; background:var(--paper-white); display:none; flex-direction:column;
-        }
+        .fullscreen-page { position:absolute; top:0; left:0; width:100%; height:100%; z-index:5; background:var(--paper-white); display:none; flex-direction:column; }
         .fullscreen-page.active { display:flex; }
-        .page-header {
-            padding:14px 16px; display:flex; align-items:center; gap:10px;
-            flex-shrink:0; background:var(--paper-white);
-        }
-        .btn-back {
-            width:38px; height:38px; border-radius:var(--radius-md);
-            background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color);
-            cursor:pointer; display:flex; align-items:center; justify-content:center;
-            font-size:21px; color:var(--ink-gray); border:none; flex-shrink:0; text-decoration:none;
-        }
+        .page-header { padding:14px 16px; display:flex; align-items:center; gap:10px; flex-shrink:0; background:var(--paper-white); }
+        .btn-back { width:38px; height:38px; border-radius:var(--radius-md); background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:21px; color:var(--ink-gray); border:none; flex-shrink:0; text-decoration:none; }
         .page-title { font-size:17px; color:var(--ink-gray); font-family:var(--font-serif); letter-spacing:1px; }
-        .page-content {
-            flex:1; overflow-y:auto; padding:4px 16px 24px; -webkit-overflow-scrolling:touch;
-        }
-
-        /* ============ 更多功能 ============ */
-        .more-grid {
-            display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding-top:8px;
-        }
-        .more-card {
-            background:var(--milk-white); border-radius:var(--radius-md); padding:18px 8px;
-            text-align:center; cursor:pointer; box-shadow:0 1px 3px var(--shadow-color);
-            transition:transform 0.15s ease; display:flex; flex-direction:column;
-            align-items:center; gap:7px;
-        }
+        .page-content { flex:1; overflow-y:auto; padding:4px 16px 24px; -webkit-overflow-scrolling:touch; }
+        .more-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding-top:8px; }
+        .more-card { background:var(--milk-white); border-radius:var(--radius-md); padding:18px 8px; text-align:center; cursor:pointer; box-shadow:0 1px 3px var(--shadow-color); transition:transform 0.15s ease; display:flex; flex-direction:column; align-items:center; gap:7px; }
         .more-card:active { transform:scale(0.96); }
         .more-card .card-icon { font-size:27px; }
-        .more-card .card-label {
-            font-size:12px; color:var(--light-ink); font-family:var(--font-serif); line-height:1.3;
-        }
-        .version-info {
-            text-align:center; font-size:11px; color:var(--lighter-ink);
-            padding:22px 0 12px; font-family:var(--font-serif); letter-spacing:0.5px;
-        }
-
-        /* ============ 设置 ============ */
-        .settings-tabs {
-            display:flex; gap:0; padding:0 16px; overflow-x:auto; flex-shrink:0;
-            -webkit-overflow-scrolling:touch; scroll-behavior:smooth; background:var(--paper-white);
-        }
-        .settings-tab {
-            flex-shrink:0; padding:9px 15px; font-size:13px; color:var(--lighter-ink);
-            cursor:pointer; font-family:var(--font-serif); border-bottom:2px solid transparent;
-            transition:all 0.2s; white-space:nowrap;
-        }
+        .more-card .card-label { font-size:12px; color:var(--light-ink); font-family:var(--font-serif); line-height:1.3; }
+        .version-info { text-align:center; font-size:11px; color:var(--lighter-ink); padding:22px 0 12px; font-family:var(--font-serif); letter-spacing:0.5px; }
+        .settings-tabs { display:flex; gap:0; padding:0 16px; overflow-x:auto; flex-shrink:0; -webkit-overflow-scrolling:touch; background:var(--paper-white); }
+        .settings-tab { flex-shrink:0; padding:9px 15px; font-size:13px; color:var(--lighter-ink); cursor:pointer; font-family:var(--font-serif); border-bottom:2px solid transparent; transition:all 0.2s; white-space:nowrap; }
         .settings-tab.active { color:var(--ink-gray); border-bottom-color:var(--heart-pink); }
-        .settings-panel {
-            display:none; flex:1; overflow-y:auto; padding:16px; -webkit-overflow-scrolling:touch;
-        }
+        .settings-panel { display:none; flex:1; overflow-y:auto; padding:16px; -webkit-overflow-scrolling:touch; }
         .settings-panel.active { display:block; }
-        .settings-card {
-            background:var(--milk-white); border-radius:var(--radius-md); padding:15px 16px;
-            margin-bottom:10px; cursor:pointer; box-shadow:0 1px 3px var(--shadow-color);
-            display:flex; align-items:center; gap:10px; font-family:var(--font-serif);
-            font-size:14px; color:var(--ink-gray); transition:transform 0.15s ease;
-        }
+        .settings-card { background:var(--milk-white); border-radius:var(--radius-md); padding:15px 16px; margin-bottom:10px; cursor:pointer; box-shadow:0 1px 3px var(--shadow-color); display:flex; align-items:center; gap:10px; font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); transition:transform 0.15s ease; }
         .settings-card:active { transform:scale(0.98); }
         .settings-card .s-icon { font-size:22px; }
-        .settings-dev {
-            padding:14px 16px; color:var(--lighter-ink); font-size:13px;
-            font-family:var(--font-serif); text-align:center;
-        }
-        .settings-section-title {
-            font-size:13px; color:var(--lighter-ink); margin:6px 0 10px;
-            font-family:var(--font-serif); letter-spacing:0.5px;
-        }
-
-        /* ============ 记忆重塑 ============ */
-        .reshape-slider {
-            display:flex; overflow-x:auto; scroll-snap-type:x mandatory;
-            flex:1; -webkit-overflow-scrolling:touch; scroll-behavior:smooth;
-        }
-        .reshape-page {
-            flex-shrink:0; width:100%; scroll-snap-align:start; overflow-y:auto;
-            padding:16px 16px 24px; -webkit-overflow-scrolling:touch;
-        }
-        .reshape-title {
-            text-align:center; font-size:14.5px; color:var(--light-ink);
-            margin-bottom:18px; font-family:var(--font-serif); letter-spacing:1px;
-        }
+        .settings-dev { padding:14px 16px; color:var(--lighter-ink); font-size:13px; font-family:var(--font-serif); text-align:center; }
+        .settings-section-title { font-size:13px; color:var(--lighter-ink); margin:6px 0 10px; font-family:var(--font-serif); letter-spacing:0.5px; }
+        .reshape-slider { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; flex:1; -webkit-overflow-scrolling:touch; }
+        .reshape-page { flex-shrink:0; width:100%; scroll-snap-align:start; overflow-y:auto; padding:16px 16px 24px; -webkit-overflow-scrolling:touch; }
+        .reshape-title { text-align:center; font-size:14.5px; color:var(--light-ink); margin-bottom:18px; font-family:var(--font-serif); letter-spacing:1px; }
         .reshape-avatar-area { text-align:center; margin-bottom:24px; }
-        .reshape-avatar {
-            width:72px; height:72px; border-radius:var(--radius-md); object-fit:cover;
-            background:var(--moonlight-warm); box-shadow:0 2px 6px var(--shadow-color);
-        }
-        .btn-change-avatar {
-            font-size:13px; color:var(--light-ink); cursor:pointer;
-            font-family:var(--font-serif); text-decoration:underline;
-            text-underline-offset:3px; background:none; border:none; margin-top:8px;
-        }
+        .reshape-avatar { width:72px; height:72px; border-radius:var(--radius-md); object-fit:cover; background:var(--moonlight-warm); box-shadow:0 2px 6px var(--shadow-color); }
+        .btn-change-avatar { font-size:13px; color:var(--light-ink); cursor:pointer; font-family:var(--font-serif); text-decoration:underline; text-underline-offset:3px; background:none; border:none; margin-top:8px; }
         .reshape-field { margin-bottom:20px; }
-        .reshape-field label {
-            display:block; font-size:13px; color:var(--light-ink);
-            margin-bottom:6px; font-family:var(--font-serif);
-        }
-        .reshape-input {
-            width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm);
-            background:var(--moonlight-cool); font-family:var(--font-serif); font-size:15px;
-            color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color);
-        }
+        .reshape-field label { display:block; font-size:13px; color:var(--light-ink); margin-bottom:6px; font-family:var(--font-serif); }
+        .reshape-input { width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:15px; color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color); }
         .reshape-input::placeholder { color:var(--lighter-ink); }
-        .btn-save-reshape {
-            display:block; width:100%; padding:13px; margin-top:10px; border:none;
-            border-radius:var(--radius-md); background:var(--milk-white);
-            font-family:var(--font-serif); font-size:15px; color:var(--ink-gray);
-            cursor:pointer; box-shadow:0 1px 3px var(--shadow-color);
-            letter-spacing:2px; transition:transform 0.15s ease;
-        }
+        .btn-save-reshape { display:block; width:100%; padding:13px; margin-top:10px; border:none; border-radius:var(--radius-md); background:var(--milk-white); font-family:var(--font-serif); font-size:15px; color:var(--ink-gray); cursor:pointer; box-shadow:0 1px 3px var(--shadow-color); letter-spacing:2px; transition:transform 0.15s ease; }
         .btn-save-reshape:active { transform:scale(0.97); }
-        .bg-preview {
-            width:100%; height:80px; border-radius:var(--radius-sm);
-            background:var(--moonlight-cool); margin-bottom:8px;
-            background-size:cover; background-position:center;
-            box-shadow:inset 0 1px 2px var(--shadow-color);
-        }
-
-        /* ============ 通话界面 ============ */
-        .call-screen {
-            position:fixed; top:0; left:50%; transform:translateX(-50%);
-            max-width:480px; width:100%; height:100%; z-index:20;
-            background:var(--paper-white); display:none; flex-direction:column;
-            align-items:center; justify-content:center; gap:24px;
-        }
+        .bg-preview { width:100%; height:80px; border-radius:var(--radius-sm); background:var(--moonlight-cool); margin-bottom:8px; background-size:cover; background-position:center; box-shadow:inset 0 1px 2px var(--shadow-color); }
+        .call-screen { position:fixed; top:0; left:50%; transform:translateX(-50%); max-width:480px; width:100%; height:100%; z-index:20; background:var(--paper-white); display:none; flex-direction:column; align-items:center; justify-content:center; gap:24px; }
         .call-screen.active { display:flex; }
-        .call-avatar {
-            width:84px; height:84px; border-radius:var(--radius-md); object-fit:cover;
-            background:var(--moonlight-warm); box-shadow:0 4px 16px var(--shadow-color);
-        }
-        .call-timer {
-            font-family:var(--font-serif); font-size:20px; color:var(--light-ink); letter-spacing:2px;
-        }
-        .btn-hangup {
-            width:60px; height:60px; border-radius:50%; background:#e8c0c0;
-            border:none; cursor:pointer; font-size:26px; display:flex;
-            align-items:center; justify-content:center;
-            box-shadow:0 3px 12px rgba(200,150,150,0.3); transition:transform 0.15s ease;
-        }
+        .call-avatar { width:84px; height:84px; border-radius:var(--radius-md); object-fit:cover; background:var(--moonlight-warm); box-shadow:0 4px 16px var(--shadow-color); }
+        .call-timer { font-family:var(--font-serif); font-size:20px; color:var(--light-ink); letter-spacing:2px; }
+        .btn-hangup { width:60px; height:60px; border-radius:50%; background:#e8c0c0; border:none; cursor:pointer; font-size:26px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 12px rgba(200,150,150,0.3); transition:transform 0.15s ease; }
         .btn-hangup:active { transform:scale(0.92); }
-
-        /* ============ 字卡库 ============ */
-        .wordcard-page {
-            position:absolute; top:0; left:0; width:100%; height:100%;
-            z-index:5; background:var(--paper-white); display:none; flex-direction:column;
-        }
+        .wordcard-page { position:absolute; top:0; left:0; width:100%; height:100%; z-index:5; background:var(--paper-white); display:none; flex-direction:column; }
         .wordcard-page.active { display:flex; }
-        .wordcard-tabs {
-            display:flex; gap:0; padding:6px 8px 10px; overflow-x:auto; flex-shrink:0;
-            background:var(--paper-white); -webkit-overflow-scrolling:touch;
-        }
-        .wordcard-tab {
-            flex-shrink:0; padding:7px 12px; font-size:12px; color:var(--lighter-ink);
-            cursor:pointer; font-family:var(--font-serif); border-radius:16px; margin:0 3px;
-            transition:all 0.2s; white-space:nowrap; background:var(--moonlight-warm);
-        }
-        .wordcard-tab.active {
-            color:var(--ink-gray); background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color);
-        }
-
-        .subpool-tabs {
-            display:flex; gap:4px; padding:4px 16px 8px; overflow-x:auto;
-            flex-shrink:0; -webkit-overflow-scrolling:touch;
-        }
-        .subpool-tab {
-            flex-shrink:0; padding:6px 14px; font-size:12px; color:var(--lighter-ink);
-            cursor:pointer; font-family:var(--font-serif); border-radius:14px;
-            background:var(--moonlight-warm); transition:all 0.2s; white-space:nowrap;
-        }
-        .subpool-tab.active {
-            color:var(--ink-gray); background:var(--milk-white); box-shadow:0 1px 2px var(--shadow-color);
-        }
-
+        .wordcard-tabs { display:flex; gap:0; padding:6px 8px 10px; overflow-x:auto; flex-shrink:0; background:var(--paper-white); -webkit-overflow-scrolling:touch; }
+        .wordcard-tab { flex-shrink:0; padding:7px 12px; font-size:12px; color:var(--lighter-ink); cursor:pointer; font-family:var(--font-serif); border-radius:16px; margin:0 3px; transition:all 0.2s; white-space:nowrap; background:var(--moonlight-warm); }
+        .wordcard-tab.active { color:var(--ink-gray); background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color); }
+        .subpool-tabs { display:flex; gap:4px; padding:4px 16px 8px; overflow-x:auto; flex-shrink:0; -webkit-overflow-scrolling:touch; }
+        .subpool-tab { flex-shrink:0; padding:6px 14px; font-size:12px; color:var(--lighter-ink); cursor:pointer; font-family:var(--font-serif); border-radius:14px; background:var(--moonlight-warm); transition:all 0.2s; white-space:nowrap; }
+        .subpool-tab.active { color:var(--ink-gray); background:var(--milk-white); box-shadow:0 1px 2px var(--shadow-color); }
         .wordcard-input-area { padding:6px 16px 10px; flex-shrink:0; }
-        .wordcard-textarea {
-            width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm);
-            background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px;
-            color:var(--ink-gray); outline:none; resize:vertical; min-height:60px;
-            line-height:1.6; box-shadow:inset 0 1px 2px var(--shadow-color);
-            -webkit-user-select:text; user-select:text;
-        }
+        .wordcard-textarea { width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); outline:none; resize:vertical; min-height:60px; line-height:1.6; box-shadow:inset 0 1px 2px var(--shadow-color); -webkit-user-select:text; user-select:text; }
         .wordcard-textarea::placeholder { color:var(--lighter-ink); }
-        .wordcard-add-btn {
-            display:block; width:100%; padding:10px; margin-top:8px; border:none;
-            border-radius:var(--radius-md); background:var(--milk-white);
-            font-family:var(--font-serif); font-size:14px; color:var(--ink-gray);
-            cursor:pointer; box-shadow:0 1px 3px var(--shadow-color); transition:transform 0.15s ease;
-        }
+        .wordcard-add-btn { display:block; width:100%; padding:10px; margin-top:8px; border:none; border-radius:var(--radius-md); background:var(--milk-white); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); cursor:pointer; box-shadow:0 1px 3px var(--shadow-color); transition:transform 0.15s ease; }
         .wordcard-add-btn:active { transform:scale(0.97); }
-
-        .wordcard-actions {
-            display:flex; gap:6px; padding:4px 16px 8px; flex-wrap:wrap; flex-shrink:0;
-        }
-        .wordcard-action-btn {
-            padding:5px 10px; font-size:11px; border-radius:12px; border:none; cursor:pointer;
-            font-family:var(--font-serif); background:var(--moonlight-warm);
-            color:var(--light-ink); transition:all 0.15s;
-        }
+        .wordcard-actions { display:flex; gap:6px; padding:4px 16px 8px; flex-wrap:wrap; flex-shrink:0; }
+        .wordcard-action-btn { padding:5px 10px; font-size:11px; border-radius:12px; border:none; cursor:pointer; font-family:var(--font-serif); background:var(--moonlight-warm); color:var(--light-ink); transition:all 0.15s; }
         .wordcard-action-btn:active { background:var(--milk-white); }
-
-        .wordcard-list {
-            flex:1; overflow-y:auto; padding:0 16px 16px; -webkit-overflow-scrolling:touch;
-        }
-        .wordcard-item {
-            display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:6px;
-            background:var(--milk-white); border-radius:var(--radius-sm);
-            box-shadow:0 1px 2px var(--shadow-color); font-family:var(--font-serif);
-            font-size:14px; color:var(--ink-gray);
-        }
+        .wordcard-list { flex:1; overflow-y:auto; padding:0 16px 16px; -webkit-overflow-scrolling:touch; }
+        .wordcard-item { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:6px; background:var(--milk-white); border-radius:var(--radius-sm); box-shadow:0 1px 2px var(--shadow-color); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); }
         .wordcard-item .wc-content { flex:1; word-break:break-word; line-height:1.4; }
         .wordcard-item .wc-actions { display:flex; gap:4px; flex-shrink:0; }
-        .wc-btn {
-            width:28px; height:28px; border-radius:50%; border:none; cursor:pointer;
-            font-size:13px; display:flex; align-items:center; justify-content:center;
-            background:var(--moonlight-warm); color:var(--light-ink); transition:all 0.15s;
-        }
+        .wc-btn { width:28px; height:28px; border-radius:50%; border:none; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; background:var(--moonlight-warm); color:var(--light-ink); transition:all 0.15s; }
         .wc-btn:active { background:var(--milk-white); }
         .wc-btn.danger { color:#8b6b6b; }
-
-        .group-select-area {
-            display:flex; gap:8px; padding:0 16px 6px; flex-shrink:0; align-items:center;
-        }
-        .group-select {
-            flex:1; padding:8px 10px; border:none; border-radius:var(--radius-sm);
-            background:var(--moonlight-cool); font-family:var(--font-serif); font-size:13px;
-            color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color);
-        }
-        .group-input {
-            flex:1; padding:8px 10px; border:none; border-radius:var(--radius-sm);
-            background:var(--moonlight-cool); font-family:var(--font-serif); font-size:13px;
-            color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color);
-            -webkit-user-select:text; user-select:text;
-        }
+        .group-select-area { display:flex; gap:8px; padding:0 16px 6px; flex-shrink:0; align-items:center; }
+        .group-select { flex:1; padding:8px 10px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:13px; color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color); }
+        .group-input { flex:1; padding:8px 10px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:13px; color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color); -webkit-user-select:text; user-select:text; }
         .group-input::placeholder { color:var(--lighter-ink); }
-        .group-meta {
-            display:flex; align-items:center; gap:6px; padding:4px 16px;
-            font-size:11px; color:var(--lighter-ink); font-family:var(--font-serif);
-        }
-        .group-meta .group-name {
-            cursor:pointer; padding:3px 8px; border-radius:10px; background:var(--moonlight-warm);
-        }
-        .group-meta .group-name.active {
-            background:var(--milk-white); box-shadow:0 1px 2px var(--shadow-color);
-        }
-
+        .group-meta { display:flex; align-items:center; gap:6px; padding:4px 16px; font-size:11px; color:var(--lighter-ink); font-family:var(--font-serif); }
+        .group-meta .group-name { cursor:pointer; padding:3px 8px; border-radius:10px; background:var(--moonlight-warm); }
+        .group-meta .group-name.active { background:var(--milk-white); box-shadow:0 1px 2px var(--shadow-color); }
         .search-area { padding:6px 16px; flex-shrink:0; }
-        .search-input {
-            width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm);
-            background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px;
-            color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color);
-            -webkit-user-select:text; user-select:text;
-        }
+        .search-input { width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color); -webkit-user-select:text; user-select:text; }
         .search-input::placeholder { color:var(--lighter-ink); }
-        .search-result-info {
-            font-size:11px; color:var(--lighter-ink); padding:4px 16px; font-family:var(--font-serif);
-        }
-        .search-result-meta {
-            font-size:10px; color:var(--lighter-ink); font-family:var(--font-serif);
-        }
-
+        .search-result-info { font-size:11px; color:var(--lighter-ink); padding:4px 16px; font-family:var(--font-serif); }
+        .search-result-meta { font-size:10px; color:var(--lighter-ink); font-family:var(--font-serif); }
         .export-list { padding:8px 16px; }
-        .export-item {
-            display:flex; align-items:center; gap:8px; padding:12px; margin-bottom:6px;
-            background:var(--milk-white); border-radius:var(--radius-sm);
-            box-shadow:0 1px 2px var(--shadow-color); font-family:var(--font-serif);
-            font-size:13px; color:var(--ink-gray);
-        }
+        .export-item { display:flex; align-items:center; gap:8px; padding:12px; margin-bottom:6px; background:var(--milk-white); border-radius:var(--radius-sm); box-shadow:0 1px 2px var(--shadow-color); font-family:var(--font-serif); font-size:13px; color:var(--ink-gray); }
         .export-item .exp-label { flex:1; }
-        .export-item .exp-btn {
-            padding:6px 14px; border-radius:12px; border:none; cursor:pointer;
-            font-family:var(--font-serif); font-size:12px; background:var(--moonlight-warm);
-            color:var(--light-ink);
-        }
-        .export-all-btn {
-            display:block; width:100%; padding:12px; margin-top:8px; border:none;
-            border-radius:var(--radius-md); background:var(--milk-white);
-            font-family:var(--font-serif); font-size:14px; color:var(--ink-gray);
-            cursor:pointer; box-shadow:0 1px 3px var(--shadow-color);
-        }
-        .exclusive-info {
-            text-align:center; font-size:12px; color:var(--lighter-ink);
-            padding:8px; font-family:var(--font-serif);
-        }
-
-        /* ============ 教学模式 ============ */
-        .teach-page {
-            position:absolute; top:0; left:0; width:100%; height:100%;
-            z-index:5; background:var(--paper-white); display:none; flex-direction:column;
-        }
+        .export-item .exp-btn { padding:6px 14px; border-radius:12px; border:none; cursor:pointer; font-family:var(--font-serif); font-size:12px; background:var(--moonlight-warm); color:var(--light-ink); }
+        .export-all-btn { display:block; width:100%; padding:12px; margin-top:8px; border:none; border-radius:var(--radius-md); background:var(--milk-white); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); cursor:pointer; box-shadow:0 1px 3px var(--shadow-color); }
+        .exclusive-info { text-align:center; font-size:12px; color:var(--lighter-ink); padding:8px; font-family:var(--font-serif); }
+        .teach-page { position:absolute; top:0; left:0; width:100%; height:100%; z-index:5; background:var(--paper-white); display:none; flex-direction:column; }
         .teach-page.active { display:flex; }
-        .teach-content {
-            flex:1; overflow-y:auto; padding:16px; -webkit-overflow-scrolling:touch;
-        }
+        .teach-content { flex:1; overflow-y:auto; padding:16px; -webkit-overflow-scrolling:touch; }
         .teach-row { display:flex; align-items:flex-start; gap:8px; margin-bottom:16px; }
         .teach-row.mine { flex-direction:row-reverse; }
-        .teach-avatar {
-            width:32px; height:32px; border-radius:6px; object-fit:cover;
-            flex-shrink:0; background:var(--moonlight-warm);
-        }
-        .teach-bubble {
-            flex:1; padding:10px 14px; border-radius:var(--radius-md); font-size:14px;
-            font-family:var(--font-serif); box-shadow:0 1px 3px var(--shadow-color);
-            background:var(--moonlight-cool);
-        }
+        .teach-avatar { width:32px; height:32px; border-radius:6px; object-fit:cover; flex-shrink:0; background:var(--moonlight-warm); }
+        .teach-bubble { flex:1; padding:10px 14px; border-radius:var(--radius-md); font-size:14px; font-family:var(--font-serif); box-shadow:0 1px 3px var(--shadow-color); background:var(--moonlight-cool); }
         .teach-row.theirs .teach-bubble { background:var(--moonlight-warm); }
-        .teach-input {
-            width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm);
-            background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px;
-            color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color);
-            -webkit-user-select:text; user-select:text;
-        }
-        .teach-pair {
-            display:flex; align-items:center; gap:8px; padding:8px; margin-bottom:6px;
-            background:var(--milk-white); border-radius:var(--radius-sm);
-            box-shadow:0 1px 2px var(--shadow-color);
-        }
+        .teach-input { width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color); -webkit-user-select:text; user-select:text; }
+        .teach-pair { display:flex; align-items:center; gap:8px; padding:8px; margin-bottom:6px; background:var(--milk-white); border-radius:var(--radius-sm); box-shadow:0 1px 2px var(--shadow-color); }
         .teach-pair-content { flex:1; font-size:13px; }
-        .teach-pair-del {
-            width:24px; height:24px; border-radius:50%; border:none; cursor:pointer;
-            font-size:14px; background:transparent; color:var(--ink-gray);
-        }
-
-        .edit-popup {
-            position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-            background:var(--toast-bg); border-radius:var(--radius-lg); padding:20px 24px;
-            z-index:21; display:none; flex-direction:column; gap:10px; min-width:250px;
-            box-shadow:0 6px 24px rgba(139,129,120,0.18);
-        }
+        .teach-pair-del { width:24px; height:24px; border-radius:50%; border:none; cursor:pointer; font-size:14px; background:transparent; color:var(--ink-gray); }
+        .edit-popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--toast-bg); border-radius:var(--radius-lg); padding:20px 24px; z-index:21; display:none; flex-direction:column; gap:10px; min-width:250px; box-shadow:0 6px 24px rgba(139,129,120,0.18); }
         .edit-popup.active { display:flex; }
-        .edit-popup input {
-            width:100%; padding:8px 12px; border:none; border-radius:var(--radius-sm);
-            background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px;
-            color:var(--ink-gray); outline:none;
-        }
+        .edit-popup input { width:100%; padding:8px 12px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); outline:none; }
         .edit-popup-btns { display:flex; gap:10px; justify-content:flex-end; }
-
         @media (max-width:360px) {
             .heart-chain .heart { font-size:11px; }
             .heart-chain { gap:1px; }
@@ -658,8 +216,6 @@
     </style>
 </head>
 <body>
-
-<!-- ==================== 聊天主界面 ==================== -->
 <div id="chatView" class="view active">
     <div class="chat-header">
         <div class="header-avatars">
@@ -683,8 +239,6 @@
         <button class="btn-send" id="btnSend">发送</button>
     </div>
 </div>
-
-<!-- ==================== ⊕ 弹窗 ==================== -->
 <div class="overlay" id="plusOverlay"></div>
 <div class="plus-popup" id="plusPopup">
     <div class="plus-card" id="plusPhoto"><span class="card-icon">📷</span><span class="card-label">照片</span></div>
@@ -694,12 +248,8 @@
     <div class="plus-card full-width" id="plusTeachMode"><span class="card-icon">📖</span><span class="card-label">教学模式</span></div>
     <div class="plus-card full-width" id="plusMore"><span class="card-label">更多功能 →</span></div>
 </div>
-
-<!-- ==================== 表情面板 ==================== -->
 <div class="overlay" id="emojiOverlay"></div>
 <div class="emoji-popup" id="emojiPopup"><div class="emoji-grid" id="emojiGrid"><div class="emoji-add" id="emojiAddBtn">+</div></div></div>
-
-<!-- ==================== 提示框 ==================== -->
 <div class="toast-overlay" id="toastOverlay"></div>
 <div class="toast-popup" id="toastPopup">
     <span class="toast-heart">🩷</span><span class="toast-text" id="toastText"></span>
@@ -708,28 +258,20 @@
         <button class="toast-btn" id="toastConfirmBtn">确认</button>
     </div>
 </div>
-
-<!-- ==================== 编辑小框 ==================== -->
 <div class="overlay" id="editOverlay" style="z-index:20;"></div>
 <div class="edit-popup" id="editPopup">
     <input type="text" id="editInput" placeholder="编辑内容...">
     <div class="edit-popup-btns"><button class="toast-btn cancel" id="editCancelBtn">取消</button><button class="toast-btn" id="editSaveBtn">保存</button></div>
 </div>
-
-<!-- ==================== 更多功能页 ==================== -->
 <div class="fullscreen-page" id="morePage">
     <div class="page-header"><button class="btn-back" id="btnMoreBack">←</button><span class="page-title">更多功能</span></div>
-    <div class="page-content"><div class="more-grid" id="moreGrid"></div><div class="version-info">v1.2.2 · 易遇🩷雾凉</div></div>
+    <div class="page-content"><div class="more-grid" id="moreGrid"></div><div class="version-info">v1.2.3 · 易遇🩷雾凉</div></div>
 </div>
-
-<!-- ==================== 设置页 ==================== -->
 <div class="fullscreen-page" id="settingsPage">
     <div class="page-header"><button class="btn-back" id="btnSettingsBack">←</button><span class="page-title">设置</span></div>
     <div class="settings-tabs" id="settingsTabs"></div>
     <div id="settingsPanels"></div>
 </div>
-
-<!-- ==================== 记忆重塑页 ==================== -->
 <div class="fullscreen-page" id="reshapePage">
     <div class="page-header"><button class="btn-back" id="btnReshapeBack">←</button><span class="page-title">记忆重塑</span></div>
     <div class="reshape-slider" id="reshapeSlider">
@@ -754,15 +296,11 @@
         </div>
     </div>
 </div>
-
-<!-- ==================== 通话界面 ==================== -->
 <div class="call-screen" id="callScreen">
     <img class="call-avatar his-avatar" id="callAvatar" src="" alt="他" onerror="this.style.display='none'">
     <div class="call-timer" id="callTimer">00:00</div>
     <button class="btn-hangup" id="btnHangup">📞</button>
 </div>
-
-<!-- ==================== 字卡库页 ==================== -->
 <div class="wordcard-page" id="wordcardPage">
     <div class="page-header"><button class="btn-back" id="btnWordcardBack">←</button><span class="page-title">字卡库</span></div>
     <div class="subpool-tabs" id="subpoolTabs"></div>
@@ -784,34 +322,20 @@
     <div class="export-list" id="exportList" style="display:none;"></div>
     <div class="wordcard-tabs" id="wordcardTabs"></div>
 </div>
-
-<!-- ==================== 教学模式页 ==================== -->
 <div class="teach-page" id="teachPage">
     <div class="page-header"><button class="btn-back" id="btnTeachBack">←</button><span class="page-title">教学模式</span></div>
     <div class="teach-content" id="teachContent"></div>
 </div>
-
-<!-- ================================================================
-     第一批结束 · 继续第二批（<script>标签在第二批开头）
-     ================================================================ -->
-    <script>
-// ================================================================
-// 第二批：数据层 + 聊天核心 + 设置 + 记忆重塑 + 字卡库数据层
-// 版本：v1.2.2
-// ================================================================
+<script>
 (function() {
 'use strict';
-
-// ==================== Service Worker ====================
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        var swCode = 'var CACHE_NAME="yiwu-v1.2.2";self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(["/"])}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
+        var swCode = 'var CACHE_NAME="yiwu-v1.2.3";self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(["/"])}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
         var blob = new Blob([swCode], {type:'application/javascript'});
         navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});
     });
 }
-
-// ==================== LocalStorage ====================
 var LS = {
     get: function(key, def) {
         try { var v = localStorage.getItem('yw_'+key); return v !== null ? JSON.parse(v) : def; }
@@ -822,10 +346,7 @@ var LS = {
         catch(e) { showToast('存储空间不足'); }
     }
 };
-
-// ==================== IndexedDB ====================
 var DB_NAME = 'YiWuChat', DB_VERSION = 1, db = null;
-
 function openDB() {
     return new Promise(function(rs, rj) {
         var r = indexedDB.open(DB_NAME, DB_VERSION);
@@ -835,39 +356,31 @@ function openDB() {
                 var s = d.createObjectStore('messages', {keyPath:'id', autoIncrement:true});
                 s.createIndex('timestamp','timestamp',{unique:false});
             }
-            if (!d.objectStoreNames.contains('emojis')) {
-                d.createObjectStore('emojis', {keyPath:'id', autoIncrement:true});
-            }
-            if (!d.objectStoreNames.contains('wordcards')) {
-                d.createObjectStore('wordcards', {keyPath:'id', autoIncrement:true});
-            }
+            if (!d.objectStoreNames.contains('emojis')) d.createObjectStore('emojis', {keyPath:'id', autoIncrement:true});
+            if (!d.objectStoreNames.contains('wordcards')) d.createObjectStore('wordcards', {keyPath:'id', autoIncrement:true});
         };
         r.onsuccess = function(e) { db = e.target.result; rs(db); };
         r.onerror = function() { rj(r.error); };
     });
 }
-
 function dbAdd(sn, data) {
     return new Promise(function(rs, rj) {
         var tx = db.transaction(sn,'readwrite'), st = tx.objectStore(sn);
         var r = st.add(data); r.onsuccess = function() { rs(r.result); }; r.onerror = function() { rj(r.error); };
     });
 }
-
 function dbPut(sn, data) {
     return new Promise(function(rs, rj) {
         var tx = db.transaction(sn,'readwrite'), st = tx.objectStore(sn);
         var r = st.put(data); r.onsuccess = function() { rs(r.result); }; r.onerror = function() { rj(r.error); };
     });
 }
-
 function dbGetAll(sn) {
     return new Promise(function(rs, rj) {
         var tx = db.transaction(sn,'readonly'), st = tx.objectStore(sn);
         var r = st.getAll(); r.onsuccess = function() { rs(r.result); }; r.onerror = function() { rj(r.error); };
     });
 }
-
 function dbGetPaginated(sn, offset, limit) {
     return new Promise(function(rs, rj) {
         var tx = db.transaction(sn,'readonly'), st = tx.objectStore(sn);
@@ -883,15 +396,12 @@ function dbGetPaginated(sn, offset, limit) {
         r.onerror = function() { rj(r.error); };
     });
 }
-
 function dbClear(sn) {
     return new Promise(function(rs, rj) {
         var tx = db.transaction(sn,'readwrite'), st = tx.objectStore(sn);
         var r = st.clear(); r.onsuccess = function() { rs(); }; r.onerror = function() { rj(r.error); };
     });
 }
-
-// ==================== 全局状态 ====================
 var state = {
     hisName:'易遇', hisNick:'老公', myName:'雾凉', myNick:'乖宝',
     hisAvatar:'', myAvatar:'', hisStatus:'', hisSignature:'', chatBg:'',
@@ -900,63 +410,40 @@ var state = {
     quotingId:null, quotingText:'',
     autoReplyTimeout:null, activeChatTimeout:null, statusChangeTimeout:null,
     lastUserMessageTime:0,
-    wordcardData: {},
-    wordcardFoldState: {},
-    wcCurrentTab: 0,
-    wcCurrentSubpool: 0,
-    _wcCurrentGroup: null,
-    wcSearchResults: [],
-    exclusiveCards: [],
-    exclusiveDeleteChance: { used: false, date: '' },
-    teachPairs: []
+    wordcardData:{}, wordcardFoldState:{},
+    wcCurrentTab:0, wcCurrentSubpool:0, _wcCurrentGroup:null, wcSearchResults:[],
+    exclusiveCards:[], exclusiveDeleteChance:{used:false,date:''}, teachPairs:[]
 };
-
 function $(s) { return document.querySelector(s); }
 function $$(s) { return document.querySelectorAll(s); }
-
-// ==================== 初始化 ====================
-async function initApp() {
-    await openDB();
-    loadAllSettings();
-    await loadEmojis();
-    await loadMessages();
-    await loadWordcardData();
-    updateAllChatUI();
-    bindAllEvents();
-    startStatusCycle();
-    startActiveChat();
-    if (state.messagesLoaded === 0) $('#messagesContainer').innerHTML = '';
-    buildMoreGrid();
-    setTimeout(bindWordcardActions, 800);
+function escHTML(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function formatTime(ts) { var d = new Date(ts); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function getDateStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function downloadJSON(data,fn) {
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(url);},100);
 }
-
 function loadAllSettings() {
     state.hisName = LS.get('hisName','易遇'); state.hisNick = LS.get('hisNick','老公');
     state.myName = LS.get('myName','雾凉'); state.myNick = LS.get('myNick','乖宝');
     state.hisAvatar = LS.get('hisAvatar',''); state.myAvatar = LS.get('myAvatar','');
     state.hisStatus = LS.get('hisStatus',''); state.hisSignature = LS.get('hisSignature','');
     state.chatBg = LS.get('chatBg','');
-    state.wordcardFoldState = LS.get('wcFoldState', {});
-    state.exclusiveCards = LS.get('exclusiveCards', []);
-    state.exclusiveDeleteChance = LS.get('exclusiveDeleteChance', { used: false, date: '' });
-    state.teachPairs = LS.get('teachPairs', []);
+    state.wordcardFoldState = LS.get('wcFoldState',{});
+    state.exclusiveCards = LS.get('exclusiveCards',[]);
+    state.exclusiveDeleteChance = LS.get('exclusiveDeleteChance',{used:false,date:''});
+    state.teachPairs = LS.get('teachPairs',[]);
 }
-
 function saveAllSettings() {
     LS.set('hisName',state.hisName); LS.set('hisNick',state.hisNick);
     LS.set('myName',state.myName); LS.set('myNick',state.myNick);
     LS.set('hisAvatar',state.hisAvatar); LS.set('myAvatar',state.myAvatar);
     LS.set('hisStatus',state.hisStatus); LS.set('hisSignature',state.hisSignature);
-    LS.set('chatBg',state.chatBg);
-    LS.set('wcFoldState', state.wordcardFoldState);
-    LS.set('exclusiveCards', state.exclusiveCards);
-    LS.set('exclusiveDeleteChance', state.exclusiveDeleteChance);
-    LS.set('teachPairs', state.teachPairs);
+    LS.set('chatBg',state.chatBg); LS.set('wcFoldState',state.wordcardFoldState);
+    LS.set('exclusiveCards',state.exclusiveCards); LS.set('exclusiveDeleteChance',state.exclusiveDeleteChance);
+    LS.set('teachPairs',state.teachPairs);
 }
-
-// ==================== 表情 ====================
 async function loadEmojis() { state.emojis = await dbGetAll('emojis'); renderEmojiGrid(); }
-
 function renderEmojiGrid() {
     var g = $('#emojiGrid'); if (!g) return; g.innerHTML = '';
     state.emojis.forEach(function(e) {
@@ -964,10 +451,8 @@ function renderEmojiGrid() {
         var img = document.createElement('img'); img.src = e.data; d.appendChild(img);
         d.onclick = function() { sendEmoji(e.data); }; g.appendChild(d);
     });
-    var add = document.createElement('div'); add.className = 'emoji-add'; add.textContent = '+';
-    add.onclick = addEmoji; g.appendChild(add);
+    var add = document.createElement('div'); add.className = 'emoji-add'; add.textContent = '+'; add.onclick = addEmoji; g.appendChild(add);
 }
-
 function addEmoji() {
     var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
     inp.onchange = async function(e) {
@@ -977,18 +462,13 @@ function addEmoji() {
         reader.readAsDataURL(f);
     }; inp.click();
 }
-
 function sendEmoji(data) { closeEmojiPanel(); sendMessage(data, 'image'); }
-
-// ==================== 消息 ====================
 async function loadMessages() {
     var msgs = await dbGetPaginated('messages', 0, state.PAGE_SIZE);
     state.messagesLoaded = msgs.length; renderAllMessages(msgs);
     if (msgs.length > 0) setTimeout(function() { $('#messagesContainer').scrollTop = $('#messagesContainer').scrollHeight; }, 150);
 }
-
 function renderAllMessages(msgs) { var c = $('#messagesContainer'); c.innerHTML = ''; msgs.forEach(function(m) { renderOneMessage(m, c); }); }
-
 function renderOneMessage(msg, container) {
     var isMine = msg.sender === 'me';
     var row = document.createElement('div');
@@ -1026,15 +506,9 @@ function renderOneMessage(msg, container) {
     }
     cw.appendChild(meta); row.appendChild(cw); container.appendChild(row);
 }
-
 function appendMsg(msg) { renderOneMessage(msg, $('#messagesContainer')); $('#messagesContainer').scrollTop = $('#messagesContainer').scrollHeight; }
-function formatTime(ts) { var d = new Date(ts); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
-function escHTML(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-// ==================== 发送消息 ====================
 async function sendMessage(content, type, quoteId, quoteText) {
-    var qId = state.quotingId || quoteId || null;
-    var qText = state.quotingText || quoteText || '';
+    var qId = state.quotingId || quoteId || null, qText = state.quotingText || quoteText || '';
     state.quotingId = null; state.quotingText = null;
     var msg = { sender:'me', content:content, type:type||'text', timestamp:Date.now(), read:false, quoteId:qId, quoteText:qText, quotedBy:[] };
     var id = await dbAdd('messages', msg); msg.id = id;
@@ -1043,14 +517,11 @@ async function sendMessage(content, type, quoteId, quoteText) {
     if (qId) { await updateQuotedBy(qId, id); }
     scheduleAutoReply();
 }
-
 async function updateQuotedBy(quotedMsgId, newMsgId) {
     var all = await dbGetAll('messages');
     var target = all.find(function(m) { return m.id === quotedMsgId; });
     if (target) { if (!target.quotedBy) target.quotedBy = []; target.quotedBy.push(newMsgId); await dbPut('messages', target); }
 }
-
-// ==================== 自动回复 ====================
 function scheduleAutoReply() {
     clearTimeout(state.autoReplyTimeout);
     $('#typingIndicator').classList.add('visible'); markAllRead();
@@ -1060,13 +531,11 @@ function scheduleAutoReply() {
         await doAutoReply();
     }, delay);
 }
-
 function markAllRead() {
     $$('.message-row.mine .check-mark.unread').forEach(function(ck) {
         ck.classList.remove('unread'); ck.classList.add('read'); ck.textContent = '✓✓';
     });
 }
-
 async function doAutoReply() {
     var lastMyMsg = getLastMyMessage();
     if (lastMyMsg && state.teachPairs.length > 0) {
@@ -1075,8 +544,7 @@ async function doAutoReply() {
             addToExclusiveIfNew(matched.reply, 'teach');
             var rmsg = { sender:'him', content:matched.reply, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] };
             var rid = await dbAdd('messages', rmsg); rmsg.id = rid;
-            state.messagesLoaded++; appendMsg(rmsg);
-            return;
+            state.messagesLoaded++; appendMsg(rmsg); return;
         }
     }
     var pool = state.exclusiveCards.length > 0 ? state.exclusiveCards : getAllReplyCards();
@@ -1087,25 +555,20 @@ async function doAutoReply() {
     var id = await dbAdd('messages', msg); msg.id = id;
     state.messagesLoaded++; appendMsg(msg);
 }
-
 function getLastMyMessage() {
     var rows = $$('#messagesContainer .message-row.mine');
     if (rows.length === 0) return null;
     var bub = rows[rows.length-1].querySelector('.message-bubble');
     return bub ? bub.textContent.trim() : null;
 }
-
 function getAllReplyCards() {
-    var cards = [];
-    var data = state.wordcardData;
+    var cards = [], data = state.wordcardData;
     ['emoji','action','reply','song'].forEach(function(sk) {
         var poolData = data[sk] || {};
         Object.values(poolData).forEach(function(arr) { if (Array.isArray(arr)) cards = cards.concat(arr); });
     });
     return cards;
 }
-
-// ==================== 主动聊天 ====================
 function startActiveChat() { scheduleActiveCheck(); }
 function scheduleActiveCheck() {
     clearTimeout(state.activeChatTimeout);
@@ -1126,8 +589,6 @@ async function checkActiveChat() {
         state.messagesLoaded++; appendMsg(msg);
     }, 2000 + Math.random() * 4000);
 }
-
-// ==================== 专属回复池 ====================
 function addToExclusiveIfNew(content, source) {
     var exists = state.exclusiveCards.some(function(c) { return (typeof c==='string'?c:(c.content||'')) === content; });
     if (exists) return;
@@ -1137,7 +598,6 @@ function addToExclusiveIfNew(content, source) {
     else { state.exclusiveCards.push({ content:content, source:source, weight:1, timestamp:Date.now() }); }
     saveAllSettings();
 }
-
 function moveFromReplyToExclusive(content) {
     var data = state.wordcardData;
     ['emoji','action','reply','song'].forEach(function(sk) {
@@ -1150,8 +610,6 @@ function moveFromReplyToExclusive(content) {
     });
     saveWordcardData();
 }
-
-// ==================== 状态栏 ====================
 function startStatusCycle() { applyStatus(); scheduleStatusChange(); }
 function scheduleStatusChange() {
     clearTimeout(state.statusChangeTimeout);
@@ -1188,8 +646,6 @@ function applyRandomGradient(el) {
     el.style.background = 'linear-gradient(135deg, hsl('+h1+',15%,82%), hsl('+h2+',15%,88%))';
     el.style.webkitBackgroundClip='text'; el.style.webkitTextFillColor='transparent'; el.style.backgroundClip='text';
 }
-
-// ==================== UI 更新 ====================
 function updateAllChatUI() {
     $$('.his-avatar').forEach(function(img) { if (state.hisAvatar) { img.src=state.hisAvatar; img.style.display=''; } else img.style.display='none'; });
     $$('.my-avatar').forEach(function(img) { if (state.myAvatar) { img.src=state.myAvatar; img.style.display=''; } else img.style.display='none'; });
@@ -1211,8 +667,6 @@ function syncReshape() {
     if (state.myAvatar) { $('#reshapeMyAvatar').src=state.myAvatar; $('#reshapeMyAvatar').style.display=''; }
     if (state.chatBg) $('#bgPreview').style.backgroundImage='url('+state.chatBg+')';
 }
-
-// ==================== 提示框 ====================
 function showToast(text, showCancel, onConfirm, onCancel) {
     $('#toastText').textContent = text;
     $('#toastPopup').classList.add('active'); $('#toastOverlay').classList.add('active');
@@ -1221,8 +675,6 @@ function showToast(text, showCancel, onConfirm, onCancel) {
     else { cb.style.display='none'; $('#toastConfirmBtn').onclick=function(){closeToast();if(onConfirm)onConfirm();}; }
 }
 function closeToast() { $('#toastPopup').classList.remove('active'); $('#toastOverlay').classList.remove('active'); }
-
-// ==================== ⊕ 弹窗 ====================
 function openPlus() { $('#plusPopup').classList.add('active'); $('#plusOverlay').classList.add('active'); }
 function closePlus() { $('#plusPopup').classList.remove('active'); $('#plusOverlay').classList.remove('active'); }
 function openPhoto() { closePlus(); pickImage(function(d){sendMessage(d,'image');}); }
@@ -1251,8 +703,6 @@ function scrollToMsg(id) {
     if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.background='rgba(232,180,184,0.2)';setTimeout(function(){row.style.background='';},1800);}
 }
 function updateSendBtn() { var b=$('#btnSend'); if($('#chatInput').value.trim()) b.classList.add('visible'); else b.classList.remove('visible'); }
-
-// ==================== 页面跳转 ====================
 function openMorePage() { $('#morePage').classList.add('active'); $('#chatView').classList.remove('active'); buildMoreGrid(); }
 function closeMorePage() { $('#morePage').classList.remove('active'); $('#chatView').classList.add('active'); }
 function openSettingsPage() { closeMorePage(); $('#settingsPage').classList.add('active'); $('#chatView').classList.remove('active'); buildSettings(); setTimeout(bindDataEvents,300); }
@@ -1263,8 +713,6 @@ function openWordcardPage() { closeMorePage(); $('#wordcardPage').classList.add(
 function closeWordcardPage() { $('#wordcardPage').classList.remove('active'); $('#chatView').classList.add('active'); }
 function openTeachPage() { closePlus(); $('#teachPage').classList.add('active'); $('#chatView').classList.remove('active'); renderTeachPage(); }
 function closeTeachPage() { $('#teachPage').classList.remove('active'); $('#chatView').classList.add('active'); }
-
-// ==================== 更多功能 ====================
 var moreFeatures = [
     { icon:'🌐', label:'朋友圈' },{ icon:'✉️', label:'信件邮递' },{ icon:'📨', label:'传讯' },
     { icon:'💕', label:'恋爱日记' },{ icon:'☁️', label:'小世界' },{ icon:'🎵', label:'一起听歌' },
@@ -1283,8 +731,6 @@ function buildMoreGrid() {
         g.appendChild(c);
     });
 }
-
-// ==================== 设置 ====================
 var settingsTabsData = [
     { icon:'🎨', label:'主题切换', content:'dev' },{ icon:'💬', label:'自定义气泡样式', content:'dev' },
     { icon:'⚡', label:'系统频率控制', content:'dev' },{ icon:'📦', label:'数据管理', content:'data' },
@@ -1320,19 +766,12 @@ function bindDataEvents() {
     if(ef)ef.onclick=exportFullBackup; if(el)el.onclick=exportLightBackup; if(ec)ec.onclick=exportChatRecords;
     if(imf)imf.onclick=importFullBackup; if(iwc)iwc.onclick=importWordCardsJSON;
 }
-
-// ==================== 导入导出 ====================
 async function getAllData() {
-    return { version:'1.2.2', exportTime:new Date().toISOString(),
+    return { version:'1.2.3', exportTime:new Date().toISOString(),
         settings:{ hisName:state.hisName,hisNick:state.hisNick,myName:state.myName,myNick:state.myNick,hisAvatar:state.hisAvatar,myAvatar:state.myAvatar,hisStatus:state.hisStatus,hisSignature:state.hisSignature,chatBg:state.chatBg },
         messages:await dbGetAll('messages'), emojis:await dbGetAll('emojis'), wordcards:await dbGetAll('wordcards'),
         exclusiveCards:state.exclusiveCards, teachPairs:state.teachPairs };
 }
-function downloadJSON(data,fn) {
-    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(url);},100);
-}
-function getDateStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 async function exportFullBackup(){var d=await getAllData();downloadJSON(d,'易遇雾凉_全量备份_'+getDateStr()+'.json');showToast('📤 全量备份已导出');}
 async function exportLightBackup(){
     var d=await getAllData(); d.emojis=[]; d.settings.hisAvatar=d.settings.hisAvatar?'[图片已省略]':''; d.settings.myAvatar=d.settings.myAvatar?'[图片已省略]':''; d.settings.chatBg=d.settings.chatBg?'[图片已省略]':'';
@@ -1375,8 +814,6 @@ function importWordCardsJSON(){
         };reader.readAsText(f);
     };inp.click();
 }
-
-// ==================== 记忆重塑 ====================
 function changeAvatar(type){
     var inp=document.createElement('input');inp.type='file';inp.accept='image/*';
     inp.onchange=function(e){var f=e.target.files[0];if(!f)return;var reader=new FileReader();
@@ -1400,15 +837,11 @@ function saveReshape(){
     state.myNick=$('#reshapeCallMe').value||'乖宝';state.hisSignature=$('#reshapeSignature').value||'';
     state.myName=$('#reshapeMyName').value||'雾凉';saveAllSettings();updateAllChatUI();showToast('铭刻于心底\n已保存');
 }
-
-// ==================== 编辑小框 ====================
 var editCallback=null;
 function showEditPopup(currentValue,cb){$('#editInput').value=currentValue||'';$('#editPopup').classList.add('active');$('#editOverlay').classList.add('active');editCallback=cb;$('#editInput').focus();}
 function closeEditPopup(){$('#editPopup').classList.remove('active');$('#editOverlay').classList.remove('active');editCallback=null;}
 $('#editSaveBtn').onclick=function(){var val=$('#editInput').value.trim();if(editCallback)editCallback(val);closeEditPopup();};
 $('#editCancelBtn').onclick=closeEditPopup;$('#editOverlay').onclick=closeEditPopup;
-
-// ==================== 事件绑定 ====================
 function bindAllEvents(){
     $('#btnPlus').onclick=openPlus;$('#plusOverlay').onclick=closePlus;
     $('#plusPhoto').onclick=openPhoto;$('#plusCamera').onclick=openCamera;
@@ -1424,16 +857,24 @@ function bindAllEvents(){
     $('#btnTeachBack').onclick=closeTeachPage;
     $('#btnChangeHisAvatar').onclick=function(){changeAvatar('his');};$('#btnChangeMyAvatar').onclick=function(){changeAvatar('my');};
     $('#btnChangeChatBg').onclick=changeChatBg;$('#btnSaveReshape1').onclick=saveReshape;$('#btnSaveReshape2').onclick=saveReshape;
-    bindLongPress();
+    bindLongPress(); bindWordcardActions();
+    var groupInput = $('#groupInput');
+    if (groupInput) { groupInput.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            var val = this.value.trim(); if (!val) return;
+            var info = getCurrentPoolInfo();
+            if (!state.wordcardData[info.poolKey]) state.wordcardData[info.poolKey] = {};
+            if (!state.wordcardData[info.poolKey][info.subpoolKey]) state.wordcardData[info.poolKey][info.subpoolKey] = {};
+            if (!state.wordcardData[info.poolKey][info.subpoolKey][val]) state.wordcardData[info.poolKey][info.subpoolKey][val] = [];
+            state._wcCurrentGroup = val; saveWordcardData(); renderWordcardPage(); this.value = '';
+        }
+    };}
 }
-
 function bindLongPress(){
     var lt=null,ltg=null,mc=$('#messagesContainer');
     mc.addEventListener('touchstart',function(e){var b=e.target.closest('.message-bubble');if(!b)return;ltg=b.closest('.message-row');lt=setTimeout(function(){if(ltg){state.quotingId=parseInt(ltg.dataset.msgId);state.quotingText=ltg.querySelector('.message-bubble').textContent;$('#chatInput').focus();showToast('已引用消息，输入回复即可');}ltg=null;},600);},{passive:false});
     mc.addEventListener('touchend',function(){clearTimeout(lt);});mc.addEventListener('touchmove',function(){clearTimeout(lt);});
 }
-
-// ==================== 字卡库数据层 ====================
 async function loadWordcardData(){
     var cards=await dbGetAll('wordcards');state.wordcardData={};
     cards.forEach(function(c){
@@ -1444,7 +885,6 @@ async function loadWordcardData(){
         state.wordcardData[pk][sk][gk].push({id:c.id,content:c.content,groupKey:gk});
     });
 }
-
 async function saveWordcardData(){
     await dbClear('wordcards');
     var data=state.wordcardData;
@@ -1452,7 +892,6 @@ async function saveWordcardData(){
         data[pk][sk][gk].forEach(function(card){dbAdd('wordcards',{poolKey:pk,subpoolKey:sk,groupKey:gk,content:card.content,timestamp:Date.now()});});
     });});});
 }
-
 function addCardsToCurrentPool(cards){
     var info=getCurrentPoolInfo(),pk=info.poolKey,sk=info.subpoolKey,gk=info.groupKey||'_nogroup';
     if(!state.wordcardData[pk])state.wordcardData[pk]={};
@@ -1461,18 +900,7 @@ function addCardsToCurrentPool(cards){
     cards.forEach(function(c){var content=typeof c==='string'?c:(c.content||c);state.wordcardData[pk][sk][gk].push({id:Date.now()+Math.random(),content:content,groupKey:gk});});
     saveWordcardData();renderWordcardPage();
 }
-
-// ================================================================
-// 第二批结束 · 继续第三批（字卡库配置 + 渲染 + 教学模式 + 启动）
-// ================================================================
- // ================================================================
-// 第三批：字卡库完整功能 + 教学模式 + 初始化启动
-// 版本：v1.2.2
-// 直接接在第二批末尾，同一立即执行函数内
-// ================================================================
-
-// ==================== 字卡库配置 ====================
-var POOL_CONFIG = {
+    var POOL_CONFIG = {
     tabs: [
         { key: 'status', icon: '☀️', label: '系统状态池' },
         { key: 'content', icon: '💬', label: '内容回复池' },
@@ -1518,7 +946,6 @@ function getCurrentGroupKey(pk, sk) {
     return '_nogroup';
 }
 
-// ==================== 字卡库渲染 ====================
 function renderWordcardPage() {
     renderWordcardTabs();
     renderSubpoolTabs();
@@ -1788,7 +1215,6 @@ function moveCard(card, pk, sk, gk) {
     saveWordcardData(); renderWordcardPage(); showToast('已移动到 ' + targetSk);
 }
 
-// ==================== 批量操作 ====================
 function bindWordcardActions() {
     var actionsEl = $('#wcActions');
     if (!actionsEl) return;
@@ -1834,7 +1260,6 @@ function clearCurrentPool(pk, sk, gk) {
     }
 }
 
-// ==================== 搜索 ====================
 function performSearch() {
     var query = $('#searchInput').value.trim().toLowerCase();
     if (!query) { state.wcSearchResults = []; renderSearchResults(); return; }
@@ -1881,7 +1306,6 @@ function renderSearchResults() {
     });
 }
 
-// ==================== 导出 ====================
 function renderExportList(info) {
     var list = $('#exportList'); if (info.poolKey !== 'export') return;
     list.innerHTML = '';
@@ -1950,11 +1374,10 @@ function exportAllPools() {
     });
     allData.exclusive = state.exclusiveCards.map(function(c) { return typeof c === 'string' ? c : c.content; });
     allData.teachPairs = state.teachPairs;
-    downloadJSON({ version:'1.2.2', exportTime: new Date().toISOString(), allPools: allData }, '字卡_全部池子_' + getDateStr() + '.json');
+    downloadJSON({ version:'1.2.3', exportTime: new Date().toISOString(), allPools: allData }, '字卡_全部池子_' + getDateStr() + '.json');
     showToast('📤 全部池子已导出');
 }
 
-// ==================== 专属回复池 ====================
 function renderExclusiveList(list) {
     if (state.exclusiveCards.length === 0) {
         list.innerHTML = '<div class="settings-dev">易遇还没有学到的字卡<br>他会从对话中学习</div>'; return;
@@ -2011,7 +1434,6 @@ function applyDeleteExclusive() {
     }
 }
 
-// ==================== 教学模式 ====================
 function renderTeachPage() {
     var container = $('#teachContent'); if (!container) return; container.innerHTML = '';
 
@@ -2033,9 +1455,9 @@ function renderTeachPage() {
 
     var saveBtn = document.createElement('button'); saveBtn.className = 'btn-save-reshape'; saveBtn.textContent = '铭刻于心';
     saveBtn.onclick = function() {
-        var trigger = ($('#teachTrigger')||{}).value, reply = ($('#teachReply')||{}).value;
+        var triggerEl = document.getElementById('teachTrigger'), replyEl = document.getElementById('teachReply');
+        var trigger = triggerEl ? triggerEl.value.trim() : '', reply = replyEl ? replyEl.value.trim() : '';
         if (!trigger || !reply) { showToast('请填写完整'); return; }
-        trigger = trigger.trim(); reply = reply.trim();
         var exists = state.teachPairs.some(function(p) { return p.trigger === trigger && p.reply === reply; });
         if (exists) { showToast('该配对已存在'); return; }
         state.teachPairs.push({ trigger:trigger, reply:reply, timestamp:Date.now() });
@@ -2063,29 +1485,23 @@ function renderTeachPage() {
     }
 }
 
-// ==================== 补充事件 ====================
-var _origBindAllEvents = bindAllEvents;
-bindAllEvents = function() {
-    _origBindAllEvents();
-    bindWordcardActions();
-    var groupInput = $('#groupInput');
-    if (groupInput) {
-        groupInput.onkeydown = function(e) {
-            if (e.key === 'Enter') {
-                var val = this.value.trim(); if (!val) return;
-                var info = getCurrentPoolInfo();
-                if (!state.wordcardData[info.poolKey]) state.wordcardData[info.poolKey] = {};
-                if (!state.wordcardData[info.poolKey][info.subpoolKey]) state.wordcardData[info.poolKey][info.subpoolKey] = {};
-                if (!state.wordcardData[info.poolKey][info.subpoolKey][val]) state.wordcardData[info.poolKey][info.subpoolKey][val] = [];
-                state._wcCurrentGroup = val; saveWordcardData(); renderWordcardPage(); this.value = '';
-            }
-        };
-    }
-};
+async function initApp() {
+    await openDB();
+    loadAllSettings();
+    await loadEmojis();
+    await loadMessages();
+    await loadWordcardData();
+    updateAllChatUI();
+    bindAllEvents();
+    startStatusCycle();
+    startActiveChat();
+    if (state.messagesLoaded === 0) $('#messagesContainer').innerHTML = '';
+    buildMoreGrid();
+    setTimeout(bindWordcardActions, 800);
+}
 
-// ==================== 启动 ====================
 initApp().then(function() {
-    console.log('易遇🩷雾凉 v1.2.2 完整就绪');
+    console.log('易遇🩷雾凉 v1.2.3 就绪');
 }).catch(function(e) {
     console.error('初始化失败', e);
 });
