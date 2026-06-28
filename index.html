@@ -265,7 +265,7 @@
 </div>
 <div class="fullscreen-page" id="morePage">
     <div class="page-header"><button class="btn-back" id="btnMoreBack">←</button><span class="page-title">更多功能</span></div>
-    <div class="page-content"><div class="more-grid" id="moreGrid"></div><div class="version-info">v1.3.1 · 易遇🩷雾凉</div></div>
+    <div class="page-content"><div class="more-grid" id="moreGrid"></div><div class="version-info">v1.3.2 · 易遇🩷雾凉</div></div>
 </div>
 <div class="fullscreen-page" id="settingsPage">
     <div class="page-header"><button class="btn-back" id="btnSettingsBack">←</button><span class="page-title">设置</span></div>
@@ -332,12 +332,13 @@
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        var swCode = 'var CACHE_NAME="yiwu-v1.3.1";self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(["/"])}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
+        var swCode = 'var CACHE_NAME="yiwu-v1.3.2";self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(["/"])}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
         var blob = new Blob([swCode], {type:'application/javascript'});
         navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});
     });
 }
-    var LS = {
+
+var LS = {
     get: function(key, def) {
         try { var v = localStorage.getItem('yw_'+key); return v !== null ? JSON.parse(v) : def; }
         catch(e) { return def; }
@@ -356,7 +357,8 @@ function openDB() {
         r.onupgradeneeded = function(e) {
             var d = e.target.result;
             if (!d.objectStoreNames.contains('messages')) {
-                d.createObjectStore('messages', {keyPath:'id', autoIncrement:true}).createIndex('timestamp','timestamp',{unique:false});
+                var s = d.createObjectStore('messages', {keyPath:'id', autoIncrement:true});
+                s.createIndex('timestamp','timestamp',{unique:false});
             }
             if (!d.objectStoreNames.contains('emojis')) {
                 d.createObjectStore('emojis', {keyPath:'id', autoIncrement:true});
@@ -796,7 +798,7 @@ function bindDataEvents() {
 }
 
 async function getAllData() {
-    return { version:'1.3.1', exportTime:new Date().toISOString(),
+    return { version:'1.3.2', exportTime:new Date().toISOString(),
         settings:{ hisName:state.hisName,hisNick:state.hisNick,myName:state.myName,myNick:state.myNick,hisAvatar:state.hisAvatar,myAvatar:state.myAvatar,hisStatus:state.hisStatus,hisSignature:state.hisSignature,chatBg:state.chatBg },
         messages:await dbGetAll('messages'), emojis:await dbGetAll('emojis'), wordcards:await dbGetAll('wordcards'),
         exclusiveCards:state.exclusiveCards, teachPairs:state.teachPairs };
@@ -1120,7 +1122,7 @@ function renderExportList(info){
     var eab=$('#exportAllPools');if(eab)eab.onclick=exportAllPools;
 }
 function exportSubpool(sk){var cards=[];['status','content'].forEach(function(pk){if(state.wordcardData[pk]&&state.wordcardData[pk][sk])Object.values(state.wordcardData[pk][sk]).forEach(function(arr){cards=cards.concat(arr.map(function(c){return c.content;}));});});downloadJSON({subpool:sk,wordCards:cards,exportTime:new Date().toISOString()},'字卡_'+sk+'_'+getDateStr()+'.json');showToast('📤 已导出 '+cards.length+' 条');}
-function exportAllPools(){var ad={};Object.keys(state.wordcardData).forEach(function(pk){ad[pk]={};Object.keys(state.wordcardData[pk]).forEach(function(sk){ad[pk][sk]={};Object.keys(state.wordcardData[pk][sk]).forEach(function(gk){ad[pk][sk][gk]=state.wordcardData[pk][sk][gk].map(function(c){return c.content;});});});});ad.exclusive=state.exclusiveCards.map(function(c){return typeof c==='string'?c:c.content;});ad.teachPairs=state.teachPairs;downloadJSON({version:'1.3.1',exportTime:new Date().toISOString(),allPools:ad},'字卡_全部池子_'+getDateStr()+'.json');showToast('📤 全部池子已导出');}
+function exportAllPools(){var ad={};Object.keys(state.wordcardData).forEach(function(pk){ad[pk]={};Object.keys(state.wordcardData[pk]).forEach(function(sk){ad[pk][sk]={};Object.keys(state.wordcardData[pk][sk]).forEach(function(gk){ad[pk][sk][gk]=state.wordcardData[pk][sk][gk].map(function(c){return c.content;});});});});ad.exclusive=state.exclusiveCards.map(function(c){return typeof c==='string'?c:c.content;});ad.teachPairs=state.teachPairs;downloadJSON({version:'1.3.2',exportTime:new Date().toISOString(),allPools:ad},'字卡_全部池子_'+getDateStr()+'.json');showToast('📤 全部池子已导出');}
 
 function renderExclusiveList(list){
     if(state.exclusiveCards.length===0){list.innerHTML='<div class="settings-dev">易遇还没有学到的字卡<br>他会从对话中学习</div>';return;}
@@ -1156,7 +1158,7 @@ async function initApp(){
         if(state.messagesLoaded===0)$('#messagesContainer').innerHTML='';
         buildMoreGrid();
         setTimeout(bindWordcardActions,800);
-        console.log('易遇🩷雾凉 v1.3.1 就绪');
+        console.log('易遇🩷雾凉 v1.3.2 就绪');
     }catch(e){
         console.error('初始化失败',e);
         showToast('初始化失败：'+e.message+'\n请刷新页面重试');
