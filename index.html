@@ -2,10 +2,12 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0">
     <title>易遇🩷雾凉</title>
     <style>
-        /* ============ 全局样式 ============ */
+        /* ================================================================
+           易遇🩷雾凉 v1.1.0 — 完整样式表
+           ================================================================ */
         :root {
             --paper-white: #f8f4e8;
             --moonlight-warm: #F7F4ED;
@@ -17,11 +19,16 @@
             --cool-gray-blue: #b8c0c8;
             --heart-pink: #e8b4b8;
             --shadow-color: rgba(139, 129, 120, 0.08);
-            --font-serif: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', serif;
+            --toast-bg: #e8dff0;
+            --btn-green: #7ab89a;
+            --btn-green-shadow: rgba(122, 184, 154, 0.3);
+            --font-serif: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', 'KaiTi', 'STKaiti', serif;
             --radius-sm: 6px;
             --radius-md: 8px;
             --radius-lg: 12px;
             --avatar-size: 36px;
+            --btn-icon-size: 38px;
+            --input-height: 42px;
         }
 
         * {
@@ -29,26 +36,28 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: var(--font-serif);
+            background: #f0ece2;
             -webkit-user-select: none;
             user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            font-family: var(--font-serif);
-            background: var(--paper-white);
-            color: var(--ink-gray);
             max-width: 480px;
             margin: 0 auto;
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
             position: relative;
-            background-image: 
-                radial-gradient(ellipse at 30% 20%, rgba(200,180,160,0.03) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 60%, rgba(180,170,200,0.03) 0%, transparent 50%);
+            background: var(--paper-white);
+            box-shadow: 0 0 60px rgba(0,0,0,0.05);
         }
 
-        /* 纸质纹理 */
         body::before {
             content: '';
             position: fixed;
@@ -58,17 +67,28 @@
             height: 100%;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.4;
+            opacity: 0.35;
             background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
         }
 
-        /* ============ 滚动条隐藏 ============ */
-        ::-webkit-scrollbar {
-            width: 0;
-            height: 0;
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.25;
+            background:
+                radial-gradient(ellipse at 20% 15%, rgba(210,195,170,0.04) 0%, transparent 55%),
+                radial-gradient(ellipse at 75% 55%, rgba(185,175,200,0.04) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 85%, rgba(200,190,175,0.03) 0%, transparent 50%);
         }
 
-        /* ============ 视图容器 ============ */
+        ::-webkit-scrollbar { width: 0; height: 0; }
+
         .view {
             position: absolute;
             top: 0;
@@ -80,114 +100,81 @@
             z-index: 1;
             background: var(--paper-white);
         }
+        .view.active { display: flex; }
 
-        .view.active {
-            display: flex;
-        }
+        #chatView { display: flex; flex-direction: column; height: 100%; }
 
-        /* ============ 聊天主界面 ============ */
-        #chatView {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        /* 顶栏 */
         .chat-header {
-            padding: 12px 16px 8px;
+            padding: 14px 16px 6px;
             text-align: center;
             flex-shrink: 0;
             position: relative;
             z-index: 2;
+            background: var(--paper-white);
         }
-
         .header-avatars {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             margin-bottom: 6px;
         }
-
         .header-avatar {
             width: var(--avatar-size);
             height: var(--avatar-size);
-            border-radius: var(--radius-sm);
+            border-radius: 7px;
             object-fit: cover;
             background: var(--moonlight-warm);
             flex-shrink: 0;
+            box-shadow: 0 1px 2px var(--shadow-color);
         }
 
         .heart-chain {
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 1.5px;
             flex-shrink: 0;
+            padding: 0 4px;
         }
-
         .heart-chain .heart {
             font-size: 13px;
             display: inline-block;
-            animation: none;
             color: var(--heart-pink);
+            will-change: transform;
         }
-
-        /* 心跳动画 */
-        @keyframes heartbeat-center {
+        @keyframes hb-center {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+            50% { transform: scale(1.16); }
         }
-
-        @keyframes heartbeat-close {
+        @keyframes hb-close {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+            50% { transform: scale(1.09); }
         }
-
-        @keyframes heartbeat-mid {
+        @keyframes hb-mid {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-
-        @keyframes heartbeat-outer {
+        @keyframes hb-outer {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.03); }
         }
-
-        .heart-chain .heart:nth-child(5) {
-            animation: heartbeat-center 0.833s ease-in-out infinite;
-        }
-
+        .heart-chain .heart:nth-child(5) { animation: hb-center 0.833s ease-in-out infinite; }
         .heart-chain .heart:nth-child(4),
-        .heart-chain .heart:nth-child(6) {
-            animation: heartbeat-close 1s ease-in-out infinite;
-            animation-delay: 0.2s;
-        }
-
+        .heart-chain .heart:nth-child(6) { animation: hb-close 1s ease-in-out infinite; animation-delay: 0.2s; }
         .heart-chain .heart:nth-child(3),
-        .heart-chain .heart:nth-child(7) {
-            animation: heartbeat-mid 1.25s ease-in-out infinite;
-            animation-delay: 0.35s;
-        }
-
+        .heart-chain .heart:nth-child(7) { animation: hb-mid 1.25s ease-in-out infinite; animation-delay: 0.35s; }
         .heart-chain .heart:nth-child(2),
-        .heart-chain .heart:nth-child(8) {
-            animation: heartbeat-outer 1.67s ease-in-out infinite;
-            animation-delay: 0.5s;
-        }
-
+        .heart-chain .heart:nth-child(8) { animation: hb-outer 1.67s ease-in-out infinite; animation-delay: 0.5s; }
         .heart-chain .heart:nth-child(1),
-        .heart-chain .heart:nth-child(9) {
-            animation: heartbeat-outer 2s ease-in-out infinite;
-            animation-delay: 0.6s;
-        }
+        .heart-chain .heart:nth-child(9) { animation: hb-outer 2s ease-in-out infinite; animation-delay: 0.6s; }
 
         .header-nicknames {
             font-size: 13px;
             color: var(--light-ink);
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            font-family: var(--font-serif);
         }
 
-        /* 状态栏和签名 */
         .status-area {
             padding: 0 16px;
             text-align: center;
@@ -195,104 +182,73 @@
             min-height: 0;
             transition: all 0.3s ease;
         }
-
         .his-status {
             font-size: 12px;
-            background: linear-gradient(135deg, #c8d0d8, #d8d0dc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 2px;
+            line-height: 1.5;
         }
 
-        .his-signature {
-            font-size: 11px;
-            background: linear-gradient(135deg, #d0c8c0, #c8d0d0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* 消息区域 */
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: 8px 16px;
+            padding: 10px 16px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
             -webkit-overflow-scrolling: touch;
         }
-
         .message-row {
             display: flex;
             align-items: flex-end;
             gap: 8px;
             max-width: 100%;
         }
-
-        .message-row.mine {
-            flex-direction: row-reverse;
-        }
-
+        .message-row.mine { flex-direction: row-reverse; }
         .message-avatar {
             width: var(--avatar-size);
             height: var(--avatar-size);
-            border-radius: var(--radius-sm);
+            border-radius: 7px;
             object-fit: cover;
             flex-shrink: 0;
             background: var(--moonlight-warm);
+            box-shadow: 0 1px 2px var(--shadow-color);
         }
-
-        .message-content {
-            max-width: 70%;
-            display: flex;
-            flex-direction: column;
-        }
-
+        .message-content { max-width: 72%; display: flex; flex-direction: column; }
         .message-bubble {
             padding: 10px 14px;
             border-radius: var(--radius-md);
             font-size: 15px;
-            line-height: 1.6;
+            line-height: 1.65;
             word-break: break-word;
             position: relative;
             box-shadow: 0 1px 3px var(--shadow-color);
+            font-family: var(--font-serif);
         }
-
         .message-row.mine .message-bubble {
             background: var(--moonlight-cool);
             border-bottom-right-radius: 2px;
         }
-
         .message-row.theirs .message-bubble {
             background: var(--moonlight-warm);
             border-bottom-left-radius: 2px;
         }
+        .message-bubble img { max-width: 200px; border-radius: 4px; display: block; }
 
-        /* 引用条 */
         .quote-bar {
             display: flex;
             align-items: flex-start;
             gap: 6px;
             margin-bottom: 4px;
-            padding: 6px 8px;
-            background: rgba(248, 244, 232, 0.6);
+            padding: 6px 10px;
+            background: rgba(248,244,232,0.7);
             border-left: 2px solid var(--cool-gray-blue);
             border-radius: 2px;
             font-size: 13px;
             color: var(--lighter-ink);
-            max-width: 100%;
-            word-break: break-word;
             cursor: pointer;
-        }
-
-        .quote-bar .quote-text {
-            flex: 1;
+            word-break: break-word;
             line-height: 1.4;
         }
 
-        /* 消息状态 */
         .message-meta {
             font-size: 11px;
             color: var(--lighter-ink);
@@ -300,66 +256,49 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            font-family: var(--font-serif);
         }
-
-        .message-row.mine .message-meta {
-            justify-content: flex-end;
-        }
-
+        .message-row.mine .message-meta { justify-content: flex-end; }
         .check-mark {
-            font-family: serif;
+            font-family: 'KaiTi','STKaiti','Noto Serif SC',serif;
             font-style: italic;
-        }
-
-        .check-mark.read {
-            opacity: 1;
-        }
-
-        .check-mark.unread {
-            opacity: 0.5;
-        }
-
-        .quote-indicator {
-            cursor: pointer;
             font-size: 12px;
         }
+        .check-mark.read { opacity: 1; color: var(--light-ink); }
+        .check-mark.unread { opacity: 0.45; }
+        .quote-indicator { cursor: pointer; font-size: 13px; color: var(--light-ink); }
 
-        /* 他正在输入 */
         .typing-indicator {
             text-align: center;
             font-size: 11px;
             color: var(--lighter-ink);
-            padding: 4px;
+            padding: 6px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.35s ease;
             flex-shrink: 0;
+            font-family: var(--font-serif);
+            font-style: italic;
         }
+        .typing-indicator.visible { opacity: 0.7; }
 
-        .typing-indicator.visible {
-            opacity: 0.7;
-        }
-
-        /* 底栏 */
         .chat-footer {
-            padding: 8px 12px 12px;
+            padding: 8px 12px 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-shrink: 0;
             background: var(--paper-white);
         }
-
         .input-wrapper {
             flex: 1;
             background: var(--moonlight-cool);
             border-radius: var(--radius-md);
             box-shadow: inset 0 1px 2px var(--shadow-color);
+            height: var(--input-height);
             display: flex;
             align-items: center;
             padding: 0 12px;
-            height: 42px;
         }
-
         .chat-input {
             flex: 1;
             border: none;
@@ -369,33 +308,25 @@
             color: var(--ink-gray);
             outline: none;
             height: 100%;
+            -webkit-user-select: text;
+            user-select: text;
         }
-
-        .chat-input::placeholder {
-            color: var(--lighter-ink);
-            font-size: 14px;
-        }
+        .chat-input::placeholder { color: var(--lighter-ink); font-size: 13.5px; font-style: italic; }
 
         .btn-smile {
-            width: 34px;
-            height: 34px;
+            width: var(--btn-icon-size);
+            height: var(--btn-icon-size);
             border: 1.5px solid var(--lighter-ink);
             border-radius: 50%;
             background: transparent;
             cursor: pointer;
-            position: relative;
             flex-shrink: 0;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
-        .smile-face {
-            width: 16px;
-            height: 16px;
-            position: relative;
-        }
-
+        .smile-face { width: 17px; height: 17px; position: relative; }
         .smile-face::before,
         .smile-face::after {
             content: '';
@@ -404,17 +335,10 @@
             height: 3px;
             background: var(--lighter-ink);
             border-radius: 50%;
-            top: 4px;
+            top: 5px;
         }
-
-        .smile-face::before {
-            left: 3px;
-        }
-
-        .smile-face::after {
-            right: 3px;
-        }
-
+        .smile-face::before { left: 3px; }
+        .smile-face::after { right: 3px; }
         .smile-mouth {
             position: absolute;
             bottom: 2px;
@@ -427,8 +351,8 @@
         }
 
         .btn-plus {
-            width: 34px;
-            height: 34px;
+            width: var(--btn-icon-size);
+            height: var(--btn-icon-size);
             border-radius: 50%;
             background: var(--milk-white);
             box-shadow: 0 1px 3px var(--shadow-color);
@@ -444,8 +368,8 @@
         }
 
         .btn-send {
-            height: 34px;
-            padding: 0 14px;
+            height: var(--btn-icon-size);
+            padding: 0 16px;
             border-radius: var(--radius-sm);
             background: var(--milk-white);
             box-shadow: 0 1px 3px var(--shadow-color);
@@ -460,33 +384,21 @@
             transition: opacity 0.2s ease, transform 0.15s ease;
             white-space: nowrap;
         }
+        .btn-send.visible { opacity: 1; pointer-events: auto; }
+        .btn-send:active { transform: scale(0.95); }
 
-        .btn-send.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .btn-send:active {
-            transform: scale(0.95);
-        }
-
-        /* ============ 弹窗遮罩 ============ */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.18);
             z-index: 10;
             display: none;
         }
+        .overlay.active { display: block; }
 
-        .overlay.active {
-            display: block;
-        }
-
-        /* ============ ⊕ 弹窗 ============ */
         .plus-popup {
             position: fixed;
             bottom: 0;
@@ -498,20 +410,16 @@
             border-radius: var(--radius-lg) var(--radius-lg) 0 0;
             z-index: 15;
             padding: 20px 16px 30px;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
-
-        .plus-popup.active {
-            transform: translateX(-50%) translateY(0);
-        }
-
+        .plus-popup.active { transform: translateX(-50%) translateY(0); }
         .plus-card {
             background: var(--milk-white);
             border-radius: var(--radius-md);
-            padding: 16px 12px;
+            padding: 18px 12px;
             text-align: center;
             cursor: pointer;
             box-shadow: 0 1px 3px var(--shadow-color);
@@ -519,28 +427,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
         }
+        .plus-card:active { transform: scale(0.96); }
+        .plus-card .card-icon { font-size: 28px; }
+        .plus-card .card-label { font-size: 13px; color: var(--light-ink); font-family: var(--font-serif); }
+        .plus-card.full-width { grid-column: 1 / -1; }
 
-        .plus-card:active {
-            transform: scale(0.96);
-        }
-
-        .plus-card .card-icon {
-            font-size: 28px;
-        }
-
-        .plus-card .card-label {
-            font-size: 13px;
-            color: var(--light-ink);
-            font-family: var(--font-serif);
-        }
-
-        .plus-card.more-card {
-            grid-column: 1 / -1;
-        }
-
-        /* ============ 表情面板 ============ */
         .emoji-popup {
             position: fixed;
             bottom: 0;
@@ -553,20 +446,11 @@
             z-index: 15;
             padding: 16px;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-height: 50vh;
+            max-height: 55vh;
             overflow-y: auto;
         }
-
-        .emoji-popup.active {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .emoji-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
+        .emoji-popup.active { transform: translateX(-50%) translateY(0); }
+        .emoji-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .emoji-item {
             aspect-ratio: 1;
             background: var(--milk-white);
@@ -575,10 +459,10 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 32px;
+            overflow: hidden;
             box-shadow: 0 1px 2px var(--shadow-color);
         }
-
+        .emoji-item img { width: 100%; height: 100%; object-fit: cover; }
         .emoji-add {
             aspect-ratio: 1;
             background: var(--moonlight-warm);
@@ -587,61 +471,9 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 26px;
             color: var(--lighter-ink);
-            border: 1px dashed var(--lighter-ink);
-        }
-
-        /* ============ 提示框 ============ */
-        .toast-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #e8dff0;
-            border-radius: var(--radius-lg);
-            padding: 24px 28px;
-            z-index: 20;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(139, 129, 120, 0.15);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            min-width: 220px;
-        }
-
-        .toast-popup.active {
-            display: flex;
-        }
-
-        .toast-heart {
-            font-size: 28px;
-        }
-
-        .toast-text {
-            font-size: 14px;
-            color: var(--ink-gray);
-            font-family: var(--font-serif);
-            line-height: 1.5;
-        }
-
-        .toast-btn {
-            margin-top: 6px;
-            padding: 8px 28px;
-            border-radius: 20px;
-            border: none;
-            cursor: pointer;
-            font-family: var(--font-serif);
-            font-size: 14px;
-            color: white;
-            background: #7ab89a;
-            box-shadow: 0 2px 6px rgba(122, 184, 154, 0.3);
-            transition: transform 0.15s ease;
-        }
-
-        .toast-btn:active {
-            transform: scale(0.95);
+            border: 1.5px dashed var(--lighter-ink);
         }
 
         .toast-overlay {
@@ -652,14 +484,44 @@
             height: 100%;
             z-index: 19;
             display: none;
-            background: rgba(0,0,0,0.15);
+            background: rgba(0,0,0,0.14);
         }
-
-        .toast-overlay.active {
-            display: block;
+        .toast-overlay.active { display: block; }
+        .toast-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--toast-bg);
+            border-radius: var(--radius-lg);
+            padding: 26px 30px;
+            z-index: 20;
+            text-align: center;
+            box-shadow: 0 6px 24px rgba(139, 129, 120, 0.18);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-width: 230px;
         }
+        .toast-popup.active { display: flex; }
+        .toast-heart { font-size: 30px; }
+        .toast-text { font-size: 14px; color: var(--ink-gray); font-family: var(--font-serif); line-height: 1.6; white-space: pre-line; }
+        .toast-btn {
+            margin-top: 8px;
+            padding: 9px 30px;
+            border-radius: 22px;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-serif);
+            font-size: 14px;
+            color: #fff;
+            background: var(--btn-green);
+            box-shadow: 0 2px 8px var(--btn-green-shadow);
+            transition: transform 0.15s ease;
+        }
+        .toast-btn:active { transform: scale(0.95); }
 
-        /* ============ 全屏页面通用 ============ */
         .fullscreen-page {
             position: absolute;
             top: 0;
@@ -671,19 +533,15 @@
             display: none;
             flex-direction: column;
         }
-
-        .fullscreen-page.active {
-            display: flex;
-        }
-
+        .fullscreen-page.active { display: flex; }
         .page-header {
             padding: 14px 16px;
             display: flex;
             align-items: center;
             gap: 10px;
             flex-shrink: 0;
+            background: var(--paper-white);
         }
-
         .btn-back {
             width: 38px;
             height: 38px;
@@ -694,39 +552,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 21px;
             color: var(--ink-gray);
             border: none;
             flex-shrink: 0;
             text-decoration: none;
         }
+        .page-title { font-size: 17px; color: var(--ink-gray); font-family: var(--font-serif); letter-spacing: 1px; }
+        .page-content { flex: 1; overflow-y: auto; padding: 4px 16px 24px; -webkit-overflow-scrolling: touch; }
 
-        .page-title {
-            font-size: 17px;
-            color: var(--ink-gray);
-            font-family: var(--font-serif);
-            letter-spacing: 1px;
-        }
-
-        .page-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 16px 24px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* ============ 更多功能 ============ */
-        .more-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding-top: 8px;
-        }
-
+        .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-top: 8px; }
         .more-card {
             background: var(--milk-white);
             border-radius: var(--radius-md);
-            padding: 16px 8px;
+            padding: 18px 8px;
             text-align: center;
             cursor: pointer;
             box-shadow: 0 1px 3px var(--shadow-color);
@@ -734,32 +573,20 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
         }
-
-        .more-card:active {
-            transform: scale(0.96);
-        }
-
-        .more-card .card-icon {
-            font-size: 26px;
-        }
-
-        .more-card .card-label {
-            font-size: 12px;
-            color: var(--light-ink);
-            font-family: var(--font-serif);
-        }
-
+        .more-card:active { transform: scale(0.96); }
+        .more-card .card-icon { font-size: 27px; }
+        .more-card .card-label { font-size: 12px; color: var(--light-ink); font-family: var(--font-serif); line-height: 1.3; }
         .version-info {
             text-align: center;
             font-size: 11px;
             color: var(--lighter-ink);
-            padding: 20px 0 10px;
+            padding: 22px 0 12px;
             font-family: var(--font-serif);
+            letter-spacing: 0.5px;
         }
 
-        /* ============ 设置 - 标签栏 ============ */
         .settings-tabs {
             display: flex;
             gap: 0;
@@ -768,11 +595,11 @@
             flex-shrink: 0;
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
+            background: var(--paper-white);
         }
-
         .settings-tab {
             flex-shrink: 0;
-            padding: 8px 14px;
+            padding: 9px 15px;
             font-size: 13px;
             color: var(--lighter-ink);
             cursor: pointer;
@@ -781,28 +608,13 @@
             transition: all 0.2s;
             white-space: nowrap;
         }
-
-        .settings-tab.active {
-            color: var(--ink-gray);
-            border-bottom-color: var(--heart-pink);
-        }
-
-        .settings-panel {
-            display: none;
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .settings-panel.active {
-            display: block;
-        }
-
+        .settings-tab.active { color: var(--ink-gray); border-bottom-color: var(--heart-pink); }
+        .settings-panel { display: none; flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+        .settings-panel.active { display: block; }
         .settings-card {
             background: var(--milk-white);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 15px 16px;
             margin-bottom: 10px;
             cursor: pointer;
             box-shadow: 0 1px 3px var(--shadow-color);
@@ -814,24 +626,11 @@
             color: var(--ink-gray);
             transition: transform 0.15s ease;
         }
+        .settings-card:active { transform: scale(0.98); }
+        .settings-card .s-icon { font-size: 22px; }
+        .settings-dev { padding: 14px 16px; color: var(--lighter-ink); font-size: 13px; font-family: var(--font-serif); text-align: center; }
+        .settings-section-title { font-size: 13px; color: var(--lighter-ink); margin: 6px 0 10px; font-family: var(--font-serif); letter-spacing: 0.5px; }
 
-        .settings-card:active {
-            transform: scale(0.98);
-        }
-
-        .settings-card .s-icon {
-            font-size: 22px;
-        }
-
-        .settings-dev {
-            padding: 12px 16px;
-            color: var(--lighter-ink);
-            font-size: 13px;
-            font-family: var(--font-serif);
-            text-align: center;
-        }
-
-        /* ============ 记忆重塑 ============ */
         .reshape-slider {
             display: flex;
             overflow-x: auto;
@@ -840,39 +639,24 @@
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
         }
-
         .reshape-page {
             flex-shrink: 0;
             width: 100%;
             scroll-snap-align: start;
             overflow-y: auto;
-            padding: 16px;
+            padding: 16px 16px 24px;
             -webkit-overflow-scrolling: touch;
         }
-
-        .reshape-title {
-            text-align: center;
-            font-size: 15px;
-            color: var(--light-ink);
-            margin-bottom: 20px;
-            font-family: var(--font-serif);
-            letter-spacing: 1px;
-        }
-
-        .reshape-avatar-area {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
+        .reshape-title { text-align: center; font-size: 14.5px; color: var(--light-ink); margin-bottom: 18px; font-family: var(--font-serif); letter-spacing: 1px; }
+        .reshape-avatar-area { text-align: center; margin-bottom: 24px; }
         .reshape-avatar {
             width: 72px;
             height: 72px;
             border-radius: var(--radius-md);
             object-fit: cover;
             background: var(--moonlight-warm);
-            margin-bottom: 8px;
+            box-shadow: 0 2px 6px var(--shadow-color);
         }
-
         .btn-change-avatar {
             font-size: 13px;
             color: var(--light-ink);
@@ -882,20 +666,10 @@
             text-underline-offset: 3px;
             background: none;
             border: none;
+            margin-top: 8px;
         }
-
-        .reshape-field {
-            margin-bottom: 18px;
-        }
-
-        .reshape-field label {
-            display: block;
-            font-size: 13px;
-            color: var(--light-ink);
-            margin-bottom: 6px;
-            font-family: var(--font-serif);
-        }
-
+        .reshape-field { margin-bottom: 20px; }
+        .reshape-field label { display: block; font-size: 13px; color: var(--light-ink); margin-bottom: 6px; font-family: var(--font-serif); }
         .reshape-input {
             width: 100%;
             padding: 10px 14px;
@@ -908,16 +682,12 @@
             outline: none;
             box-shadow: inset 0 1px 2px var(--shadow-color);
         }
-
-        .reshape-input::placeholder {
-            color: var(--lighter-ink);
-        }
-
+        .reshape-input::placeholder { color: var(--lighter-ink); }
         .btn-save-reshape {
             display: block;
             width: 100%;
-            padding: 12px;
-            margin-top: 8px;
+            padding: 13px;
+            margin-top: 10px;
             border: none;
             border-radius: var(--radius-md);
             background: var(--milk-white);
@@ -929,12 +699,18 @@
             letter-spacing: 2px;
             transition: transform 0.15s ease;
         }
-
-        .btn-save-reshape:active {
-            transform: scale(0.97);
+        .btn-save-reshape:active { transform: scale(0.97); }
+        .bg-preview {
+            width: 100%;
+            height: 80px;
+            border-radius: var(--radius-sm);
+            background: var(--moonlight-cool);
+            margin-bottom: 8px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: inset 0 1px 2px var(--shadow-color);
         }
 
-        /* ============ 通话界面 ============ */
         .call-screen {
             position: fixed;
             top: 0;
@@ -949,1242 +725,841 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 24px;
         }
-
-        .call-screen.active {
-            display: flex;
-        }
-
+        .call-screen.active { display: flex; }
         .call-avatar {
-            width: 80px;
-            height: 80px;
+            width: 84px;
+            height: 84px;
             border-radius: var(--radius-md);
             object-fit: cover;
             background: var(--moonlight-warm);
+            box-shadow: 0 4px 16px var(--shadow-color);
         }
-
-        .call-timer {
-            font-family: var(--font-serif);
-            font-size: 18px;
-            color: var(--light-ink);
-        }
-
+        .call-timer { font-family: var(--font-serif); font-size: 20px; color: var(--light-ink); letter-spacing: 2px; }
         .btn-hangup {
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: #e8c0c0;
             border: none;
             cursor: pointer;
-            font-size: 24px;
-            color: white;
+            font-size: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 3px 12px rgba(200,150,150,0.3);
+            transition: transform 0.15s ease;
+        }
+        .btn-hangup:active { transform: scale(0.92); }
+
+        @media (max-width: 360px) {
+            .heart-chain .heart { font-size: 11px; }
+            .heart-chain { gap: 1px; }
+            .header-avatars { gap: 3px; }
+            .message-bubble { font-size: 14px; padding: 8px 12px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ==================== 聊天主界面 ==================== -->
-    <div id="chatView" class="view active">
-        <!-- 顶栏 -->
-        <div class="chat-header">
-            <div class="header-avatars">
-                <img class="header-avatar his-avatar" id="headerHisAvatar" src="" alt="" onerror="this.style.display='none'">
-                <div class="heart-chain" id="heartChain">
-                    <span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span>
-                    <span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span>
-                    <span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span>
-                </div>
-                <img class="header-avatar my-avatar" id="headerMyAvatar" src="" alt="" onerror="this.style.display='none'">
+<!-- ==================== 聊天主界面 ==================== -->
+<div id="chatView" class="view active">
+    <div class="chat-header">
+        <div class="header-avatars">
+            <img class="header-avatar his-avatar" id="headerHisAvatar" src="" alt="他" onerror="this.style.display='none'">
+            <div class="heart-chain" id="heartChain">
+                <span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span>
+                <span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span>
+                <span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span>
             </div>
-            <div class="header-nicknames" id="headerNicknames">老公🩷乖宝</div>
+            <img class="header-avatar my-avatar" id="headerMyAvatar" src="" alt="我" onerror="this.style.display='none'">
         </div>
+        <div class="header-nicknames" id="headerNicknames">老公🩷乖宝</div>
+    </div>
 
-        <!-- 状态栏和签名 -->
-        <div class="status-area" id="statusArea" style="display:none;">
-            <div class="his-status" id="hisStatus"></div>
-            <div class="his-signature" id="hisSignature"></div>
+    <div class="status-area" id="statusArea" style="display:none;">
+        <div class="his-status" id="hisStatus"></div>
+    </div>
+
+    <div class="messages-container" id="messagesContainer"></div>
+
+    <div class="typing-indicator" id="typingIndicator">他正在输入中...</div>
+
+    <div class="chat-footer">
+        <div class="input-wrapper">
+            <input type="text" class="chat-input" id="chatInput" placeholder="对梦角说点什么..." autocomplete="off">
         </div>
+        <button class="btn-smile" id="btnSmile" aria-label="表情">
+            <div class="smile-face"><div class="smile-mouth"></div></div>
+        </button>
+        <button class="btn-plus" id="btnPlus" aria-label="更多">⊕</button>
+        <button class="btn-send" id="btnSend">发送</button>
+    </div>
+</div>
 
-        <!-- 消息区 -->
-        <div class="messages-container" id="messagesContainer"></div>
+<!-- ==================== ⊕ 弹窗 ==================== -->
+<div class="overlay" id="plusOverlay"></div>
+<div class="plus-popup" id="plusPopup">
+    <div class="plus-card" id="plusPhoto"><span class="card-icon">📷</span><span class="card-label">照片</span></div>
+    <div class="plus-card" id="plusCamera"><span class="card-icon">📸</span><span class="card-label">拍摄</span></div>
+    <div class="plus-card" id="plusVoiceCall"><span class="card-icon">📞</span><span class="card-label">语音通话</span></div>
+    <div class="plus-card" id="plusVideoCall"><span class="card-icon">📹</span><span class="card-label">视频通话</span></div>
+    <div class="plus-card full-width" id="plusTeachMode"><span class="card-icon">📖</span><span class="card-label">教学模式</span></div>
+    <div class="plus-card full-width" id="plusMore"><span class="card-label">更多功能 →</span></div>
+</div>
 
-        <!-- 他正在输入 -->
-        <div class="typing-indicator" id="typingIndicator">他正在输入中...</div>
+<!-- ==================== 表情面板 ==================== -->
+<div class="overlay" id="emojiOverlay"></div>
+<div class="emoji-popup" id="emojiPopup">
+    <div class="emoji-grid" id="emojiGrid"><div class="emoji-add" id="emojiAddBtn">+</div></div>
+</div>
 
-        <!-- 底栏 -->
-        <div class="chat-footer">
-            <div class="input-wrapper">
-                <input type="text" class="chat-input" id="chatInput" placeholder="对梦角说点什么...">
+<!-- ==================== 提示框 ==================== -->
+<div class="toast-overlay" id="toastOverlay"></div>
+<div class="toast-popup" id="toastPopup">
+    <span class="toast-heart">🩷</span>
+    <span class="toast-text" id="toastText"></span>
+    <button class="toast-btn" id="toastConfirmBtn">确认</button>
+</div>
+
+<!-- ==================== 更多功能页 ==================== -->
+<div class="fullscreen-page" id="morePage">
+    <div class="page-header">
+        <button class="btn-back" id="btnMoreBack">←</button>
+        <span class="page-title">更多功能</span>
+    </div>
+    <div class="page-content">
+        <div class="more-grid" id="moreGrid"></div>
+        <div class="version-info">v1.1.0 · 易遇🩷雾凉</div>
+    </div>
+</div>
+
+<!-- ==================== 设置页 ==================== -->
+<div class="fullscreen-page" id="settingsPage">
+    <div class="page-header">
+        <button class="btn-back" id="btnSettingsBack">←</button>
+        <span class="page-title">设置</span>
+    </div>
+    <div class="settings-tabs" id="settingsTabs"></div>
+    <div id="settingsPanels"></div>
+</div>
+
+<!-- ==================== 记忆重塑页 ==================== -->
+<div class="fullscreen-page" id="reshapePage">
+    <div class="page-header">
+        <button class="btn-back" id="btnReshapeBack">←</button>
+        <span class="page-title">记忆重塑</span>
+    </div>
+    <div class="reshape-slider" id="reshapeSlider">
+        <div class="reshape-page" id="reshapePage1">
+            <div class="reshape-title">—— 🩷 他的模样·头像 🩷 ——</div>
+            <div class="reshape-avatar-area">
+                <img class="reshape-avatar his-avatar" id="reshapeHisAvatar" src="" alt="他的头像" onerror="this.style.display='none'">
+                <br><button class="btn-change-avatar" id="btnChangeHisAvatar">更换头像</button>
             </div>
-            <button class="btn-smile" id="btnSmile">
-                <div class="smile-face">
-                    <div class="smile-mouth"></div>
-                </div>
-            </button>
-            <button class="btn-plus" id="btnPlus">⊕</button>
-            <button class="btn-send" id="btnSend">发送</button>
+            <div class="reshape-title">—— 🩷 羁绊之名（关于他）🩷 ——</div>
+            <div class="reshape-field"><label>梦角名字</label><input class="reshape-input" id="reshapeDreamName" placeholder="易遇"></div>
+            <div class="reshape-field"><label>昵称</label><input class="reshape-input" id="reshapeHisNick" placeholder="老公"></div>
+            <div class="reshape-field"><label>称呼我</label><input class="reshape-input" id="reshapeCallMe" placeholder="乖宝"></div>
+            <div class="reshape-title">—— 🩷 他的个性签名 🩷 ——</div>
+            <div class="reshape-field"><label>（显示在聊天顶栏）</label><input class="reshape-input" id="reshapeSignature" placeholder=""></div>
+            <button class="btn-save-reshape" id="btnSaveReshape1">铭刻于心底</button>
         </div>
-    </div>
-
-    <!-- ==================== ⊕ 弹窗遮罩 ==================== -->
-    <div class="overlay" id="plusOverlay"></div>
-
-    <!-- ==================== ⊕ 弹窗 ==================== -->
-    <div class="plus-popup" id="plusPopup">
-        <div class="plus-card" onclick="openPhoto()">
-            <span class="card-icon">📷</span>
-            <span class="card-label">照片</span>
-        </div>
-        <div class="plus-card" onclick="openCamera()">
-            <span class="card-icon">📸</span>
-            <span class="card-label">拍摄</span>
-        </div>
-        <div class="plus-card" onclick="startCall('voice')">
-            <span class="card-icon">📞</span>
-            <span class="card-label">语音通话</span>
-        </div>
-        <div class="plus-card" onclick="startCall('video')">
-            <span class="card-icon">📹</span>
-            <span class="card-label">视频通话</span>
-        </div>
-        <div class="plus-card more-card" onclick="openMorePage()">
-            <span class="card-label">更多功能 →</span>
-        </div>
-    </div>
-
-    <!-- ==================== 表情面板 ==================== -->
-    <div class="overlay" id="emojiOverlay"></div>
-    <div class="emoji-popup" id="emojiPopup">
-        <div class="emoji-grid" id="emojiGrid">
-            <div class="emoji-add" onclick="addEmoji()">+</div>
-        </div>
-    </div>
-
-    <!-- ==================== 提示框 ==================== -->
-    <div class="toast-overlay" id="toastOverlay"></div>
-    <div class="toast-popup" id="toastPopup">
-        <span class="toast-heart">🩷</span>
-        <span class="toast-text" id="toastText"></span>
-        <button class="toast-btn" onclick="closeToast()">确认</button>
-    </div>
-
-    <!-- ==================== 更多功能页 ==================== -->
-    <div class="fullscreen-page" id="morePage">
-        <div class="page-header">
-            <button class="btn-back" onclick="closeMorePage()">←</button>
-            <span class="page-title">更多功能</span>
-        </div>
-        <div class="page-content">
-            <div class="more-grid" id="moreGrid"></div>
-            <div class="version-info">v1.0.0 · 易遇🩷雾凉</div>
-        </div>
-    </div>
-
-    <!-- ==================== 设置页 ==================== -->
-    <div class="fullscreen-page" id="settingsPage">
-        <div class="page-header">
-            <button class="btn-back" onclick="closeSettingsPage()">←</button>
-            <span class="page-title">设置</span>
-        </div>
-        <div class="settings-tabs" id="settingsTabs"></div>
-        <div id="settingsPanels"></div>
-    </div>
-
-    <!-- ==================== 记忆重塑页 ==================== -->
-    <div class="fullscreen-page" id="reshapePage">
-        <div class="page-header">
-            <button class="btn-back" onclick="closeReshapePage()">←</button>
-            <span class="page-title">记忆重塑</span>
-        </div>
-        <div class="reshape-slider" id="reshapeSlider">
-            <!-- 第1页：关于他 -->
-            <div class="reshape-page" id="reshapePage1">
-                <div class="reshape-title">—— 🩷 他的模样·头像 🩷 ——</div>
-                <div class="reshape-avatar-area">
-                    <img class="reshape-avatar" id="reshapeHisAvatar" src="" alt="" onerror="this.style.display='none'">
-                    <br>
-                    <button class="btn-change-avatar" onclick="changeAvatar('his')">更换头像</button>
-                </div>
-                <div class="reshape-title">—— 🩷 羁绊之名（关于他）🩷 ——</div>
-                <div class="reshape-field">
-                    <label>梦角名字</label>
-                    <input class="reshape-input" id="reshapeDreamName" placeholder="易遇">
-                </div>
-                <div class="reshape-field">
-                    <label>昵称</label>
-                    <input class="reshape-input" id="reshapeHisNick" placeholder="老公">
-                </div>
-                <div class="reshape-field">
-                    <label>称呼我</label>
-                    <input class="reshape-input" id="reshapeCallMe" placeholder="乖宝">
-                </div>
-                <div class="reshape-title">—— 🩷 他的个性签名 🩷 ——</div>
-                <div class="reshape-field">
-                    <label>（显示在聊天顶栏）</label>
-                    <input class="reshape-input" id="reshapeSignature" placeholder="">
-                </div>
-                <button class="btn-save-reshape" onclick="saveReshape()">铭刻于心底</button>
+        <div class="reshape-page" id="reshapePage2">
+            <div class="reshape-title">—— 🩷 我的模样·头像 🩷 ——</div>
+            <div class="reshape-avatar-area">
+                <img class="reshape-avatar my-avatar" id="reshapeMyAvatar" src="" alt="我的头像" onerror="this.style.display='none'">
+                <br><button class="btn-change-avatar" id="btnChangeMyAvatar">更换头像</button>
             </div>
-
-            <!-- 第2页：关于我 -->
-            <div class="reshape-page" id="reshapePage2">
-                <div class="reshape-title">—— 🩷 我的模样·头像 🩷 ——</div>
-                <div class="reshape-avatar-area">
-                    <img class="reshape-avatar" id="reshapeMyAvatar" src="" alt="" onerror="this.style.display='none'">
-                    <br>
-                    <button class="btn-change-avatar" onclick="changeAvatar('my')">更换头像</button>
-                </div>
-                <div class="reshape-title">—— 🩷 羁绊之名（关于我）🩷 ——</div>
-                <div class="reshape-field">
-                    <label>我的名字</label>
-                    <input class="reshape-input" id="reshapeMyName" placeholder="雾凉">
-                </div>
-                <div class="reshape-field">
-                    <label>聊天背景</label>
-                    <button class="btn-change-avatar" onclick="changeChatBg()">更换背景</button>
-                </div>
-                <button class="btn-save-reshape" onclick="saveReshape()">铭刻于心底</button>
+            <div class="reshape-title">—— 🩷 羁绊之名（关于我）🩷 ——</div>
+            <div class="reshape-field"><label>我的名字</label><input class="reshape-input" id="reshapeMyName" placeholder="雾凉"></div>
+            <div class="reshape-field">
+                <label>聊天背景</label>
+                <div class="bg-preview" id="bgPreview"></div>
+                <button class="btn-change-avatar" id="btnChangeChatBg">更换背景</button>
             </div>
+            <button class="btn-save-reshape" id="btnSaveReshape2">铭刻于心底</button>
         </div>
     </div>
+</div>
 
-    <!-- ==================== 通话界面 ==================== -->
-    <div class="call-screen" id="callScreen">
-        <img class="call-avatar his-avatar" src="" alt="" onerror="this.style.display='none'">
-        <div class="call-timer" id="callTimer">00:00</div>
-        <button class="btn-hangup" onclick="endCall()">📞</button>
-    </div>
+<!-- ==================== 通话界面 ==================== -->
+<div class="call-screen" id="callScreen">
+    <img class="call-avatar his-avatar" id="callAvatar" src="" alt="他" onerror="this.style.display='none'">
+    <div class="call-timer" id="callTimer">00:00</div>
+    <button class="btn-hangup" id="btnHangup">📞</button>
+</div>
 
-    <script>
-    // ==================== 主脚本 ====================
-    (function() {
-        'use strict';
+<script>
+(function() {
+'use strict';
 
-        // ==================== 注册 Service Worker ====================
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    const CACHE_NAME = 'yiwu-v1.0.0';
-                    const urlsToCache = [
-                        '/',
-                        'index.html',
-                        'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap'
-                    ];
-                    self.addEventListener('install', event => {
-                        event.waitUntil(
-                            caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-                        );
-                    });
-                    self.addEventListener('fetch', event => {
-                        event.respondWith(
-                            caches.match(event.request).then(response => response || fetch(event.request))
-                        );
-                    });
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(swUrl).catch(() => {});
-            });
-        }
+// ==================== Service Worker ====================
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        var swCode = 'var CACHE_NAME="yiwu-v1.1.0";self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(["/"])}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
+        var blob = new Blob([swCode], {type:'application/javascript'});
+        var swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl).catch(function(){});
+    });
+}
 
-        // ==================== 数据存储 ====================
-        const LS = {
-            get(key, defaultValue = null) {
-                try { return JSON.parse(localStorage.getItem('yw_' + key)) ?? defaultValue; }
-                catch(e) { return defaultValue; }
-            },
-            set(key, value) {
-                localStorage.setItem('yw_' + key, JSON.stringify(value));
+// ==================== LocalStorage ====================
+var LS = {
+    get: function(key, def) {
+        try { var v = localStorage.getItem('yw_'+key); return v !== null ? JSON.parse(v) : def; }
+        catch(e) { return def; }
+    },
+    set: function(key, val) {
+        try { localStorage.setItem('yw_'+key, JSON.stringify(val)); }
+        catch(e) { showToast('存储空间不足'); }
+    }
+};
+
+// ==================== IndexedDB ====================
+var DB_NAME = 'YiWuChat', DB_VERSION = 1, db = null;
+
+function openDB() {
+    return new Promise(function(rs, rj) {
+        var r = indexedDB.open(DB_NAME, DB_VERSION);
+        r.onupgradeneeded = function(e) {
+            var d = e.target.result;
+            if (!d.objectStoreNames.contains('messages')) {
+                var s = d.createObjectStore('messages', {keyPath:'id', autoIncrement:true});
+                s.createIndex('timestamp','timestamp',{unique:false});
+            }
+            if (!d.objectStoreNames.contains('emojis')) {
+                d.createObjectStore('emojis', {keyPath:'id', autoIncrement:true});
             }
         };
+        r.onsuccess = function(e) { db = e.target.result; rs(db); };
+        r.onerror = function() { rj(r.error); };
+    });
+}
 
-        // IndexedDB
-        const DB_NAME = 'YiWuChat';
-        const DB_VERSION = 1;
-        let db = null;
+function dbAdd(sn, data) {
+    return new Promise(function(rs, rj) {
+        var tx = db.transaction(sn,'readwrite'), st = tx.objectStore(sn);
+        var r = st.add(data); r.onsuccess = function() { rs(r.result); }; r.onerror = function() { rj(r.error); };
+    });
+}
 
-        function openDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains('messages')) {
-                        const store = db.createObjectStore('messages', { keyPath: 'id', autoIncrement: true });
-                        store.createIndex('timestamp', 'timestamp', { unique: false });
-                    }
-                    if (!db.objectStoreNames.contains('emojis')) {
-                        db.createObjectStore('emojis', { keyPath: 'id', autoIncrement: true });
-                    }
-                };
-                request.onsuccess = (e) => { db = e.target.result; resolve(db); };
-                request.onerror = () => reject(request.error);
-            });
-        }
+function dbPut(sn, data) {
+    return new Promise(function(rs, rj) {
+        var tx = db.transaction(sn,'readwrite'), st = tx.objectStore(sn);
+        var r = st.put(data); r.onsuccess = function() { rs(r.result); }; r.onerror = function() { rj(r.error); };
+    });
+}
 
-        function dbAdd(storeName, data) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(storeName, 'readwrite');
-                const store = tx.objectStore(storeName);
-                const request = store.add(data);
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
+function dbGetAll(sn) {
+    return new Promise(function(rs, rj) {
+        var tx = db.transaction(sn,'readonly'), st = tx.objectStore(sn);
+        var r = st.getAll(); r.onsuccess = function() { rs(r.result); }; r.onerror = function() { rj(r.error); };
+    });
+}
 
-        function dbGetAll(storeName) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(storeName, 'readonly');
-                const store = tx.objectStore(storeName);
-                const request = store.getAll();
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        function dbGetPaginated(storeName, offset, limit) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(storeName, 'readonly');
-                const store = tx.objectStore(storeName);
-                const index = store.index('timestamp');
-                const results = [];
-                let count = 0;
-                let skipped = 0;
-                const request = index.openCursor(null, 'prev');
-                request.onsuccess = (e) => {
-                    const cursor = e.target.result;
-                    if (!cursor) { resolve(results.reverse()); return; }
-                    if (skipped < offset) { skipped++; cursor.continue(); return; }
-                    if (count >= limit) { resolve(results.reverse()); return; }
-                    results.push(cursor.value);
-                    count++;
-                    cursor.continue();
-                };
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        function dbClear(storeName) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(storeName, 'readwrite');
-                const store = tx.objectStore(storeName);
-                const request = store.clear();
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        // ==================== 全局状态 ====================
-        const state = {
-            hisName: '易遇',
-            hisNick: '老公',
-            myName: '雾凉',
-            myNick: '乖宝',
-            hisAvatar: '',
-            myAvatar: '',
-            hisStatus: '',
-            hisSignature: '',
-            chatBg: '',
-            wordCards: [], // 字卡库
-            emojis: [], // 表情库
-            messagesLoaded: 0,
-            PAGE_SIZE: 50,
-            currentCallType: null,
-            callStartTime: null,
-            callInterval: null,
-            typingTimeout: null,
-            autoReplyTimeout: null
+function dbGetPaginated(sn, offset, limit) {
+    return new Promise(function(rs, rj) {
+        var tx = db.transaction(sn,'readonly'), st = tx.objectStore(sn);
+        var idx = st.index('timestamp'), results = [], count = 0, skipped = 0;
+        var r = idx.openCursor(null, 'prev');
+        r.onsuccess = function(e) {
+            var c = e.target.result;
+            if (!c) { rs(results.reverse()); return; }
+            if (skipped < offset) { skipped++; c.continue(); return; }
+            if (count >= limit) { rs(results.reverse()); return; }
+            results.push(c.value); count++; c.continue();
         };
+        r.onerror = function() { rj(r.error); };
+    });
+}
 
-        // ==================== DOM 引用 ====================
-        const $ = (sel) => document.querySelector(sel);
-        const $$ = (sel) => document.querySelectorAll(sel);
+function dbClear(sn) {
+    return new Promise(function(rs, rj) {
+        var tx = db.transaction(sn,'readwrite'), st = tx.objectStore(sn);
+        var r = st.clear(); r.onsuccess = function() { rs(); }; r.onerror = function() { rj(r.error); };
+    });
+}
 
-        // ==================== 初始化 ====================
-        async function init() {
-            await openDB();
-            loadSettings();
+function dbDelete(sn, id) {
+    return new Promise(function(rs, rj) {
+        var tx = db.transaction(sn,'readwrite'), st = tx.objectStore(sn);
+        var r = st.delete(id); r.onsuccess = function() { rs(); }; r.onerror = function() { rj(r.error); };
+    });
+}
+
+// ==================== 全局状态 ====================
+var state = {
+    hisName:'易遇', hisNick:'老公', myName:'雾凉', myNick:'乖宝',
+    hisAvatar:'', myAvatar:'', hisStatus:'', hisSignature:'', chatBg:'',
+    wordCards:[], emojis:[], messagesLoaded:0, PAGE_SIZE:50,
+    currentCallType:null, callStartTime:null, callInterval:null,
+    quotingId:null, quotingText:'',
+    autoReplyTimeout:null, activeChatTimeout:null, statusChangeTimeout:null,
+    lastUserMessageTime:0
+};
+
+function $(s) { return document.querySelector(s); }
+function $$(s) { return document.querySelectorAll(s); }
+
+// ==================== 初始化 ====================
+async function initApp() {
+    await openDB();
+    loadSettings();
+    await loadEmojis();
+    await loadMessages();
+    updateAllChatUI();
+    bindEvents();
+    startStatusCycle();
+    startActiveChat();
+    if (state.messagesLoaded === 0) $('#messagesContainer').innerHTML = '';
+}
+
+function loadSettings() {
+    state.hisName = LS.get('hisName','易遇'); state.hisNick = LS.get('hisNick','老公');
+    state.myName = LS.get('myName','雾凉'); state.myNick = LS.get('myNick','乖宝');
+    state.hisAvatar = LS.get('hisAvatar',''); state.myAvatar = LS.get('myAvatar','');
+    state.hisStatus = LS.get('hisStatus',''); state.hisSignature = LS.get('hisSignature','');
+    state.chatBg = LS.get('chatBg',''); state.wordCards = LS.get('wordCards',[]);
+}
+
+function saveSettings() {
+    LS.set('hisName',state.hisName); LS.set('hisNick',state.hisNick);
+    LS.set('myName',state.myName); LS.set('myNick',state.myNick);
+    LS.set('hisAvatar',state.hisAvatar); LS.set('myAvatar',state.myAvatar);
+    LS.set('hisStatus',state.hisStatus); LS.set('hisSignature',state.hisSignature);
+    LS.set('chatBg',state.chatBg); LS.set('wordCards',state.wordCards);
+}
+
+// ==================== 表情 ====================
+async function loadEmojis() { state.emojis = await dbGetAll('emojis'); renderEmojiGrid(); }
+
+function renderEmojiGrid() {
+    var g = $('#emojiGrid'); if (!g) return; g.innerHTML = '';
+    state.emojis.forEach(function(e) {
+        var d = document.createElement('div'); d.className = 'emoji-item';
+        var img = document.createElement('img'); img.src = e.data; img.alt = '表情';
+        d.appendChild(img); d.onclick = function() { sendEmoji(e.data); }; g.appendChild(d);
+    });
+    var add = document.createElement('div'); add.className = 'emoji-add'; add.textContent = '+';
+    add.onclick = addEmoji; g.appendChild(add);
+}
+
+function addEmoji() {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = async function(e) {
+        var f = e.target.files[0]; if (!f) return;
+        var reader = new FileReader();
+        reader.onload = async function(ev) {
+            await dbAdd('emojis', {data:ev.target.result, timestamp:Date.now()});
             await loadEmojis();
-            await loadMessages();
-            updateChatUI();
-            setupEventListeners();
-            buildMoreGrid();
-            buildSettingsTabs();
-            // 显示初始消息或欢迎
-            if (state.messagesLoaded === 0) {
-                renderMessages([]);
-            }
-        }
-
-        function loadSettings() {
-            state.hisName = LS.get('hisName', '易遇');
-            state.hisNick = LS.get('hisNick', '老公');
-            state.myName = LS.get('myName', '雾凉');
-            state.myNick = LS.get('myNick', '乖宝');
-            state.hisAvatar = LS.get('hisAvatar', '');
-            state.myAvatar = LS.get('myAvatar', '');
-            state.hisStatus = LS.get('hisStatus', '');
-            state.hisSignature = LS.get('hisSignature', '');
-            state.chatBg = LS.get('chatBg', '');
-            state.wordCards = LS.get('wordCards', []);
-        }
-
-        function saveSettings() {
-            LS.set('hisName', state.hisName);
-            LS.set('hisNick', state.hisNick);
-            LS.set('myName', state.myName);
-            LS.set('myNick', state.myNick);
-            LS.set('hisAvatar', state.hisAvatar);
-            LS.set('myAvatar', state.myAvatar);
-            LS.set('hisStatus', state.hisStatus);
-            LS.set('hisSignature', state.hisSignature);
-            LS.set('chatBg', state.chatBg);
-            LS.set('wordCards', state.wordCards);
-        }
-
-        async function loadEmojis() {
-            const stored = await dbGetAll('emojis');
-            state.emojis = stored;
-            renderEmojiGrid();
-        }
-
-        async function loadMessages() {
-            const msgs = await dbGetPaginated('messages', 0, state.PAGE_SIZE);
-            state.messagesLoaded = msgs.length;
-            renderMessages(msgs);
-            if (msgs.length > 0) {
-                setTimeout(() => {
-                    const container = $('#messagesContainer');
-                    container.scrollTop = container.scrollHeight;
-                }, 100);
-            }
-        }
-
-        // ==================== UI 更新 ====================
-        function updateChatUI() {
-            // 顶栏头像
-            const hisAvatars = $$('.his-avatar');
-            hisAvatars.forEach(img => {
-                if (state.hisAvatar) { img.src = state.hisAvatar; img.style.display = ''; }
-                else { img.style.display = 'none'; }
-            });
-            const myAvatars = $$('.my-avatar');
-            myAvatars.forEach(img => {
-                if (state.myAvatar) { img.src = state.myAvatar; img.style.display = ''; }
-                else { img.style.display = 'none'; }
-            });
-
-            // 昵称
-            const nickText = (state.hisNick || '梦角') + '🩷' + (state.myNick || '我');
-            $('#headerNicknames').textContent = nickText;
-
-            // 状态栏
-            const statusArea = $('#statusArea');
-            if (state.hisStatus || state.hisSignature) {
-                statusArea.style.display = '';
-                $('#hisStatus').textContent = state.hisStatus;
-                $('#hisSignature').textContent = state.hisSignature;
-                // 随机淡色渐变
-                applyRandomGradient($('#hisStatus'));
-                applyRandomGradient($('#hisSignature'));
-            } else {
-                statusArea.style.display = 'none';
-            }
-
-            // 输入框占位
-            const placeholder = state.hisNick ? `对${state.hisNick}说点什么...` : '对梦角说点什么...';
-            $('#chatInput').placeholder = placeholder;
-
-            // 聊天背景
-            if (state.chatBg) {
-                $('#chatView').style.backgroundImage = `url(${state.chatBg})`;
-            } else {
-                $('#chatView').style.backgroundImage = '';
-            }
-
-            // 记忆重塑页同步
-            if ($('#reshapeHisNick')) {
-                $('#reshapeDreamName').value = state.hisName;
-                $('#reshapeHisNick').value = state.hisNick;
-                $('#reshapeCallMe').value = state.myNick;
-                $('#reshapeSignature').value = state.hisSignature;
-                $('#reshapeMyName').value = state.myName;
-                if (state.hisAvatar) {
-                    $('#reshapeHisAvatar').src = state.hisAvatar;
-                    $('#reshapeHisAvatar').style.display = '';
-                }
-                if (state.myAvatar) {
-                    $('#reshapeMyAvatar').src = state.myAvatar;
-                    $('#reshapeMyAvatar').style.display = '';
-                }
-            }
-        }
-
-        function applyRandomGradient(el) {
-            const hue1 = Math.floor(Math.random() * 360);
-            const hue2 = (hue1 + Math.floor(Math.random() * 60) + 20) % 360;
-            const color1 = `hsl(${hue1}, 15%, 80%)`;
-            const color2 = `hsl(${hue2}, 15%, 85%)`;
-            el.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-            el.style.webkitBackgroundClip = 'text';
-            el.style.webkitTextFillColor = 'transparent';
-            el.style.backgroundClip = 'text';
-        }
-
-        // ==================== 消息渲染 ====================
-        function renderMessages(messages) {
-            const container = $('#messagesContainer');
-            container.innerHTML = '';
-            messages.forEach(msg => renderMessage(msg, container));
-        }
-
-        function renderMessage(msg, container) {
-            const isMine = msg.sender === 'me';
-            const row = document.createElement('div');
-            row.className = 'message-row ' + (isMine ? 'mine' : 'theirs');
-            row.dataset.msgId = msg.id;
-
-            // 头像
-            const avatar = document.createElement('img');
-            avatar.className = 'message-avatar';
-            if (isMine) {
-                avatar.src = state.myAvatar || '';
-                if (!state.myAvatar) avatar.style.display = 'none';
-            } else {
-                avatar.src = state.hisAvatar || '';
-                if (!state.hisAvatar) avatar.style.display = 'none';
-            }
-            row.appendChild(avatar);
-
-            // 内容区
-            const contentWrap = document.createElement('div');
-            contentWrap.className = 'message-content';
-
-            // 引用
-            if (msg.quoteId !== undefined && msg.quoteId !== null) {
-                const quoteBar = document.createElement('div');
-                quoteBar.className = 'quote-bar';
-                quoteBar.onclick = () => scrollToMessage(msg.quoteId);
-                quoteBar.innerHTML = `<span class="quote-text">${msg.quoteText || '引用消息'}</span>`;
-                contentWrap.appendChild(quoteBar);
-            }
-
-            // 气泡
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            if (msg.type === 'image') {
-                const img = document.createElement('img');
-                img.src = msg.content;
-                img.style.maxWidth = '100%';
-                img.style.borderRadius = '4px';
-                bubble.appendChild(img);
-            } else if (msg.type === 'call') {
-                bubble.textContent = msg.content;
-                bubble.style.fontStyle = 'italic';
-            } else {
-                bubble.textContent = msg.content;
-            }
-            contentWrap.appendChild(bubble);
-
-            // 状态行
-            const meta = document.createElement('div');
-            meta.className = 'message-meta';
-
-            if (isMine) {
-                // 已读
-                const checks = document.createElement('span');
-                checks.className = 'check-mark ' + (msg.read ? 'read' : 'unread');
-                checks.textContent = msg.read ? '✓✓' : '✓';
-                meta.appendChild(checks);
-
-                // 引用指示
-                if (msg.quotedBy && msg.quotedBy.length > 0) {
-                    const qind = document.createElement('span');
-                    qind.className = 'quote-indicator';
-                    qind.textContent = '↩';
-                    qind.onclick = () => scrollToQuoter(msg.quotedBy[0]);
-                    meta.appendChild(qind);
-                }
-
-                // 时间戳
-                const time = document.createElement('span');
-                time.textContent = formatTime(msg.timestamp);
-                meta.appendChild(time);
-            } else {
-                // 他的消息：引用指示 + 时间戳
-                if (msg.quotedBy && msg.quotedBy.length > 0) {
-                    const qind = document.createElement('span');
-                    qind.className = 'quote-indicator';
-                    qind.textContent = '↩';
-                    meta.appendChild(qind);
-                }
-                const time = document.createElement('span');
-                time.textContent = formatTime(msg.timestamp);
-                meta.appendChild(time);
-            }
-
-            contentWrap.appendChild(meta);
-            row.appendChild(contentWrap);
-            container.appendChild(row);
-        }
-
-        function appendMessage(msg) {
-            const container = $('#messagesContainer');
-            renderMessage(msg, container);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function formatTime(timestamp) {
-            const d = new Date(timestamp);
-            const h = String(d.getHours()).padStart(2, '0');
-            const m = String(d.getMinutes()).padStart(2, '0');
-            return h + ':' + m;
-        }
-
-        async function sendMessage(content, type = 'text', quoteId = null, quoteText = '') {
-            const msg = {
-                sender: 'me',
-                content: content,
-                type: type,
-                timestamp: Date.now(),
-                read: false,
-                quoteId: quoteId,
-                quoteText: quoteText,
-                quotedBy: []
-            };
-
-            const id = await dbAdd('messages', msg);
-            msg.id = id;
-            state.messagesLoaded++;
-            appendMessage(msg);
-
-            // 触发自动回复
-            scheduleAutoReply();
-        }
-
-        function scheduleAutoReply() {
-            clearTimeout(state.autoReplyTimeout);
-            const typingIndicator = $('#typingIndicator');
-            typingIndicator.classList.add('visible');
-
-            // 标记所有未读消息为已读
-            markAllMyMessagesAsRead();
-
-            const delay = 1500 + Math.random() * 3000;
-            state.autoReplyTimeout = setTimeout(() => {
-                typingIndicator.classList.remove('visible');
-                doAutoReply();
-            }, delay);
-        }
-
-        async function markAllMyMessagesAsRead() {
-            const container = $('#messagesContainer');
-            const myRows = container.querySelectorAll('.message-row.mine');
-            myRows.forEach(row => {
-                const checkMark = row.querySelector('.check-mark');
-                if (checkMark && checkMark.classList.contains('unread')) {
-                    checkMark.classList.remove('unread');
-                    checkMark.classList.add('read');
-                    checkMark.textContent = '✓✓';
-                }
-            });
-            // 更新 DB 中的已读状态（简化处理，实际应批量更新）
-        }
-
-        async function doAutoReply() {
-            if (state.wordCards.length === 0) {
-                showToast('他没有可说的话…去字卡库为他准备一些话语吧');
-                return;
-            }
-            const randomCard = state.wordCards[Math.floor(Math.random() * state.wordCards.length)];
-            const msg = {
-                sender: 'him',
-                content: randomCard,
-                type: 'text',
-                timestamp: Date.now(),
-                quoteId: null,
-                quoteText: '',
-                quotedBy: []
-            };
-            const id = await dbAdd('messages', msg);
-            msg.id = id;
-            state.messagesLoaded++;
-            appendMessage(msg);
-        }
-
-        // ==================== 提示框 ====================
-        function showToast(text) {
-            $('#toastText').textContent = text;
-            $('#toastPopup').classList.add('active');
-            $('#toastOverlay').classList.add('active');
-        }
-
-        window.closeToast = function() {
-            $('#toastPopup').classList.remove('active');
-            $('#toastOverlay').classList.remove('active');
         };
+        reader.readAsDataURL(f);
+    }; inp.click();
+}
 
-        // ==================== 表情面板 ====================
-        function renderEmojiGrid() {
-            const grid = $('#emojiGrid');
-            grid.innerHTML = '';
-            state.emojis.forEach((emoji, index) => {
-                const item = document.createElement('div');
-                item.className = 'emoji-item';
-                const img = document.createElement('img');
-                img.src = emoji.data;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                img.style.borderRadius = '4px';
-                item.appendChild(img);
-                item.onclick = () => sendEmoji(emoji.data);
-                grid.appendChild(item);
-            });
-            const addBtn = document.createElement('div');
-            addBtn.className = 'emoji-add';
-            addBtn.textContent = '+';
-            addBtn.onclick = addEmoji;
-            grid.appendChild(addBtn);
+function sendEmoji(data) { closeEmojiPanel(); sendMessage(data, 'image'); }
+
+// ==================== 消息 ====================
+async function loadMessages() {
+    var msgs = await dbGetPaginated('messages', 0, state.PAGE_SIZE);
+    state.messagesLoaded = msgs.length; renderAllMessages(msgs);
+    if (msgs.length > 0) setTimeout(function() {
+        $('#messagesContainer').scrollTop = $('#messagesContainer').scrollHeight;
+    }, 150);
+}
+
+function renderAllMessages(msgs) {
+    var c = $('#messagesContainer'); c.innerHTML = '';
+    msgs.forEach(function(m) { renderOneMessage(m, c); });
+}
+
+function renderOneMessage(msg, container) {
+    var isMine = msg.sender === 'me';
+    var row = document.createElement('div');
+    row.className = 'message-row ' + (isMine ? 'mine' : 'theirs');
+    row.dataset.msgId = msg.id;
+
+    var av = document.createElement('img'); av.className = 'message-avatar';
+    if (isMine) { if (state.myAvatar) av.src = state.myAvatar; else av.style.display = 'none'; }
+    else { if (state.hisAvatar) av.src = state.hisAvatar; else av.style.display = 'none'; }
+    row.appendChild(av);
+
+    var cw = document.createElement('div'); cw.className = 'message-content';
+
+    if (msg.quoteId !== null && msg.quoteId !== undefined && msg.quoteId !== '') {
+        var qb = document.createElement('div'); qb.className = 'quote-bar';
+        qb.onclick = function() { scrollToMsg(msg.quoteId); };
+        qb.innerHTML = '<span class="quote-text">' + escHTML(msg.quoteText || '引用消息') + '</span>';
+        cw.appendChild(qb);
+    }
+
+    var bub = document.createElement('div'); bub.className = 'message-bubble';
+    if (msg.type === 'image') { var im = document.createElement('img'); im.src = msg.content; im.style.maxWidth = '100%'; bub.appendChild(im); }
+    else if (msg.type === 'call') { bub.textContent = msg.content; bub.style.fontStyle = 'italic'; }
+    else { bub.textContent = msg.content; }
+    cw.appendChild(bub);
+
+    var meta = document.createElement('div'); meta.className = 'message-meta';
+    if (isMine) {
+        var ck = document.createElement('span'); ck.className = 'check-mark ' + (msg.read ? 'read' : 'unread');
+        ck.textContent = msg.read ? '✓✓' : '✓'; meta.appendChild(ck);
+        if (msg.quotedBy && msg.quotedBy.length > 0) {
+            var qi = document.createElement('span'); qi.className = 'quote-indicator'; qi.textContent = '↩';
+            qi.onclick = function() { scrollToMsg(msg.quotedBy[0]); }; meta.appendChild(qi);
         }
-
-        function addEmoji() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    const data = ev.target.result;
-                    await dbAdd('emojis', { data: data, timestamp: Date.now() });
-                    await loadEmojis();
-                };
-                reader.readAsDataURL(file);
-            };
-            input.click();
+        meta.appendChild(document.createElement('span')).textContent = formatTime(msg.timestamp);
+    } else {
+        if (msg.quotedBy && msg.quotedBy.length > 0) {
+            var qi2 = document.createElement('span'); qi2.className = 'quote-indicator'; qi2.textContent = '↩'; meta.appendChild(qi2);
         }
+        meta.appendChild(document.createElement('span')).textContent = formatTime(msg.timestamp);
+    }
+    cw.appendChild(meta); row.appendChild(cw); container.appendChild(row);
+}
 
-        function sendEmoji(data) {
-            closeEmojiPanel();
-            sendMessage(data, 'image');
-        }
+function appendMsg(msg) { renderOneMessage(msg, $('#messagesContainer')); $('#messagesContainer').scrollTop = $('#messagesContainer').scrollHeight; }
 
-        // ==================== ⊕ 弹窗 ====================
-        function openPlusPopup() {
-            $('#plusPopup').classList.add('active');
-            $('#plusOverlay').classList.add('active');
-        }
+function formatTime(ts) {
+    var d = new Date(ts);
+    return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
 
-        function closePlusPopup() {
-            $('#plusPopup').classList.remove('active');
-            $('#plusOverlay').classList.remove('active');
-        }
+function escHTML(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-        window.openPhoto = function() {
-            closePlusPopup();
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => sendMessage(ev.target.result, 'image');
-                reader.readAsDataURL(file);
-            };
-            input.click();
-        };
+// ==================== 发送消息 ====================
+async function sendMessage(content, type, quoteId, quoteText) {
+    var qId = state.quotingId || quoteId || null;
+    var qText = state.quotingText || quoteText || '';
+    state.quotingId = null; state.quotingText = null;
 
-        window.openCamera = function() {
-            closePlusPopup();
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.capture = 'environment';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => sendMessage(ev.target.result, 'image');
-                reader.readAsDataURL(file);
-            };
-            input.click();
-        };
+    var msg = { sender:'me', content:content, type:type||'text', timestamp:Date.now(), read:false, quoteId:qId, quoteText:qText, quotedBy:[] };
+    var id = await dbAdd('messages', msg); msg.id = id;
+    state.messagesLoaded++; state.lastUserMessageTime = Date.now();
+    appendMsg(msg);
 
-        // ==================== 通话 ====================
-        window.startCall = function(type) {
-            closePlusPopup();
-            state.currentCallType = type;
-            const screen = $('#callScreen');
-            screen.classList.add('active');
-            state.callStartTime = Date.now();
-            state.callInterval = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - state.callStartTime) / 1000);
-                const min = String(Math.floor(elapsed / 60)).padStart(2, '0');
-                const sec = String(elapsed % 60).padStart(2, '0');
-                $('#callTimer').textContent = min + ':' + sec;
-            }, 1000);
-        };
+    if (qId) { await updateQuotedBy(qId, id); }
 
-        window.endCall = function() {
-            clearInterval(state.callInterval);
-            const elapsed = Math.floor((Date.now() - state.callStartTime) / 1000);
-            const min = String(Math.floor(elapsed / 60)).padStart(2, '0');
-            const sec = String(elapsed % 60).padStart(2, '0');
-            const duration = min + ':' + sec;
-            const callType = state.currentCallType === 'voice' ? '语音通话' : '视频通话';
-            sendMessage(callType + ' · ' + duration, 'call');
-            $('#callScreen').classList.remove('active');
-            state.callStartTime = null;
-            state.currentCallType = null;
-        };
+    scheduleAutoReply();
+}
 
-        // ==================== 更多功能 ====================
-        const moreFeatures = [
-            { icon: '🌐', label: '朋友圈', action: 'todo' },
-            { icon: '✉️', label: '信件邮递', action: 'todo' },
-            { icon: '📨', label: '传讯', action: 'todo' },
-            { icon: '💕', label: '恋爱日记', action: 'todo' },
-            { icon: '☁️', label: '小世界', action: 'todo' },
-            { icon: '🎵', label: '一起听歌', action: 'todo' },
-            { icon: '⚖️', label: '决策', action: 'todo' },
-            { icon: '🌸', label: '纪念日', action: 'todo' },
-            { icon: '📞', label: '通话记录', action: 'todo' },
-            { icon: '💭', label: '记忆重塑', action: () => openReshapePage() },
-            { icon: '📑', label: '字卡库', action: 'todo' },
-            { icon: '📊', label: '数据统计', action: 'todo' },
-            { icon: '⚙️', label: '设置', action: () => openSettingsPage() }
-        ];
+async function updateQuotedBy(quotedMsgId, newMsgId) {
+    var all = await dbGetAll('messages');
+    var target = all.find(function(m) { return m.id === quotedMsgId; });
+    if (target) {
+        if (!target.quotedBy) target.quotedBy = [];
+        target.quotedBy.push(newMsgId);
+        await dbPut('messages', target);
+    }
+}
 
-        function buildMoreGrid() {
-            const grid = $('#moreGrid');
-            grid.innerHTML = '';
-            moreFeatures.forEach(f => {
-                const card = document.createElement('div');
-                card.className = 'more-card';
-                card.innerHTML = `<span class="card-icon">${f.icon}</span><span class="card-label">${f.label}</span>`;
-                card.onclick = () => {
-                    if (typeof f.action === 'function') {
-                        f.action();
-                    } else {
-                        showToast(f.label + '\n待开发');
-                    }
-                };
-                grid.appendChild(card);
-            });
-        }
+// ==================== 自动回复 ====================
+function scheduleAutoReply() {
+    clearTimeout(state.autoReplyTimeout);
+    $('#typingIndicator').classList.add('visible'); markAllRead();
+    var delay = 6000 + Math.random() * 54000;
+    state.autoReplyTimeout = setTimeout(async function() {
+        $('#typingIndicator').classList.remove('visible');
+        await doAutoReply();
+    }, delay);
+}
 
-        window.openMorePage = function() {
-            closePlusPopup();
-            $('#morePage').classList.add('active');
-            $('#chatView').classList.remove('active');
-        };
+function markAllRead() {
+    $$('.message-row.mine .check-mark.unread').forEach(function(ck) {
+        ck.classList.remove('unread'); ck.classList.add('read'); ck.textContent = '✓✓';
+    });
+}
 
-        window.closeMorePage = function() {
-            $('#morePage').classList.remove('active');
-            $('#chatView').classList.add('active');
-        };
+async function doAutoReply() {
+    if (state.wordCards.length === 0) { showToast('他没有可说的话…\n去字卡库为他准备一些话语吧'); return; }
+    var card = state.wordCards[Math.floor(Math.random() * state.wordCards.length)];
+    var msg = { sender:'him', content:card, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] };
+    var id = await dbAdd('messages', msg); msg.id = id;
+    state.messagesLoaded++; appendMsg(msg);
+}
 
-        // ==================== 设置页 ====================
-        const settingsTabs = [
-            { icon: '🎨', label: '主题切换', content: 'dev' },
-            { icon: '💬', label: '自定义气泡样式', content: 'dev' },
-            { icon: '⚡', label: '系统频率控制', content: 'dev' },
-            { icon: '📦', label: '数据管理', content: 'data' },
-            { icon: '🗑', label: '删除记录', content: 'dev' },
-            { icon: '🌙', label: '易遇的独白', content: 'dev' }
-        ];
+// ==================== 主动聊天 ====================
+function startActiveChat() { scheduleActiveCheck(); }
 
-        function buildSettingsTabs() {
-            const tabsContainer = $('#settingsTabs');
-            const panelsContainer = $('#settingsPanels');
-            tabsContainer.innerHTML = '';
-            panelsContainer.innerHTML = '';
+function scheduleActiveCheck() {
+    clearTimeout(state.activeChatTimeout);
+    var delay = 300000 + Math.random() * 300000;
+    state.activeChatTimeout = setTimeout(function() { checkActiveChat(); scheduleActiveCheck(); }, delay);
+}
 
-            settingsTabs.forEach((tab, index) => {
-                const tabEl = document.createElement('div');
-                tabEl.className = 'settings-tab' + (index === 3 ? ' active' : '');
-                tabEl.textContent = tab.icon + ' ' + tab.label;
-                tabEl.onclick = () => switchSettingsTab(index);
-                tabsContainer.appendChild(tabEl);
+async function checkActiveChat() {
+    if (Date.now() - state.lastUserMessageTime < 60000) return;
+    if (Math.random() > 0.2) return;
+    if (state.wordCards.length === 0) return;
+    $('#typingIndicator').classList.add('visible'); markAllRead();
+    var delay = 2000 + Math.random() * 4000;
+    setTimeout(async function() {
+        $('#typingIndicator').classList.remove('visible');
+        var card = state.wordCards[Math.floor(Math.random() * state.wordCards.length)];
+        var msg = { sender:'him', content:card, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] };
+        var id = await dbAdd('messages', msg); msg.id = id;
+        state.messagesLoaded++; appendMsg(msg);
+    }, delay);
+}
 
-                const panel = document.createElement('div');
-                panel.className = 'settings-panel' + (index === 3 ? ' active' : '');
-                panel.id = 'settingsPanel' + index;
-                if (tab.content === 'dev') {
-                    panel.innerHTML = '<div class="settings-dev">待开发</div>';
-                } else if (tab.content === 'data') {
-                    panel.innerHTML = buildDataManagementPanel();
-                }
-                panelsContainer.appendChild(panel);
-            });
-        }
+// ==================== 状态栏循环 ====================
+function startStatusCycle() { applyStatus(); scheduleStatusChange(); }
 
-        function switchSettingsTab(index) {
-            const tabs = $$('.settings-tab');
-            const panels = $$('.settings-panel');
-            tabs.forEach((t, i) => t.classList.toggle('active', i === index));
-            panels.forEach((p, i) => p.classList.toggle('active', i === index));
-        }
+function scheduleStatusChange() {
+    clearTimeout(state.statusChangeTimeout);
+    var delay = 3600000 + Math.random() * 14400000;
+    state.statusChangeTimeout = setTimeout(function() { applyStatus(); scheduleStatusChange(); }, delay);
+}
 
-        function buildDataManagementPanel() {
-            return `
-                <div style="font-size:13px;color:var(--lighter-ink);margin-bottom:12px;">—— 导出 ——</div>
-                <div class="settings-card" onclick="exportFullBackup()">
-                    <span class="s-icon">📤</span> 全量备份
-                </div>
-                <div class="settings-card" onclick="exportLightBackup()">
-                    <span class="s-icon">📋</span> 轻备份（不含图片）
-                </div>
-                <div class="settings-card" onclick="exportChatRecords()">
-                    <span class="s-icon">📝</span> 导出聊天记录
-                </div>
-                <div style="font-size:13px;color:var(--lighter-ink);margin:16px 0 12px;">—— 导入 ——</div>
-                <div class="settings-card" onclick="importFullBackup()">
-                    <span class="s-icon">📥</span> 覆盖导入备份
-                </div>
-                <div class="settings-card" onclick="importWordCards()">
-                    <span class="s-icon">📄</span> 导入字卡JSON
-                </div>
-            `;
-        }
+function applyStatus() {
+    var text = '';
+    if (state.hisStatus) text = state.hisStatus;
+    if (state.hisStatus && state.hisSignature) text += '，' + state.hisSignature;
+    else if (!state.hisStatus && state.hisSignature) text = state.hisSignature;
+    if (text) {
+        $('#hisStatus').textContent = text;
+        applyRandomGradient($('#hisStatus'));
+        $('#statusArea').style.display = '';
+    } else { $('#statusArea').style.display = 'none'; }
+}
 
-        window.openSettingsPage = function() {
-            closeMorePage();
-            $('#settingsPage').classList.add('active');
-            $('#chatView').classList.remove('active');
-        };
+function applyRandomGradient(el) {
+    var h1 = Math.floor(Math.random()*360), h2 = (h1+Math.floor(Math.random()*60)+20)%360;
+    el.style.background = 'linear-gradient(135deg, hsl('+h1+',15%,82%), hsl('+h2+',15%,88%))';
+    el.style.webkitBackgroundClip = 'text'; el.style.webkitTextFillColor = 'transparent'; el.style.backgroundClip = 'text';
+}
 
-        window.closeSettingsPage = function() {
-            $('#settingsPage').classList.remove('active');
-            $('#chatView').classList.add('active');
-        };
+// ==================== UI 更新 ====================
+function updateAllChatUI() {
+    $$('.his-avatar').forEach(function(img) {
+        if (state.hisAvatar) { img.src = state.hisAvatar; img.style.display = ''; } else img.style.display = 'none';
+    });
+    $$('.my-avatar').forEach(function(img) {
+        if (state.myAvatar) { img.src = state.myAvatar; img.style.display = ''; } else img.style.display = 'none';
+    });
+    $('#headerNicknames').textContent = (state.hisNick||'梦角') + '🩷' + (state.myNick||'我');
+    applyStatus();
+    $('#chatInput').placeholder = state.hisNick ? '对'+state.hisNick+'说点什么...' : '对梦角说点什么...';
+    var mc = $('#messagesContainer');
+    if (state.chatBg) {
+        mc.style.backgroundImage = 'url('+state.chatBg+')';
+        mc.style.backgroundSize = 'contain'; mc.style.backgroundRepeat = 'no-repeat';
+        mc.style.backgroundPosition = 'center'; mc.style.backgroundAttachment = 'fixed';
+    } else { mc.style.backgroundImage = ''; }
+    var bp = $('#bgPreview'); if (bp && state.chatBg) bp.style.backgroundImage = 'url('+state.chatBg+')';
+    syncReshape();
+}
 
-        // ==================== 数据导入导出 ====================
-        async function getAllData() {
-            const messages = await dbGetAll('messages');
-            const emojis = await dbGetAll('emojis');
-            const settings = {
-                hisName: state.hisName,
-                hisNick: state.hisNick,
-                myName: state.myName,
-                myNick: state.myNick,
-                hisAvatar: state.hisAvatar,
-                myAvatar: state.myAvatar,
-                hisStatus: state.hisStatus,
-                hisSignature: state.hisSignature,
-                chatBg: state.chatBg,
-                wordCards: state.wordCards
-            };
-            return { version: '1.0.0', settings, messages, emojis };
-        }
+function syncReshape() {
+    if (!$('#reshapeDreamName')) return;
+    $('#reshapeDreamName').value = state.hisName; $('#reshapeHisNick').value = state.hisNick;
+    $('#reshapeCallMe').value = state.myNick; $('#reshapeSignature').value = state.hisSignature;
+    $('#reshapeMyName').value = state.myName;
+    if (state.hisAvatar) { $('#reshapeHisAvatar').src = state.hisAvatar; $('#reshapeHisAvatar').style.display = ''; }
+    if (state.myAvatar) { $('#reshapeMyAvatar').src = state.myAvatar; $('#reshapeMyAvatar').style.display = ''; }
+    if (state.chatBg) $('#bgPreview').style.backgroundImage = 'url('+state.chatBg+')';
+}
 
-        function downloadJSON(data, filename) {
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
+// ==================== 提示框 ====================
+function showToast(text) { $('#toastText').textContent = text; $('#toastPopup').classList.add('active'); $('#toastOverlay').classList.add('active'); }
+function closeToast() { $('#toastPopup').classList.remove('active'); $('#toastOverlay').classList.remove('active'); }
 
-        window.exportFullBackup = async function() {
-            const data = await getAllData();
-            downloadJSON(data, '易遇雾凉_全量备份_' + new Date().toISOString().slice(0,10) + '.json');
-            showToast('全量备份已导出');
-        };
+// ==================== ⊕ 弹窗 ====================
+function openPlus() { $('#plusPopup').classList.add('active'); $('#plusOverlay').classList.add('active'); }
+function closePlus() { $('#plusPopup').classList.remove('active'); $('#plusOverlay').classList.remove('active'); }
 
-        window.exportLightBackup = async function() {
-            const data = await getAllData();
-            // 移除图片数据
-            data.emojis = [];
-            data.settings.hisAvatar = data.settings.hisAvatar ? '[图片已省略]' : '';
-            data.settings.myAvatar = data.settings.myAvatar ? '[图片已省略]' : '';
-            data.settings.chatBg = data.settings.chatBg ? '[图片已省略]' : '';
-            data.messages = data.messages.map(m => {
-                if (m.type === 'image') return { ...m, content: '[图片已省略]' };
-                return m;
-            });
-            downloadJSON(data, '易遇雾凉_轻备份_' + new Date().toISOString().slice(0,10) + '.json');
-            showToast('轻备份已导出');
-        };
+function openPhoto() { closePlus(); pickImage(function(data) { sendMessage(data, 'image'); }); }
+function openCamera() { closePlus(); pickImage(function(data) { sendMessage(data, 'image'); }, true); }
 
-        window.exportChatRecords = async function() {
-            const messages = await dbGetAll('messages');
-            const textMessages = messages.filter(m => m.type === 'text' || m.type === 'call');
-            const output = textMessages.map(m => {
-                const sender = m.sender === 'me' ? (state.myNick || '我') : (state.hisNick || '梦角');
-                const time = formatTime(m.timestamp);
-                return `[${time}] ${sender}: ${m.content}`;
-            }).join('\n');
-            const blob = new Blob([output], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = '易遇雾凉_聊天记录_' + new Date().toISOString().slice(0,10) + '.txt';
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('聊天记录已导出');
-        };
+function pickImage(cb, capture) {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+    if (capture) inp.capture = 'environment';
+    inp.onchange = function(e) { var f = e.target.files[0]; if (!f) return; var r = new FileReader(); r.onload = function(ev) { cb(ev.target.result); }; r.readAsDataURL(f); };
+    inp.click();
+}
 
-        window.importFullBackup = function() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    try {
-                        const data = JSON.parse(ev.target.result);
-                        // 清空并导入
-                        await dbClear('messages');
-                        await dbClear('emojis');
-                        for (const msg of data.messages || []) {
-                            await dbAdd('messages', msg);
-                        }
-                        for (const emoji of data.emojis || []) {
-                            await dbAdd('emojis', emoji);
-                        }
-                        if (data.settings) {
-                            Object.assign(state, data.settings);
-                            saveSettings();
-                        }
-                        await loadMessages();
-                        await loadEmojis();
-                        updateChatUI();
-                        showToast('备份已覆盖导入');
-                    } catch (err) {
-                        showToast('导入失败，文件格式错误');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        };
+function startCall(type) {
+    closePlus(); state.currentCallType = type;
+    var sc = $('#callScreen'); if (state.hisAvatar) { $('#callAvatar').src = state.hisAvatar; $('#callAvatar').style.display = ''; }
+    sc.classList.add('active'); state.callStartTime = Date.now(); $('#callTimer').textContent = '00:00';
+    state.callInterval = setInterval(function() {
+        var e = Math.floor((Date.now() - state.callStartTime) / 1000);
+        $('#callTimer').textContent = String(Math.floor(e/60)).padStart(2,'0') + ':' + String(e%60).padStart(2,'0');
+    }, 1000);
+}
 
-        window.importWordCards = function() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    try {
-                        const data = JSON.parse(ev.target.result);
-                        const cards = data.wordCards || data;
-                        if (Array.isArray(cards)) {
-                            state.wordCards = cards;
-                            saveSettings();
-                            showToast('字卡已导入，共' + cards.length + '条');
-                        } else {
-                            showToast('格式错误，需要包含wordCards数组');
-                        }
-                    } catch (err) {
-                        showToast('导入失败，JSON格式错误');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        };
+function endCall() {
+    clearInterval(state.callInterval); var e = Math.floor((Date.now() - state.callStartTime) / 1000);
+    var dur = String(Math.floor(e/60)).padStart(2,'0') + ':' + String(e%60).padStart(2,'0');
+    var ct = state.currentCallType === 'voice' ? '语音通话' : '视频通话';
+    sendMessage(ct + ' · ' + dur, 'call');
+    $('#callScreen').classList.remove('active'); state.callStartTime = null; state.currentCallType = null;
+}
 
-        // ==================== 记忆重塑 ====================
-        window.openReshapePage = function() {
-            closeMorePage();
-            updateChatUI();
-            $('#reshapePage').classList.add('active');
-            $('#chatView').classList.remove('active');
-        };
+// ==================== 表情面板 ====================
+function openEmoji() { $('#emojiPopup').classList.add('active'); $('#emojiOverlay').classList.add('active'); }
+function closeEmojiPanel() { $('#emojiPopup').classList.remove('active'); $('#emojiOverlay').classList.remove('active'); }
 
-        window.closeReshapePage = function() {
-            $('#reshapePage').classList.remove('active');
-            $('#chatView').classList.add('active');
-        };
+// ==================== 引用跳转 ====================
+function scrollToMsg(id) {
+    var row = $('#messagesContainer').querySelector('[data-msg-id="'+id+'"]');
+    if (row) { row.scrollIntoView({behavior:'smooth',block:'center'}); row.style.background = 'rgba(232,180,184,0.2)'; setTimeout(function() { row.style.background = ''; }, 1800); }
+}
 
-        window.saveReshape = function() {
-            state.hisName = $('#reshapeDreamName').value || '易遇';
-            state.hisNick = $('#reshapeHisNick').value || '老公';
-            state.myNick = $('#reshapeCallMe').value || '乖宝';
-            state.hisSignature = $('#reshapeSignature').value || '';
-            state.myName = $('#reshapeMyName').value || '雾凉';
-            saveSettings();
-            updateChatUI();
-            showToast('铭刻于心底\n已保存');
-        };
+// ==================== 发送按钮 ====================
+function updateSendBtn() {
+    var btn = $('#btnSend');
+    if ($('#chatInput').value.trim()) btn.classList.add('visible'); else btn.classList.remove('visible');
+}
 
-        window.changeAvatar = function(type) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    if (type === 'his') {
-                        state.hisAvatar = ev.target.result;
-                        $('#reshapeHisAvatar').src = ev.target.result;
-                        $('#reshapeHisAvatar').style.display = '';
-                    } else {
-                        state.myAvatar = ev.target.result;
-                        $('#reshapeMyAvatar').src = ev.target.result;
-                        $('#reshapeMyAvatar').style.display = '';
-                    }
+// ==================== 页面跳转 ====================
+function openMorePage() { $('#morePage').classList.add('active'); $('#chatView').classList.remove('active'); buildMoreGrid(); }
+function closeMorePage() { $('#morePage').classList.remove('active'); $('#chatView').classList.add('active'); }
+function openSettingsPage() { closeMorePage(); $('#settingsPage').classList.add('active'); $('#chatView').classList.remove('active'); buildSettings(); setTimeout(bindDataEvents, 300); }
+function closeSettingsPage() { $('#settingsPage').classList.remove('active'); $('#chatView').classList.add('active'); }
+function openReshapePage() { closeMorePage(); syncReshape(); $('#reshapePage').classList.add('active'); $('#chatView').classList.remove('active'); }
+function closeReshapePage() { $('#reshapePage').classList.remove('active'); $('#chatView').classList.add('active'); }
+
+// ==================== 更多功能 ====================
+var moreFeatures = [
+    { icon:'🌐', label:'朋友圈' }, { icon:'✉️', label:'信件邮递' }, { icon:'📨', label:'传讯' },
+    { icon:'💕', label:'恋爱日记' }, { icon:'☁️', label:'小世界' }, { icon:'🎵', label:'一起听歌' },
+    { icon:'⚖️', label:'决策' }, { icon:'🌸', label:'纪念日' }, { icon:'📞', label:'通话记录' },
+    { icon:'💭', label:'记忆重塑', action:function() { openReshapePage(); } },
+    { icon:'📑', label:'字卡库' }, { icon:'📊', label:'数据统计' },
+    { icon:'⚙️', label:'设置', action:function() { openSettingsPage(); } }
+];
+
+function buildMoreGrid() {
+    var g = $('#moreGrid'); if (!g) return; g.innerHTML = '';
+    moreFeatures.forEach(function(f) {
+        var c = document.createElement('div'); c.className = 'more-card';
+        c.innerHTML = '<span class="card-icon">'+f.icon+'</span><span class="card-label">'+f.label+'</span>';
+        c.onclick = function() { if (f.action) f.action(); else showToast(f.label+'\n待开发'); };
+        g.appendChild(c);
+    });
+}
+
+// ==================== 设置 ====================
+var settingsTabsData = [
+    { icon:'🎨', label:'主题切换', content:'dev' }, { icon:'💬', label:'自定义气泡样式', content:'dev' },
+    { icon:'⚡', label:'系统频率控制', content:'dev' }, { icon:'📦', label:'数据管理', content:'data' },
+    { icon:'🗑', label:'删除记录', content:'dev' }, { icon:'🌙', label:'易遇的独白', content:'dev' }
+];
+
+function buildSettings() {
+    var tc = $('#settingsTabs'), pc = $('#settingsPanels');
+    if (!tc || !pc) return; tc.innerHTML = ''; pc.innerHTML = '';
+    settingsTabsData.forEach(function(t, i) {
+        var tab = document.createElement('div'); tab.className = 'settings-tab' + (i===3?' active':'');
+        tab.textContent = t.icon + ' ' + t.label; tab.onclick = function() { switchSettingsTab(i); };
+        tc.appendChild(tab);
+        var pan = document.createElement('div'); pan.className = 'settings-panel' + (i===3?' active':'');
+        pan.id = 'settingsPanel'+i;
+        pan.innerHTML = t.content === 'dev' ? '<div class="settings-dev">待开发</div>' : buildDataHTML();
+        pc.appendChild(pan);
+    });
+}
+
+function switchSettingsTab(i) {
+    $$('.settings-tab').forEach(function(t, j) { t.classList.toggle('active', j===i); });
+    $$('.settings-panel').forEach(function(p, j) { p.classList.toggle('active', j===i); });
+    if (i === 3) setTimeout(bindDataEvents, 200);
+}
+
+function buildDataHTML() {
+    return [
+        '<div class="settings-section-title">—— 导出 ——</div>',
+        '<div class="settings-card" id="exportFull"><span class="s-icon">📤</span> 全量备份</div>',
+        '<div class="settings-card" id="exportLight"><span class="s-icon">📋</span> 轻备份（不含图片）</div>',
+        '<div class="settings-card" id="exportChat"><span class="s-icon">📝</span> 导出聊天记录</div>',
+        '<div class="settings-section-title" style="margin-top:10px;">—— 导入 ——</div>',
+        '<div class="settings-card" id="importFull"><span class="s-icon">📥</span> 覆盖导入备份</div>',
+        '<div class="settings-card" id="importWordCards"><span class="s-icon">📄</span> 导入字卡JSON</div>'
+    ].join('');
+}
+
+function bindDataEvents() {
+    var ef = $('#exportFull'), el = $('#exportLight'), ec = $('#exportChat');
+    var imf = $('#importFull'), iwc = $('#importWordCards');
+    if (ef) ef.onclick = exportFullBackup; if (el) el.onclick = exportLightBackup;
+    if (ec) ec.onclick = exportChatRecords; if (imf) imf.onclick = importFullBackup;
+    if (iwc) iwc.onclick = importWordCardsJSON;
+}
+
+// ==================== 导入导出 ====================
+async function getAllData() {
+    return {
+        version:'1.1.0', exportTime: new Date().toISOString(),
+        settings: { hisName:state.hisName, hisNick:state.hisNick, myName:state.myName, myNick:state.myNick,
+            hisAvatar:state.hisAvatar, myAvatar:state.myAvatar, hisStatus:state.hisStatus,
+            hisSignature:state.hisSignature, chatBg:state.chatBg, wordCards:state.wordCards },
+        messages: await dbGetAll('messages'), emojis: await dbGetAll('emojis')
+    };
+}
+
+function downloadJSON(data, fn) {
+    var blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = fn; document.body.appendChild(a); a.click();
+    document.body.removeChild(a); setTimeout(function() { URL.revokeObjectURL(url); }, 100);
+}
+
+function getDateStr() { var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+async function exportFullBackup() { var d = await getAllData(); downloadJSON(d, '易遇雾凉_全量备份_'+getDateStr()+'.json'); showToast('📤 全量备份已导出'); }
+async function exportLightBackup() {
+    var d = await getAllData(); d.emojis = [];
+    d.settings.hisAvatar = d.settings.hisAvatar ? '[图片已省略]' : '';
+    d.settings.myAvatar = d.settings.myAvatar ? '[图片已省略]' : '';
+    d.settings.chatBg = d.settings.chatBg ? '[图片已省略]' : '';
+    d.messages = d.messages.map(function(m) { if (m.type==='image') { var c = Object.assign({},m); c.content='[图片已省略]'; return c; } return m; });
+    downloadJSON(d, '易遇雾凉_轻备份_'+getDateStr()+'.json'); showToast('📋 轻备份已导出');
+}
+async function exportChatRecords() {
+    var msgs = await dbGetAll('messages');
+    var txt = msgs.filter(function(m) { return m.type==='text'||m.type==='call'; }).map(function(m) {
+        return '['+formatTime(m.timestamp)+'] '+(m.sender==='me'?(state.myNick||'我'):(state.hisNick||'梦角'))+': '+m.content;
+    }).join('\n');
+    var blob = new Blob([txt], {type:'text/plain;charset=UTF-8'});
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = '易遇雾凉_聊天记录_'+getDateStr()+'.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 100); showToast('📝 聊天记录已导出');
+}
+function importFullBackup() {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json';
+    inp.onchange = async function(e) {
+        var f = e.target.files[0]; if (!f) return;
+        var reader = new FileReader();
+        reader.onload = async function(ev) {
+            try {
+                var d = JSON.parse(ev.target.result);
+                if (!d.version) { showToast('无效的备份文件'); return; }
+                await dbClear('messages'); await dbClear('emojis');
+                if (d.messages) for (var i=0; i<d.messages.length; i++) await dbAdd('messages', d.messages[i]);
+                if (d.emojis) for (var j=0; j<d.emojis.length; j++) await dbAdd('emojis', d.emojis[j]);
+                if (d.settings) {
+                    var s = d.settings;
+                    state.hisName=s.hisName||'易遇'; state.hisNick=s.hisNick||'老公';
+                    state.myName=s.myName||'雾凉'; state.myNick=s.myNick||'乖宝';
+                    state.hisAvatar=s.hisAvatar||''; state.myAvatar=s.myAvatar||'';
+                    state.hisStatus=s.hisStatus||''; state.hisSignature=s.hisSignature||'';
+                    state.chatBg=s.chatBg||''; state.wordCards=s.wordCards||[];
                     saveSettings();
-                    updateChatUI();
-                };
-                reader.readAsDataURL(file);
-            };
-            input.click();
-        };
-
-        window.changeChatBg = function() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    state.chatBg = ev.target.result;
-                    saveSettings();
-                    updateChatUI();
-                };
-                reader.readAsDataURL(file);
-            };
-            input.click();
-        };
-
-        // ==================== 引用滚动 ====================
-        window.scrollToMessage = function(msgId) {
-            const container = $('#messagesContainer');
-            const row = container.querySelector(`[data-msg-id="${msgId}"]`);
-            if (row) {
-                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                row.style.background = 'rgba(232,180,184,0.2)';
-                setTimeout(() => { row.style.background = ''; }, 1500);
-            }
-        };
-
-        window.scrollToQuoter = function(msgId) {
-            scrollToMessage(msgId);
-        };
-
-        // ==================== 事件监听 ====================
-        function setupEventListeners() {
-            // ⊕ 按钮
-            $('#btnPlus').onclick = openPlusPopup;
-            $('#plusOverlay').onclick = closePlusPopup;
-
-            // 笑脸按钮
-            $('#btnSmile').onclick = () => {
-                $('#emojiPopup').classList.add('active');
-                $('#emojiOverlay').classList.add('active');
-            };
-            $('#emojiOverlay').onclick = () => {
-                $('#emojiPopup').classList.remove('active');
-                $('#emojiOverlay').classList.remove('active');
-            };
-            window.closeEmojiPanel = function() {
-                $('#emojiPopup').classList.remove('active');
-                $('#emojiOverlay').classList.remove('active');
-            };
-
-            // 发送
-            $('#btnSend').onclick = () => {
-                const input = $('#chatInput');
-                const text = input.value.trim();
-                if (!text) return;
-                input.value = '';
-                sendMessage(text, 'text');
-                updateSendButton();
-            };
-
-            // 输入框
-            $('#chatInput').oninput = updateSendButton;
-            $('#chatInput').onkeydown = (e) => {
-                if (e.key === 'Enter') {
-                    $('#btnSend').click();
                 }
-            };
+                state.messagesLoaded = 0; await loadMessages(); await loadEmojis();
+                updateAllChatUI(); showToast('📥 备份已覆盖导入');
+            } catch(e) { showToast('导入失败，文件格式错误'); }
+        }; reader.readAsText(f);
+    }; inp.click();
+}
+function importWordCardsJSON() {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json';
+    inp.onchange = function(e) {
+        var f = e.target.files[0]; if (!f) return;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            try {
+                var d = JSON.parse(ev.target.result), cards = d.wordCards || d;
+                if (Array.isArray(cards)) { state.wordCards = cards; saveSettings(); showToast('📄 字卡已导入，共 '+cards.length+' 条'); }
+                else showToast('格式错误');
+            } catch(e) { showToast('导入失败'); }
+        }; reader.readAsText(f);
+    }; inp.click();
+}
 
-            // 长按引用（简化实现，长按消息气泡触发引用）
-            $('#messagesContainer').addEventListener('touchstart', handleLongPress, { passive: false });
-            $('#messagesContainer').addEventListener('mousedown', handleLongPress);
-        }
+// ==================== 记忆重塑 ====================
+function changeAvatar(type) {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = function(e) {
+        var f = e.target.files[0]; if (!f) return;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            var data = ev.target.result;
+            if (type==='his') { state.hisAvatar = data; $('#reshapeHisAvatar').src = data; $('#reshapeHisAvatar').style.display = ''; }
+            else { state.myAvatar = data; $('#reshapeMyAvatar').src = data; $('#reshapeMyAvatar').style.display = ''; }
+            saveSettings(); updateAllChatUI();
+        }; reader.readAsDataURL(f);
+    }; inp.click();
+}
 
-        let longPressTimer = null;
-        let longPressTarget = null;
+function changeChatBg() {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = function(e) {
+        var f = e.target.files[0]; if (!f) return;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            var img = new Image(); img.onload = function() {
+                var canvas = document.createElement('canvas'), maxW = 480, scale = maxW / img.width;
+                canvas.width = maxW; canvas.height = Math.floor(img.height * scale);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                state.chatBg = canvas.toDataURL('image/jpeg', 0.8);
+                saveSettings(); updateAllChatUI(); showToast('聊天背景已更新');
+            }; img.src = ev.target.result;
+        }; reader.readAsDataURL(f);
+    }; inp.click();
+}
 
-        function handleLongPress(e) {
-            const bubble = e.target.closest('.message-bubble');
-            if (!bubble) return;
+function saveReshape() {
+    state.hisName = $('#reshapeDreamName').value || '易遇'; state.hisNick = $('#reshapeHisNick').value || '老公';
+    state.myNick = $('#reshapeCallMe').value || '乖宝'; state.hisSignature = $('#reshapeSignature').value || '';
+    state.myName = $('#reshapeMyName').value || '雾凉';
+    saveSettings(); updateAllChatUI(); showToast('铭刻于心底\n已保存');
+}
 
-            longPressTarget = bubble.closest('.message-row');
-            longPressTimer = setTimeout(() => {
-                if (longPressTarget) {
-                    const msgId = longPressTarget.dataset.msgId;
-                    const text = longPressTarget.querySelector('.message-bubble').textContent;
-                    quoteMessage(msgId, text);
-                }
-            }, 600);
-        }
+// ==================== 事件绑定 ====================
+function bindEvents() {
+    $('#btnPlus').onclick = openPlus; $('#plusOverlay').onclick = closePlus;
+    $('#plusPhoto').onclick = openPhoto; $('#plusCamera').onclick = openCamera;
+    $('#plusVoiceCall').onclick = function() { startCall('voice'); };
+    $('#plusVideoCall').onclick = function() { startCall('video'); };
+    $('#plusTeachMode').onclick = function() { closePlus(); showToast('教学模式\n即将在后续版本开放'); };
+    $('#plusMore').onclick = function() { closePlus(); openMorePage(); };
 
-        document.addEventListener('touchend', () => {
-            clearTimeout(longPressTimer);
-            longPressTarget = null;
-        });
-        document.addEventListener('mouseup', () => {
-            clearTimeout(longPressTimer);
-            longPressTarget = null;
-        });
+    $('#btnSmile').onclick = openEmoji; $('#emojiOverlay').onclick = closeEmojiPanel;
 
-        function quoteMessage(msgId, text) {
-            state.quotingId = msgId;
-            state.quotingText = text;
-            $('#chatInput').focus();
-            showToast('已引用消息，输入回复即可');
-        }
+    $('#btnSend').onclick = function() {
+        var t = $('#chatInput').value.trim(); if (!t) return;
+        $('#chatInput').value = ''; sendMessage(t, 'text'); updateSendBtn();
+    };
+    $('#chatInput').oninput = updateSendBtn;
+    $('#chatInput').onkeydown = function(e) { if (e.key==='Enter') { e.preventDefault(); $('#btnSend').click(); } };
 
-        // 修改发送逻辑以支持引用
-        const originalSend = sendMessage;
-        sendMessage = async function(content, type, quoteId, quoteText) {
-            const qId = state.quotingId || quoteId || null;
-            const qText = state.quotingText || quoteText || '';
-            state.quotingId = null;
-            state.quotingText = null;
-            return originalSend.call(this, content, type, qId, qText);
-        };
+    $('#btnHangup').onclick = endCall;
+    $('#toastOverlay').onclick = closeToast; $('#toastConfirmBtn').onclick = closeToast;
 
-        function updateSendButton() {
-            const input = $('#chatInput');
-            const sendBtn = $('#btnSend');
-            if (input.value.trim().length > 0) {
-                sendBtn.classList.add('visible');
-            } else {
-                sendBtn.classList.remove('visible');
-            }
-        }
+    $('#btnMoreBack').onclick = closeMorePage; $('#btnSettingsBack').onclick = closeSettingsPage;
+    $('#btnReshapeBack').onclick = closeReshapePage;
 
-        // ==================== 启动 ====================
-        init().then(() => {
-            console.log('易遇🩷雾凉 v1.0.0 已就绪');
-        }).catch(err => {
-            console.error('初始化失败', err);
-        });
+    $('#btnChangeHisAvatar').onclick = function() { changeAvatar('his'); };
+    $('#btnChangeMyAvatar').onclick = function() { changeAvatar('my'); };
+    $('#btnChangeChatBg').onclick = changeChatBg;
+    $('#btnSaveReshape1').onclick = saveReshape; $('#btnSaveReshape2').onclick = saveReshape;
 
-    })();
-    </script>
+    // 长按引用
+    var longTimer = null, longTarget = null;
+    var mc = $('#messagesContainer');
+    mc.addEventListener('touchstart', function(e) {
+        var bub = e.target.closest('.message-bubble'); if (!bub) return;
+        longTarget = bub.closest('.message-row');
+        longTimer = setTimeout(function() {
+            if (longTarget) {
+                state.quotingId = parseInt(longTarget.dataset.msgId);
+                state.quotingText = longTarget.querySelector('.message-bubble').textContent;
+                $('#chatInput').focus(); showToast('已引用消息，输入回复即可');
+            } longTarget = null;
+        }, 600);
+    }, {passive:false});
+    mc.addEventListener('touchend', function() { clearTimeout(longTimer); });
+    mc.addEventListener('touchmove', function() { clearTimeout(longTimer); });
+}
+
+// ==================== 启动 ====================
+initApp().then(function() { console.log('易遇🩷雾凉 v1.1.0 就绪'); }).catch(function(e) { console.error(e); });
+
+})();
+</script>
 </body>
 </html>
