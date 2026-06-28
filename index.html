@@ -108,7 +108,7 @@
         .toast-btn { margin-top:8px; padding:9px 30px; border-radius:22px; border:none; cursor:pointer; font-family:var(--font-serif); font-size:14px; color:#fff; background:var(--btn-green); box-shadow:0 2px 8px var(--btn-green-shadow); transition:transform 0.15s ease; }
         .toast-btn:active { transform:scale(0.95); }
         .toast-btn.cancel { background:#c8c0b8; box-shadow:0 2px 8px rgba(180,170,160,0.3); }
-        .toast-buttons { display:flex; gap:10px; margin-top:6px; }
+        .toast-buttons { display:flex; gap:10px; margin-top:6px; justify-content:center; }
         .fullscreen-page { position:absolute; top:0; left:0; width:100%; height:100%; z-index:5; background:var(--paper-white); display:none; flex-direction:column; }
         .fullscreen-page.active { display:flex; }
         .page-header { padding:14px 16px; display:flex; align-items:center; gap:10px; flex-shrink:0; background:var(--paper-white); }
@@ -155,9 +155,10 @@
         .wordcard-tabs { display:flex; gap:0; padding:6px 8px 10px; overflow-x:auto; flex-shrink:0; background:var(--paper-white); -webkit-overflow-scrolling:touch; }
         .wordcard-tab { flex-shrink:0; padding:7px 12px; font-size:12px; color:var(--lighter-ink); cursor:pointer; font-family:var(--font-serif); border-radius:16px; margin:0 3px; transition:all 0.2s; white-space:nowrap; background:var(--moonlight-warm); }
         .wordcard-tab.active { color:var(--ink-gray); background:var(--milk-white); box-shadow:0 1px 3px var(--shadow-color); }
-        .subpool-tabs { display:flex; gap:4px; padding:4px 16px 8px; overflow-x:auto; flex-shrink:0; -webkit-overflow-scrolling:touch; }
+        .subpool-tabs { display:flex; gap:4px; padding:4px 16px 8px; overflow-x:auto; flex-shrink:0; -webkit-overflow-scrolling:touch; align-items:center; }
         .subpool-tab { flex-shrink:0; padding:6px 14px; font-size:12px; color:var(--lighter-ink); cursor:pointer; font-family:var(--font-serif); border-radius:14px; background:var(--moonlight-warm); transition:all 0.2s; white-space:nowrap; }
         .subpool-tab.active { color:var(--ink-gray); background:var(--milk-white); box-shadow:0 1px 2px var(--shadow-color); }
+        .pool-total-count { font-size:12px; color:var(--lighter-ink); padding:0 16px 4px; flex-shrink:0; font-family:var(--font-serif); }
         .wordcard-input-area { padding:6px 16px 10px; flex-shrink:0; }
         .wordcard-textarea { width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); outline:none; resize:vertical; min-height:60px; line-height:1.6; box-shadow:inset 0 1px 2px var(--shadow-color); -webkit-user-select:text; user-select:text; }
         .wordcard-textarea::placeholder { color:var(--lighter-ink); }
@@ -167,7 +168,8 @@
         .wordcard-action-btn { padding:5px 10px; font-size:11px; border-radius:12px; border:none; cursor:pointer; font-family:var(--font-serif); background:var(--moonlight-warm); color:var(--light-ink); transition:all 0.15s; }
         .wordcard-action-btn:active { background:var(--milk-white); }
         .wordcard-list { flex:1; overflow-y:auto; padding:0 16px 16px; -webkit-overflow-scrolling:touch; }
-        .wordcard-item { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:6px; background:var(--milk-white); border-radius:var(--radius-sm); box-shadow:0 1px 2px var(--shadow-color); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); }
+        .wordcard-item { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:6px; background:var(--milk-white); border-radius:var(--radius-sm); box-shadow:0 1px 2px var(--shadow-color); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); transition:background 0.2s; }
+        .wordcard-item.selected { background:#f0e8e0; box-shadow:0 0 0 2px var(--heart-pink); }
         .wordcard-item .wc-content { flex:1; word-break:break-word; line-height:1.4; }
         .wordcard-item .wc-actions { display:flex; gap:4px; flex-shrink:0; }
         .wc-btn { width:28px; height:28px; border-radius:50%; border:none; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; background:var(--moonlight-warm); color:var(--light-ink); transition:all 0.15s; }
@@ -180,6 +182,8 @@
         .group-meta { display:flex; align-items:center; gap:6px; padding:4px 16px; font-size:11px; color:var(--lighter-ink); font-family:var(--font-serif); }
         .group-meta .group-name { cursor:pointer; padding:3px 8px; border-radius:10px; background:var(--moonlight-warm); }
         .group-meta .group-name.active { background:var(--milk-white); box-shadow:0 1px 2px var(--shadow-color); }
+        .group-meta .group-actions { display:flex; gap:2px; }
+        .group-meta .group-action-btn { width:20px; height:20px; border-radius:50%; border:none; cursor:pointer; font-size:10px; display:flex; align-items:center; justify-content:center; background:transparent; color:var(--lighter-ink); }
         .search-area { padding:6px 16px; flex-shrink:0; }
         .search-input { width:100%; padding:10px 14px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); outline:none; box-shadow:inset 0 1px 2px var(--shadow-color); -webkit-user-select:text; user-select:text; }
         .search-input::placeholder { color:var(--lighter-ink); }
@@ -207,6 +211,10 @@
         .edit-popup.active { display:flex; }
         .edit-popup input { width:100%; padding:8px 12px; border:none; border-radius:var(--radius-sm); background:var(--moonlight-cool); font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); outline:none; }
         .edit-popup-btns { display:flex; gap:10px; justify-content:flex-end; }
+        .move-popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--toast-bg); border-radius:var(--radius-lg); padding:20px 24px; z-index:21; display:none; flex-direction:column; gap:10px; min-width:250px; max-height:60vh; overflow-y:auto; box-shadow:0 6px 24px rgba(139,129,120,0.18); }
+        .move-popup.active { display:flex; }
+        .move-option { padding:10px 14px; border-radius:var(--radius-sm); cursor:pointer; font-family:var(--font-serif); font-size:14px; color:var(--ink-gray); background:var(--moonlight-cool); text-align:center; transition:background 0.15s; }
+        .move-option:active { background:var(--milk-white); }
         @media (max-width:360px) {
             .heart-chain .heart { font-size:11px; }
             .heart-chain { gap:1px; }
@@ -263,9 +271,11 @@
     <input type="text" id="editInput" placeholder="编辑内容...">
     <div class="edit-popup-btns"><button class="toast-btn cancel" id="editCancelBtn">取消</button><button class="toast-btn" id="editSaveBtn">保存</button></div>
 </div>
+<div class="overlay" id="moveOverlay" style="z-index:20;"></div>
+<div class="move-popup" id="movePopup"></div>
 <div class="fullscreen-page" id="morePage">
     <div class="page-header"><button class="btn-back" id="btnMoreBack">←</button><span class="page-title">更多功能</span></div>
-    <div class="page-content"><div class="more-grid" id="moreGrid"></div><div class="version-info">v1.3.2 · 易遇🩷雾凉</div></div>
+    <div class="page-content"><div class="more-grid" id="moreGrid"></div><div class="version-info">v1.3.3 · 易遇🩷雾凉</div></div>
 </div>
 <div class="fullscreen-page" id="settingsPage">
     <div class="page-header"><button class="btn-back" id="btnSettingsBack">←</button><span class="page-title">设置</span></div>
@@ -303,6 +313,7 @@
 </div>
 <div class="wordcard-page" id="wordcardPage">
     <div class="page-header"><button class="btn-back" id="btnWordcardBack">←</button><span class="page-title">字卡库</span></div>
+    <div class="pool-total-count" id="poolTotalCount" style="display:none;"></div>
     <div class="subpool-tabs" id="subpoolTabs"></div>
     <div class="group-select-area" id="groupSelectArea" style="display:none;"></div>
     <div class="search-area" id="searchArea" style="display:none;"><input type="text" class="search-input" id="searchInput" placeholder="搜索内容回复池..."></div>
@@ -332,7 +343,7 @@
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        var swCode = 'var CACHE_NAME="yiwu-v1.3.2";self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(["/"])}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
+        var swCode = 'var CACHE_NAME="yiwu-v1.3.3";self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE_NAME).then(function(c){return c.addAll(["/"])}))});self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});';
         var blob = new Blob([swCode], {type:'application/javascript'});
         navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});
     });
@@ -360,12 +371,8 @@ function openDB() {
                 var s = d.createObjectStore('messages', {keyPath:'id', autoIncrement:true});
                 s.createIndex('timestamp','timestamp',{unique:false});
             }
-            if (!d.objectStoreNames.contains('emojis')) {
-                d.createObjectStore('emojis', {keyPath:'id', autoIncrement:true});
-            }
-            if (!d.objectStoreNames.contains('wordcards')) {
-                d.createObjectStore('wordcards', {keyPath:'id', autoIncrement:true});
-            }
+            if (!d.objectStoreNames.contains('emojis')) d.createObjectStore('emojis', {keyPath:'id', autoIncrement:true});
+            if (!d.objectStoreNames.contains('wordcards')) d.createObjectStore('wordcards', {keyPath:'id', autoIncrement:true});
         };
         r.onsuccess = function(e) { db = e.target.result; rs(db); };
         r.onerror = function() { rj(r.error); };
@@ -426,7 +433,8 @@ var state = {
     lastUserMessageTime:0,
     wordcardData:{}, wordcardFoldState:{},
     wcCurrentTab:0, wcCurrentSubpool:0, _wcCurrentGroup:null, wcSearchResults:[],
-    exclusiveCards:[], exclusiveDeleteChance:{used:false,date:''}, teachPairs:[]
+    exclusiveCards:[], exclusiveDeleteChance:{used:false,date:''}, teachPairs:[],
+    wcSelectAll:false, wcSelectedCards:[]
 };
 
 function $(s) { return document.querySelector(s); }
@@ -661,8 +669,13 @@ function applyStatus() {
 }
 function getSubpoolCards(subpoolKey) {
     var data = state.wordcardData, cards = [];
-    var poolData = data[subpoolKey] || {};
-    Object.values(poolData).forEach(function(arr) { if (Array.isArray(arr)) cards = cards.concat(arr.map(function(c){return typeof c==='string'?c:c.content;})); });
+    ['status','content'].forEach(function(pk) {
+        if (data[pk] && data[pk][subpoolKey]) {
+            Object.values(data[pk][subpoolKey]).forEach(function(arr) {
+                if (Array.isArray(arr)) cards = cards.concat(arr.map(function(c){return typeof c==='string'?c:c.content;}));
+            });
+        }
+    });
     return cards;
 }
 function applyRandomGradient(el) {
@@ -798,7 +811,7 @@ function bindDataEvents() {
 }
 
 async function getAllData() {
-    return { version:'1.3.2', exportTime:new Date().toISOString(),
+    return { version:'1.3.3', exportTime:new Date().toISOString(),
         settings:{ hisName:state.hisName,hisNick:state.hisNick,myName:state.myName,myNick:state.myNick,hisAvatar:state.hisAvatar,myAvatar:state.myAvatar,hisStatus:state.hisStatus,hisSignature:state.hisSignature,chatBg:state.chatBg },
         messages:await dbGetAll('messages'), emojis:await dbGetAll('emojis'), wordcards:await dbGetAll('wordcards'),
         exclusiveCards:state.exclusiveCards, teachPairs:state.teachPairs };
@@ -876,6 +889,14 @@ function closeEditPopup(){$('#editPopup').classList.remove('active');$('#editOve
 $('#editSaveBtn').onclick=function(){var val=$('#editInput').value.trim();if(editCallback)editCallback(val);closeEditPopup();};
 $('#editCancelBtn').onclick=closeEditPopup;$('#editOverlay').onclick=closeEditPopup;
 
+function showMovePopup(options,cb){
+    var popup=$('#movePopup');popup.innerHTML='';options.forEach(function(opt){
+        var el=document.createElement('div');el.className='move-option';el.textContent=opt.label;el.onclick=function(){cb(opt.key);closeMovePopup();};popup.appendChild(el);
+    });popup.classList.add('active');$('#moveOverlay').classList.add('active');
+}
+function closeMovePopup(){$('#movePopup').classList.remove('active');$('#moveOverlay').classList.remove('active');}
+$('#moveOverlay').onclick=closeMovePopup;
+
 function bindEvents(){
     $('#btnPlus').onclick=openPlus;$('#plusOverlay').onclick=closePlus;
     $('#plusPhoto').onclick=openPhoto;$('#plusCamera').onclick=openCamera;
@@ -937,7 +958,7 @@ function addCardsToCurrentPool(cards){
 var POOL_CONFIG = {
     tabs: [
         { key: 'status', icon: '☀️', label: '系统状态池' },{ key: 'content', icon: '💬', label: '内容回复池' },
-        { key: 'search', icon: '🔍', label: '🔍搜索' },{ key: 'export', icon: '📤', label: '导出字卡' },
+        { key: 'search', icon: '🔍', label: '搜索' },{ key: 'export', icon: '📤', label: '导出字卡' },
         { key: 'exclusive', icon: '🩷', label: '易遇专属回复池' }
     ],
     subpools: {
@@ -968,12 +989,19 @@ function renderWordcardTabs() {
     POOL_CONFIG.tabs.forEach(function(tab, i) {
         var el = document.createElement('div'); el.className = 'wordcard-tab' + (i === state.wcCurrentTab ? ' active' : '');
         el.textContent = tab.icon + ' ' + tab.label;
-        el.onclick = function() { state.wcCurrentTab = i; state.wcCurrentSubpool = 0; state._wcCurrentGroup = null; state.wcSearchResults = []; renderWordcardPage(); };
+        el.onclick = function() { state.wcCurrentTab = i; state.wcCurrentSubpool = 0; state._wcCurrentGroup = null; state.wcSearchResults = []; state.wcSelectAll = false; state.wcSelectedCards = []; renderWordcardPage(); };
         container.appendChild(el);
     });
 }
 function renderSubpoolTabs() {
     var container = $('#subpoolTabs'), info = getCurrentPoolInfo(), subpools = POOL_CONFIG.subpools[info.poolKey] || [];
+    var totalCountEl = $('#poolTotalCount');
+    if (['status','content','exclusive'].indexOf(info.poolKey)!==-1 && subpools.length>0) {
+        var totalCount = 0; subpools.forEach(function(sp) { totalCount += getSubpoolCardCount(info.poolKey, sp.key); });
+        if (info.poolKey==='exclusive') totalCount = state.exclusiveCards.length;
+        totalCountEl.style.display = 'block';
+        totalCountEl.textContent = POOL_CONFIG.tabs[state.wcCurrentTab].label + '（总计：' + totalCount + '）';
+    } else { totalCountEl.style.display = 'none'; }
     if (subpools.length === 0) { container.style.display = 'none'; } else {
         container.style.display = 'flex'; container.innerHTML = '';
         subpools.forEach(function(sp, i) {
@@ -982,7 +1010,7 @@ function renderSubpoolTabs() {
             el.onclick = function() {
                 var foldKey = info.poolKey + '_' + sp.key;
                 state.wordcardFoldState[foldKey] = (i === state.wcCurrentSubpool) ? !state.wordcardFoldState[foldKey] : false;
-                state.wcCurrentSubpool = i; state._wcCurrentGroup = null; saveAllSettings(); renderWordcardPage();
+                state.wcCurrentSubpool = i; state._wcCurrentGroup = null; state.wcSelectAll = false; state.wcSelectedCards = []; saveAllSettings(); renderWordcardPage();
             };
             container.appendChild(el);
         });
@@ -1002,7 +1030,7 @@ function renderGroupArea(info) {
         groups.forEach(function(g) { html += '<option value="'+g+'"'+(g===currentGroup?' selected':'')+'>'+g+'</option>'; });
         html += '</select><input type="text" class="group-input" id="groupInput" placeholder="输入新分组名...">';
         area.innerHTML = html;
-        document.getElementById('groupSelect').onchange = function() { state._wcCurrentGroup = this.value; renderWordcardPage(); };
+        document.getElementById('groupSelect').onchange = function() { state._wcCurrentGroup = this.value; state.wcSelectAll = false; state.wcSelectedCards = []; renderWordcardPage(); };
     } else { area.style.display = 'none'; }
 }
 function getGroups(poolKey, subpoolKey) {
@@ -1028,7 +1056,15 @@ function updateAddButton() { var info = getCurrentPoolInfo(); var btn = $('#wcAd
 function addWordcards() {
     var info = getCurrentPoolInfo(), raw = $('#wcTextarea').value.trim(); if (!raw) return;
     var lines;
-    if (info.subpoolKey==='emoji') lines = raw.split(/[\n,，]+/).map(function(s){return s.trim();}).filter(Boolean);
+    if (info.subpoolKey==='emoji') {
+        lines = [];
+        raw.split('\n').forEach(function(line) {
+            line = line.trim(); if (!line) return;
+            var emojis = line.match(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{200D}\u{FE0F}\u{20E3}]/gu);
+            if (emojis && emojis.length>0) lines = lines.concat(emojis);
+            else lines = lines.concat(line.split(/[,，]+/).map(function(s){return s.trim();}).filter(Boolean));
+        });
+    }
     else if (info.subpoolKey==='song') lines = raw.split('\n').filter(function(l){return l.trim()&&l.indexOf('｜')!==-1;});
     else lines = raw.split('\n').filter(function(l){return l.trim();});
     if (lines.length===0) return;
@@ -1048,10 +1084,13 @@ function renderCardList(info) {
         var groups = Object.keys(data[pk][sk]); if (groups.length===0) { list.innerHTML='<div class="settings-dev">还没有字卡</div>'; return; }
         groups.forEach(function(g){
             var cards=data[pk][sk][g]||[]; if(cards.length===0)return;
-            var gh=document.createElement('div');gh.className='group-meta';gh.innerHTML='<span class="group-name'+(gk===g?' active':'')+'">'+g+'（'+cards.length+'）</span>';
+            var gh=document.createElement('div');gh.className='group-meta';
+            gh.innerHTML='<span class="group-name'+(gk===g?' active':'')+'">'+g+'（'+cards.length+'）</span><span class="group-actions"><button class="group-action-btn edit-group-btn">✏️</button><button class="group-action-btn delete-group-btn">✕</button></span>';
             var gc=document.createElement('div'); if(gk===g||gk==='_nogroup') cards.forEach(function(card){gc.appendChild(createCardItem(card,pk,sk,g));});
             list.appendChild(gh);list.appendChild(gc);
-            gh.querySelector('.group-name').onclick=function(){state._wcCurrentGroup=(state._wcCurrentGroup===g?null:g);renderWordcardPage();};
+            gh.querySelector('.group-name').onclick=function(){state._wcCurrentGroup=(state._wcCurrentGroup===g?null:g);state.wcSelectAll=false;state.wcSelectedCards=[];renderWordcardPage();};
+            gh.querySelector('.edit-group-btn').onclick=function(e){e.stopPropagation();showEditPopup(g,function(newVal){if(!newVal||newVal===g)return;if(!state.wordcardData[pk][sk][newVal])state.wordcardData[pk][sk][newVal]=[];state.wordcardData[pk][sk][newVal]=state.wordcardData[pk][sk][newVal].concat(cards);delete state.wordcardData[pk][sk][g];if(state._wcCurrentGroup===g)state._wcCurrentGroup=newVal;saveWordcardData();renderWordcardPage();});};
+            gh.querySelector('.delete-group-btn').onclick=function(e){e.stopPropagation();showToast('确认删除分组"'+g+'"及所有字卡？',true,function(){delete state.wordcardData[pk][sk][g];if(state._wcCurrentGroup===g)state._wcCurrentGroup=null;saveWordcardData();renderWordcardPage();showToast('已删除分组');});};
         }); return;
     }
     if (!data[pk]||!data[pk][sk]||!data[pk][sk][gk]||data[pk][sk][gk].length===0) { list.innerHTML='<div class="settings-dev">还没有字卡，添加一些吧</div>'; return; }
@@ -1060,6 +1099,7 @@ function renderCardList(info) {
 
 function createCardItem(card,pk,sk,gk){
     var item=document.createElement('div');item.className='wordcard-item';
+    if(state.wcSelectAll) item.classList.add('selected');
     var content=document.createElement('div');content.className='wc-content';
     if(sk==='song'){var parts=card.content.split('｜');content.innerHTML='🎵 '+escHTML(parts[0]||'')+' <span style="font-size:10px;color:var(--lighter-ink);">ID:'+escHTML(parts[1]||'')+'</span>';}
     else{content.textContent=card.content;}
@@ -1067,32 +1107,54 @@ function createCardItem(card,pk,sk,gk){
     var actions=document.createElement('div');actions.className='wc-actions';
     var eb=document.createElement('button');eb.className='wc-btn';eb.innerHTML='✏️';eb.onclick=function(e){e.stopPropagation();editCard(card,pk,sk,gk);};
     var db=document.createElement('button');db.className='wc-btn danger';db.innerHTML='✕';db.onclick=function(e){e.stopPropagation();deleteCard(card,pk,sk,gk);};
-    var mb=document.createElement('button');mb.className='wc-btn';mb.innerHTML='📦';mb.onclick=function(e){e.stopPropagation();moveCard(card,pk,sk,gk);};
+    var mb=document.createElement('button');mb.className='wc-btn';mb.innerHTML='📦';mb.onclick=function(e){e.stopPropagation();moveCardUI(card,pk,sk,gk);};
     actions.appendChild(eb);actions.appendChild(db);actions.appendChild(mb);item.appendChild(actions);return item;
 }
 
 function editCard(card,pk,sk,gk){showEditPopup(card.content,function(v){if(!v)return;var arr=state.wordcardData[pk][sk][gk];var f=arr.find(function(c){return c.id===card.id;});if(f){f.content=v;saveWordcardData();renderWordcardPage();}});}
 function deleteCard(card,pk,sk,gk){showToast('确认删除这条字卡？',true,function(){var arr=state.wordcardData[pk][sk][gk];var idx=arr.findIndex(function(c){return c.id===card.id;});if(idx!==-1){arr.splice(idx,1);saveWordcardData();renderWordcardPage();showToast('已删除');}});}
-function moveCard(card,pk,sk,gk){
+function moveCardUI(card,pk,sk,gk){
     var subpools=POOL_CONFIG.subpools[pk]||[],options=subpools.filter(function(sp){return sp.key!==sk;});
     if(options.length===0){showToast('没有可移动的目标池子');return;}
-    var tsk=options[0].key,tgk='_nogroup';
-    if(!state.wordcardData[pk])state.wordcardData[pk]={};if(!state.wordcardData[pk][tsk])state.wordcardData[pk][tsk]={};if(!state.wordcardData[pk][tsk][tgk])state.wordcardData[pk][tsk][tgk]=[];
-    state.wordcardData[pk][tsk][tgk].push(card);var arr=state.wordcardData[pk][sk][gk];var idx=arr.findIndex(function(c){return c.id===card.id;});if(idx!==-1)arr.splice(idx,1);
-    saveWordcardData();renderWordcardPage();showToast('已移动到 '+tsk);
+    var moveOptions=[];options.forEach(function(sp){moveOptions.push({key:sp.key,label:sp.icon+' '+sp.label});});
+    showMovePopup(moveOptions,function(targetSk){
+        var targetGk='_nogroup';
+        if(!state.wordcardData[pk])state.wordcardData[pk]={};if(!state.wordcardData[pk][targetSk])state.wordcardData[pk][targetSk]={};if(!state.wordcardData[pk][targetSk][targetGk])state.wordcardData[pk][targetSk][targetGk]=[];
+        state.wordcardData[pk][targetSk][targetGk].push(card);var arr=state.wordcardData[pk][sk][gk];var idx=arr.findIndex(function(c){return c.id===card.id;});if(idx!==-1)arr.splice(idx,1);
+        saveWordcardData();renderWordcardPage();showToast('已移动到 '+targetSk);
+    });
 }
 
 function bindWordcardActions(){
     var ae=$('#wcActions');if(!ae)return;
     ae.querySelectorAll('.wordcard-action-btn').forEach(function(btn){btn.onclick=function(){
         var action=btn.dataset.action,info=getCurrentPoolInfo();if(info.poolKey==='search'||info.poolKey==='export'||info.poolKey==='exclusive')return;
-        var pk=info.poolKey,sk=info.subpoolKey,gk=info.groupKey||'_nogroup',arr=getTargetArray(pk,sk,gk);if(!arr)return;
+        var pk=info.poolKey,sk=info.subpoolKey,gk=info.groupKey||'_nogroup',arr=getTargetArray(pk,sk,gk);if(!arr)arr=[];
         switch(action){
-            case'selectAll':showToast('全选：共 '+arr.length+' 条');break;
-            case'clearAll':showToast('确认清空当前池子？',true,function(){clearCurrentPool(pk,sk,gk);saveWordcardData();renderWordcardPage();showToast('已清空');});break;
-            case'dedupe':var before=arr.length,seen={};arr=arr.filter(function(c){if(seen[c.content])return false;seen[c.content]=true;return true;});setTargetArray(pk,sk,gk,arr);saveWordcardData();renderWordcardPage();showToast('去重：'+before+' → '+arr.length);break;
-            case'batchDelete':showToast('请点击每条字卡的删除按钮');break;
-            case'batchMove':showToast('请点击每条字卡的移动按钮');break;
+            case 'selectAll':
+                state.wcSelectAll=!state.wcSelectAll;renderWordcardPage();
+                showToast(state.wcSelectAll?'已全选 '+arr.length+' 条':'已取消全选');
+                break;
+            case 'clearAll':
+                showToast('确认清空当前池子？',true,function(){clearCurrentPool(pk,sk,gk);saveWordcardData();renderWordcardPage();showToast('已清空');});
+                break;
+            case 'dedupe':
+                var before=arr.length,seen={};arr=arr.filter(function(c){if(seen[c.content])return false;seen[c.content]=true;return true;});setTargetArray(pk,sk,gk,arr);saveWordcardData();renderWordcardPage();showToast('去重：'+before+' → '+arr.length);
+                break;
+            case 'batchDelete':
+                if(!state.wcSelectAll){showToast('请先点击全选');return;}
+                showToast('确认删除全部选中字卡？',true,function(){clearCurrentPool(pk,sk,gk);saveWordcardData();state.wcSelectAll=false;renderWordcardPage();showToast('已批量删除');});
+                break;
+            case 'batchMove':
+                if(!state.wcSelectAll){showToast('请先点击全选');return;}
+                var subpools=POOL_CONFIG.subpools[pk]||[],moveOpts=[];subpools.forEach(function(sp){if(sp.key!==sk)moveOpts.push({key:sp.key,label:sp.icon+' '+sp.label});});
+                if(moveOpts.length===0){showToast('没有可移动的目标池子');return;}
+                showMovePopup(moveOpts,function(targetSk){
+                    var targetGk='_nogroup';if(!state.wordcardData[pk])state.wordcardData[pk]={};if(!state.wordcardData[pk][targetSk])state.wordcardData[pk][targetSk]={};if(!state.wordcardData[pk][targetSk][targetGk])state.wordcardData[pk][targetSk][targetGk]=[];
+                    arr.forEach(function(c){state.wordcardData[pk][targetSk][targetGk].push(c);});
+                    clearCurrentPool(pk,sk,gk);saveWordcardData();state.wcSelectAll=false;renderWordcardPage();showToast('已批量移动到 '+targetSk);
+                });
+                break;
         }
     };});
 }
@@ -1110,7 +1172,7 @@ function renderSearchResults(){
     var list=$('#wcList'),info=$('#searchResultInfo'),results=state.wcSearchResults;
     if(results.length===0){info.textContent='搜索结果（0）';list.innerHTML='<div class="settings-dev">未找到匹配的字卡</div>';return;}
     info.textContent='搜索结果（'+results.length+'）';list.innerHTML='';
-    results.forEach(function(r){var item=document.createElement('div');item.className='wordcard-item';var c=document.createElement('div');c.className='wc-content';c.textContent=r.card.content;var m=document.createElement('div');m.className='search-result-meta';m.textContent=r.subpoolLabel+(r.groupKey!=='_nogroup'?' · '+r.groupKey:'');c.appendChild(m);item.appendChild(c);var a=document.createElement('div');a.className='wc-actions';var eb=document.createElement('button');eb.className='wc-btn';eb.innerHTML='✏️';eb.onclick=function(){editCard(r.card,r.poolKey,r.subpoolKey,r.groupKey);};var db=document.createElement('button');db.className='wc-btn danger';db.innerHTML='✕';db.onclick=function(){deleteCard(r.card,r.poolKey,r.subpoolKey,r.groupKey);};var mb=document.createElement('button');mb.className='wc-btn';mb.innerHTML='📦';mb.onclick=function(){moveCard(r.card,r.poolKey,r.subpoolKey,r.groupKey);};a.appendChild(eb);a.appendChild(db);a.appendChild(mb);item.appendChild(a);list.appendChild(item);});
+    results.forEach(function(r){var item=document.createElement('div');item.className='wordcard-item';var c=document.createElement('div');c.className='wc-content';c.textContent=r.card.content;var m=document.createElement('div');m.className='search-result-meta';m.textContent=r.subpoolLabel+(r.groupKey!=='_nogroup'?' · '+r.groupKey:'');c.appendChild(m);item.appendChild(c);var a=document.createElement('div');a.className='wc-actions';var eb=document.createElement('button');eb.className='wc-btn';eb.innerHTML='✏️';eb.onclick=function(){editCard(r.card,r.poolKey,r.subpoolKey,r.groupKey);};var db=document.createElement('button');db.className='wc-btn danger';db.innerHTML='✕';db.onclick=function(){deleteCard(r.card,r.poolKey,r.subpoolKey,r.groupKey);};var mb=document.createElement('button');mb.className='wc-btn';mb.innerHTML='📦';mb.onclick=function(){moveCardUI(r.card,r.poolKey,r.subpoolKey,r.groupKey);};a.appendChild(eb);a.appendChild(db);a.appendChild(mb);item.appendChild(a);list.appendChild(item);});
 }
 
 function renderExportList(info){
@@ -1122,7 +1184,7 @@ function renderExportList(info){
     var eab=$('#exportAllPools');if(eab)eab.onclick=exportAllPools;
 }
 function exportSubpool(sk){var cards=[];['status','content'].forEach(function(pk){if(state.wordcardData[pk]&&state.wordcardData[pk][sk])Object.values(state.wordcardData[pk][sk]).forEach(function(arr){cards=cards.concat(arr.map(function(c){return c.content;}));});});downloadJSON({subpool:sk,wordCards:cards,exportTime:new Date().toISOString()},'字卡_'+sk+'_'+getDateStr()+'.json');showToast('📤 已导出 '+cards.length+' 条');}
-function exportAllPools(){var ad={};Object.keys(state.wordcardData).forEach(function(pk){ad[pk]={};Object.keys(state.wordcardData[pk]).forEach(function(sk){ad[pk][sk]={};Object.keys(state.wordcardData[pk][sk]).forEach(function(gk){ad[pk][sk][gk]=state.wordcardData[pk][sk][gk].map(function(c){return c.content;});});});});ad.exclusive=state.exclusiveCards.map(function(c){return typeof c==='string'?c:c.content;});ad.teachPairs=state.teachPairs;downloadJSON({version:'1.3.2',exportTime:new Date().toISOString(),allPools:ad},'字卡_全部池子_'+getDateStr()+'.json');showToast('📤 全部池子已导出');}
+function exportAllPools(){var ad={};Object.keys(state.wordcardData).forEach(function(pk){ad[pk]={};Object.keys(state.wordcardData[pk]).forEach(function(sk){ad[pk][sk]={};Object.keys(state.wordcardData[pk][sk]).forEach(function(gk){ad[pk][sk][gk]=state.wordcardData[pk][sk][gk].map(function(c){return c.content;});});});});ad.exclusive=state.exclusiveCards.map(function(c){return typeof c==='string'?c:c.content;});ad.teachPairs=state.teachPairs;downloadJSON({version:'1.3.3',exportTime:new Date().toISOString(),allPools:ad},'字卡_全部池子_'+getDateStr()+'.json');showToast('📤 全部池子已导出');}
 
 function renderExclusiveList(list){
     if(state.exclusiveCards.length===0){list.innerHTML='<div class="settings-dev">易遇还没有学到的字卡<br>他会从对话中学习</div>';return;}
@@ -1158,7 +1220,7 @@ async function initApp(){
         if(state.messagesLoaded===0)$('#messagesContainer').innerHTML='';
         buildMoreGrid();
         setTimeout(bindWordcardActions,800);
-        console.log('易遇🩷雾凉 v1.3.2 就绪');
+        console.log('易遇🩷雾凉 v1.3.3 就绪');
     }catch(e){
         console.error('初始化失败',e);
         showToast('初始化失败：'+e.message+'\n请刷新页面重试');
