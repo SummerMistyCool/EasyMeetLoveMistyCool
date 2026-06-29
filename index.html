@@ -323,7 +323,7 @@
             .heart-chain .heart { font-size:11px; } .heart-chain { gap:1px; } .header-avatars { gap:3px; } .message-bubble { font-size:14px; padding:8px 12px; }
         }
     </style>
-    </head>
+</head>
 <body>
 <div id="chatView" class="view active">
     <div class="chat-header"><div class="header-avatars"><img class="header-avatar his-avatar" id="headerHisAvatar" src="" alt="他" onerror="this.style.display='none'"><div class="heart-chain" id="heartChain"><span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span><span class="heart">🩷</span></div><img class="header-avatar my-avatar" id="headerMyAvatar" src="" alt="我" onerror="this.style.display='none'"></div><div class="header-nicknames" id="headerNicknames">老公🩷乖宝</div></div>
@@ -559,7 +559,7 @@ async function updateQuotedBy(quotedMsgId, newMsgId) { var all = await dbGetAll(
 function toStr(c) { if (typeof c === 'string') return c; if (c && typeof c.content === 'string') return c.content; return String(c || ''); }
 function getAllReplyCards() { var data = state.wordcardData, cards = []; function collect(obj) { if (!obj) return; Object.keys(obj).forEach(function(k) { var v = obj[k]; if (Array.isArray(v)) { cards = cards.concat(v); } else if (typeof v==='object') { collect(v); } }); } if (data['reply']) collect(data['reply']); if (data['content'] && data['content']['reply']) collect(data['content']['reply']); return cards; }
 function getEmojiCards() { var data = state.wordcardData, cards = []; function collect(obj) { if (!obj) return; Object.keys(obj).forEach(function(k) { var v = obj[k]; if (Array.isArray(v)) { cards = cards.concat(v); } else if (typeof v==='object') { collect(v); } }); } if (data['emoji']) collect(data['emoji']); if (data['content'] && data['content']['emoji']) collect(data['content']['emoji']); return cards; }
-function getSongCards() { var data = state.wordcardData, cards = []; function collect(obj) { if (!obj) return; Object.keys(obj).forEach(function(k) { var v = obj[k]; if (Array.isArray(v)) { cards = cards.concat(v); } else if (typeof v==='object') { collect(v); } }); } if (data['song']) collect(data['song']); if (data['content'] && data['content']['song']) collect(data['content']['song']); return cards; }
+function getSongCards() { var data = state.wordcardData; if (!data) return []; var cards = []; function collect(obj) { if (!obj || typeof obj !== 'object') return; var keys = Object.keys(obj); for (var i = 0; i < keys.length; i++) { var v = obj[keys[i]]; if (Array.isArray(v)) { cards = cards.concat(v); } else if (v && typeof v === 'object') { collect(v); } } } if (data['song']) collect(data['song']); if (data['content'] && data['content']['song']) collect(data['content']['song']); return cards; }
 function matchKeywords(text, pool) { if (!text || pool.length===0) return null; var words = text.split(/[\s,，。！？、]+/).filter(function(w){return w.length>=2;}); var matched = []; words.forEach(function(w) { pool.forEach(function(c) { var ct = toStr(c); if (ct.indexOf(w)!==-1) matched.push(ct); }); }); if (matched.length===0) return null; return matched[Math.floor(Math.random()*matched.length)]; }
 function addToRecentHis(msg) { state.recentHisMessages.push({content:msg,time:Date.now()}); if (state.recentHisMessages.length>10) state.recentHisMessages.shift(); }
 function isRecentlyUsed(content) { var now = Date.now(); return state.recentHisMessages.some(function(m) { return m.content===content && (now-m.time)<1800000; }); }
@@ -591,24 +591,26 @@ async function checkActivePat() { if (Date.now() - state.lastHisPatTime < 60000)
 async function checkIncomingCall() { if (state.currentCallType || state.incomingCallType) return; if (Math.random() > 0.15) return; var type = Math.random()<0.5?'voice':'video'; state.incomingCallType = type; showIncomingCallUI(type); }
 
 async function checkSongRecommend() {
-    var songCards = getSongCards();
-    if (songCards.length === 0) return;
-    var now = Date.now();
-    if (now - state.lastSongRecommendTime > 3600000 + Math.random() * 7200000) {
-        var sc = songCards[Math.floor(Math.random() * songCards.length)];
-        var content = toStr(sc);
-        var parts = content.split('｜');
-        var songName = parts[0] || content;
-        var reply = songRecommendReplies[Math.floor(Math.random() * songRecommendReplies.length)];
-        var msgContent = reply + '《' + songName + '》';
-        state.lastSongRecommendTime = now;
-        state.songRecommendRecords.push({time:now, song:content});
-        if (state.songRecommendRecords.length > 50) state.songRecommendRecords.shift();
-        saveAllSettings();
-        var msg = { sender:'him', content:msgContent, type:'text', timestamp:now, quoteId:null, quoteText:'', quotedBy:[] };
-        dbAdd('messages', msg).then(function(id) { msg.id = id; state.messagesLoaded++; appendMsg(msg); });
-        recordListen(songName);
-    }
+    try {
+        var songCards = getSongCards();
+        if (songCards.length === 0) return;
+        var now = Date.now();
+        if (now - state.lastSongRecommendTime > 3600000 + Math.random() * 7200000) {
+            var sc = songCards[Math.floor(Math.random() * songCards.length)];
+            var content = toStr(sc);
+            var parts = content.split('｜');
+            var songName = parts[0] || content;
+            var reply = songRecommendReplies[Math.floor(Math.random() * songRecommendReplies.length)];
+            var msgContent = reply + '《' + songName + '》';
+            state.lastSongRecommendTime = now;
+            state.songRecommendRecords.push({time:now, song:content});
+            if (state.songRecommendRecords.length > 50) state.songRecommendRecords.shift();
+            saveAllSettings();
+            var msg = { sender:'him', content:msgContent, type:'text', timestamp:now, quoteId:null, quoteText:'', quotedBy:[] };
+            dbAdd('messages', msg).then(function(id) { msg.id = id; state.messagesLoaded++; appendMsg(msg); });
+            recordListen(songName);
+        }
+    } catch(e) { console.error('歌曲推荐出错', e); }
 }
 
 async function checkDecideAsk() {
@@ -637,87 +639,46 @@ async function checkDecideAsk() {
 function showDecideAskPopup(type, question, options) {
     state.pendingAskType = type;
     state.pendingAskData = {question:question, options:options};
-    if (state.currentCallType && !$('#callFloat').classList.contains('active')) {
-        minimizeCall();
-    }
+    if (state.currentCallType && !$('#callFloat').classList.contains('active')) { minimizeCall(); }
     var hisMsg = question;
-    if (type === 'single' || type === 'multi') {
-        hisMsg = question + ' ' + options.map(function(o, i) { return String.fromCharCode(65+i) + '.' + o; }).join(' ');
-    }
+    if (type === 'single' || type === 'multi') { hisMsg = question + ' ' + options.map(function(o, i) { return String.fromCharCode(65+i) + '.' + o; }).join(' '); }
     var msg = { sender:'him', content:hisMsg, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] };
     dbAdd('messages', msg).then(function(id) { msg.id = id; state.messagesLoaded++; appendMsg(msg); });
     var popup = $('#decidePopup');
     $('#decideQuestion').textContent = question + '🩷';
     if (type === 'yesno') {
-        $('#decideTitle').textContent = '';
-        $('#decideOptions').innerHTML = '';
+        $('#decideTitle').textContent = ''; $('#decideOptions').innerHTML = '';
         $('#decideBtns').innerHTML = '<button class="decide-btn confirm" data-v="是">是</button><button class="decide-btn confirm" data-v="否">否</button><button class="decide-btn confirm" data-v="半对">半对</button>';
     } else {
         $('#decideTitle').textContent = type === 'single' ? '只能选一个哦' : '可以多选哦';
-        state.decideMode = type;
-        state.decideMulti = type === 'multi';
-        state.decideOptions = options;
-        state.decideSelected = [];
+        state.decideMode = type; state.decideMulti = type === 'multi'; state.decideOptions = options; state.decideSelected = [];
         renderDecideOptions();
         $('#decideBtns').innerHTML = '<button class="decide-btn confirm" id="decideConfirmBtn">确认选择</button>';
-        $('#decideConfirmBtn').onclick = function() {
-            if (state.decideSelected.length === 0) { showToast('请至少选一个'); return; }
-            if (!state.decideMulti && state.decideSelected.length > 1) { showToast('只能选一个哦'); return; }
-            confirmDecideAnswer();
-        };
+        $('#decideConfirmBtn').onclick = function() { if (state.decideSelected.length === 0) { showToast('请至少选一个'); return; } if (!state.decideMulti && state.decideSelected.length > 1) { showToast('只能选一个哦'); return; } confirmDecideAnswer(); };
     }
     popup.classList.add('active');
-    $('#decideBtns').querySelectorAll('.decide-btn.confirm[data-v]').forEach(function(b) {
-        b.onclick = function() {
-            confirmDecideAnswer(this.dataset.v);
-        };
-    });
+    $('#decideBtns').querySelectorAll('.decide-btn.confirm[data-v]').forEach(function(b) { b.onclick = function() { confirmDecideAnswer(this.dataset.v); }; });
 }
 
 function renderDecideOptions() {
-    var container = $('#decideOptions');
-    container.innerHTML = '';
+    var container = $('#decideOptions'); container.innerHTML = '';
     state.decideOptions.forEach(function(opt, i) {
         var label = String.fromCharCode(65+i);
-        var el = document.createElement('div');
-        el.className = 'decide-option';
+        var el = document.createElement('div'); el.className = 'decide-option';
         if (state.decideSelected.indexOf(i) !== -1) el.classList.add('selected');
         el.innerHTML = '<div class="decide-check' + (state.decideMulti ? ' multi' : '') + '">' + (state.decideSelected.indexOf(i) !== -1 ? '✓' : '') + '</div><span>' + label + '. ' + opt + '</span>';
-        el.onclick = function() {
-            if (state.decideMulti) {
-                var idx = state.decideSelected.indexOf(i);
-                if (idx !== -1) { state.decideSelected.splice(idx, 1); } else { state.decideSelected.push(i); }
-            } else {
-                state.decideSelected = [i];
-            }
-            renderDecideOptions();
-        };
+        el.onclick = function() { if (state.decideMulti) { var idx = state.decideSelected.indexOf(i); if (idx !== -1) { state.decideSelected.splice(idx, 1); } else { state.decideSelected.push(i); } } else { state.decideSelected = [i]; } renderDecideOptions(); };
         container.appendChild(el);
     });
 }
 
 async function confirmDecideAnswer(answer) {
-    var type = state.pendingAskType;
-    var options = state.pendingAskData.options;
-    var myMsg = '';
-    var hisResponse = '';
-    if (type === 'yesno') {
-        myMsg = '我的决定：' + answer;
-        hisResponse = hisAskYesNoResponses[Math.floor(Math.random() * hisAskYesNoResponses.length)];
-    } else if (type === 'single') {
-        var selected = state.decideSelected[0];
-        var label = String.fromCharCode(65+selected);
-        myMsg = '我选' + label + '.' + options[selected];
-        hisResponse = hisAskSingleResponses[Math.floor(Math.random() * hisAskSingleResponses.length)];
-    } else if (type === 'multi') {
-        var parts = state.decideSelected.map(function(i) { return String.fromCharCode(65+i) + '.' + options[i]; });
-        myMsg = '我选' + parts.join(' ');
-        hisResponse = hisAskMultiResponses[Math.floor(Math.random() * hisAskMultiResponses.length)];
-    }
-    $('#decidePopup').classList.remove('active');
-    state.pendingAskType = null;
-    state.pendingAskData = null;
-    state.decideSelected = [];
+    var type = state.pendingAskType; var options = state.pendingAskData.options;
+    var myMsg = ''; var hisResponse = '';
+    if (type === 'yesno') { myMsg = '我的决定：' + answer; hisResponse = hisAskYesNoResponses[Math.floor(Math.random() * hisAskYesNoResponses.length)]; }
+    else if (type === 'single') { var s = state.decideSelected[0]; myMsg = '我选' + String.fromCharCode(65+s) + '.' + options[s]; hisResponse = hisAskSingleResponses[Math.floor(Math.random() * hisAskSingleResponses.length)]; }
+    else if (type === 'multi') { var p = state.decideSelected.map(function(i) { return String.fromCharCode(65+i) + '.' + options[i]; }); myMsg = '我选' + p.join(' '); hisResponse = hisAskMultiResponses[Math.floor(Math.random() * hisAskMultiResponses.length)]; }
+    $('#decidePopup').classList.remove('active'); state.pendingAskType = null; state.pendingAskData = null; state.decideSelected = [];
     var myMsgObj = { sender:'me', content:myMsg, type:'text', timestamp:Date.now(), read:true, quoteId:null, quoteText:'', quotedBy:[] };
     dbAdd('messages', myMsgObj).then(function(id) { myMsgObj.id = id; state.messagesLoaded++; appendMsg(myMsgObj); });
     await sleep(800);
@@ -777,16 +738,8 @@ function startOngoingCall(type, isIncoming) {
     $('#callMinimizeBtn').onclick = minimizeCall; $('#callHangupBtn').onclick = function(){ endCall('user'); };
     clearInterval(state.callInterval); state.callInterval = setInterval(function(){ updateCallTimer(); if(state.isSleepMode && Math.random()<0.1){ sendSleepMurmur(); } if(state.isCompanionMode && Math.random()<0.02){ sendCompanionMurmur(); } if(state.isSleepMode && Math.random()<0.03){ sendSleepSong(); } }, 1000);
 }
-function toggleSleepMode() {
-    state.isSleepMode = !state.isSleepMode;
-    if (state.isSleepMode) state.isCompanionMode = false;
-    $('#callWindowStatus').textContent = state.isSleepMode ? '陪睡中…' : (state.isCompanionMode ? '陪伴中…' : '');
-}
-function toggleCompanionMode() {
-    state.isCompanionMode = !state.isCompanionMode;
-    if (state.isCompanionMode) state.isSleepMode = false;
-    $('#callWindowStatus').textContent = state.isCompanionMode ? '陪伴中…' : (state.isSleepMode ? '陪睡中…' : '');
-}
+function toggleSleepMode() { state.isSleepMode = !state.isSleepMode; if (state.isSleepMode) state.isCompanionMode = false; $('#callWindowStatus').textContent = state.isSleepMode ? '陪睡中…' : (state.isCompanionMode ? '陪伴中…' : ''); }
+function toggleCompanionMode() { state.isCompanionMode = !state.isCompanionMode; if (state.isCompanionMode) state.isSleepMode = false; $('#callWindowStatus').textContent = state.isCompanionMode ? '陪伴中…' : (state.isSleepMode ? '陪睡中…' : ''); }
 function rejectCall(type) {
     $('#callWindow').classList.remove('active'); state.currentCallType = null; state.callStatus = '';
     var replies = callHangupReplies[type||'voice'].reject; var content = replies[Math.floor(Math.random()*replies.length)];
@@ -799,19 +752,14 @@ function rejectCall(type) {
 function endCall(who) {
     clearInterval(state.callInterval); var type = state.currentCallType||'voice'; var duration = state.callStartTime ? Math.floor((Date.now()-state.callStartTime)/1000) : 0;
     $('#callWindow').classList.remove('active'); $('#callFloat').classList.remove('active'); state.currentCallType = null; state.callStatus = ''; state.isSleepMode = false; state.isCompanionMode = false; state.callStartTime = null;
-    if (duration > 0) {
-        var callMsg = { sender:'me', content:(type==='video'?'视频通话':'语音通话'), type:'call', callType:type, duration:duration, timestamp:Date.now(), read:true, quoteId:null, quoteText:'', quotedBy:[] };
-        dbAdd('messages',callMsg).then(function(id){callMsg.id=id;state.messagesLoaded++;appendMsg(callMsg);});
-    }
+    if (duration > 0) { var callMsg = { sender:'me', content:(type==='video'?'视频通话':'语音通话'), type:'call', callType:type, duration:duration, timestamp:Date.now(), read:true, quoteId:null, quoteText:'', quotedBy:[] }; dbAdd('messages',callMsg).then(function(id){callMsg.id=id;state.messagesLoaded++;appendMsg(callMsg);}); }
     if (who === 'user') { var replies = callHangupReplies[type].userHangup; var content = replies[Math.floor(Math.random()*replies.length)]; var msg = { sender:'him', content:content, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] }; dbAdd('messages', msg).then(function(id){ msg.id=id; state.messagesLoaded++; appendMsg(msg); }); scheduleCallback(type); }
     else if (who === 'him') { var replies2 = callHangupReplies[type].hisHangup; var content2 = replies2[Math.floor(Math.random()*replies2.length)]; var msg2 = { sender:'him', content:content2, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] }; dbAdd('messages', msg2).then(function(id){ msg2.id=id; state.messagesLoaded++; appendMsg(msg2); }); }
 }
 function scheduleCallback(type) { clearTimeout(state.callBackTimeout); state.callBackTimeout = setTimeout(function() { if (Math.random()<0.15 && !state.currentCallType && !state.incomingCallType) { state.incomingCallType = type; showIncomingCallUI(type); } }, 300000 + Math.random()*300000); }
 function updateCallTimer() { if (!state.callStartTime) return; var elapsed = Math.floor((Date.now()-state.callStartTime)/1000); $('#callWindowTimer').textContent = formatDuration(elapsed); $('#callFloatTimer').textContent = formatDuration(elapsed); }
 function minimizeCall() {
-    $('#callWindow').classList.remove('active');
-    var cf = $('#callFloat');
-    cf.classList.add('active');
+    $('#callWindow').classList.remove('active'); var cf = $('#callFloat'); cf.classList.add('active');
     if (state.isCompanionMode) { cf.style.background = '#f5e6d3'; }
     else if (state.isSleepMode) { cf.style.background = 'rgba(180,160,200,0.6)'; }
     else if (state.currentCallType === 'voice') { cf.style.background = '#e8f0e0'; }
@@ -821,26 +769,17 @@ function minimizeCall() {
 }
 function sendSleepMurmur() { var murmur = sleepModeReplies[Math.floor(Math.random()*sleepModeReplies.length)]; var msg = { sender:'him', content:murmur, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] }; dbAdd('messages', msg).then(function(id){ msg.id=id; state.messagesLoaded++; appendMsg(msg); }); }
 async function sendCompanionMurmur() {
-    var pool = getAllReplyCards();
-    var exclusiveCards = state.exclusiveCards;
-    var content = '';
-    if (Math.random() < 0.15 && exclusiveCards.length > 0) {
-        var ec = exclusiveCards[Math.floor(Math.random() * exclusiveCards.length)];
-        content = toStr(ec);
-    } else if (pool.length > 0) {
-        content = toStr(pool[Math.floor(Math.random() * pool.length)]);
-    }
+    var pool = getAllReplyCards(); var exclusiveCards = state.exclusiveCards; var content = '';
+    if (Math.random() < 0.15 && exclusiveCards.length > 0) { var ec = exclusiveCards[Math.floor(Math.random() * exclusiveCards.length)]; content = toStr(ec); }
+    else if (pool.length > 0) { content = toStr(pool[Math.floor(Math.random() * pool.length)]); }
     if (!content) return;
     var msg = { sender:'him', content:content, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] };
     dbAdd('messages', msg).then(function(id){ msg.id=id; state.messagesLoaded++; appendMsg(msg); });
 }
 async function sendSleepSong() {
-    var songCards = getSongCards();
-    if (songCards.length === 0) return;
-    var sc = songCards[Math.floor(Math.random() * songCards.length)];
-    var content = toStr(sc);
-    var parts = content.split('｜');
-    var songName = parts[0] || content;
+    var songCards = getSongCards(); if (songCards.length === 0) return;
+    var sc = songCards[Math.floor(Math.random() * songCards.length)]; var content = toStr(sc);
+    var parts = content.split('｜'); var songName = parts[0] || content;
     var msgContent = '🌙 安眠曲推荐：《' + songName + '》';
     var msg = { sender:'him', content:msgContent, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] };
     dbAdd('messages', msg).then(function(id){ msg.id=id; state.messagesLoaded++; appendMsg(msg); });
@@ -851,47 +790,19 @@ function resizeMessages() { var mc = $('#messagesContainer'); if(mc) mc.scrollTo
 var _cfMoved = false;
 (function initCallFloatDrag() {
     var fl = $('#callFloat'), dragging = false, startX, startY, startLeft, startTop;
-    function onStart(e) {
-        if (e.target.closest('#callFloatClose')) return;
-        _cfMoved = false;
-        dragging = true; fl.style.transition = 'none';
-        var touch = e.touches ? e.touches[0] : e;
-        startX = touch.clientX; startY = touch.clientY;
-        var rect = fl.getBoundingClientRect();
-        startLeft = rect.left; startTop = rect.top;
-    }
-    function onMove(e) {
-        if (!dragging) return;
-        var touch = e.touches ? e.touches[0] : e;
-        var dx = touch.clientX - startX, dy = touch.clientY - startY;
-        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) _cfMoved = true;
-        fl.style.left = (startLeft + dx) + 'px';
-        fl.style.top = (startTop + dy) + 'px';
-        fl.style.right = 'auto'; fl.style.bottom = 'auto';
-    }
-    function onEnd() {
-        if (!dragging) return;
-        dragging = false; fl.style.transition = '';
-    }
-    fl.addEventListener('touchstart', onStart, {passive:false});
-    fl.addEventListener('touchmove', onMove, {passive:false});
-    fl.addEventListener('touchend', onEnd);
-    fl.addEventListener('mousedown', onStart);
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onEnd);
+    function onStart(e) { if (e.target.closest('#callFloatClose')) return; _cfMoved = false; dragging = true; fl.style.transition = 'none'; var touch = e.touches ? e.touches[0] : e; startX = touch.clientX; startY = touch.clientY; var rect = fl.getBoundingClientRect(); startLeft = rect.left; startTop = rect.top; }
+    function onMove(e) { if (!dragging) return; var touch = e.touches ? e.touches[0] : e; var dx = touch.clientX - startX, dy = touch.clientY - startY; if (Math.abs(dx) > 3 || Math.abs(dy) > 3) _cfMoved = true; fl.style.left = (startLeft + dx) + 'px'; fl.style.top = (startTop + dy) + 'px'; fl.style.right = 'auto'; fl.style.bottom = 'auto'; }
+    function onEnd() { if (!dragging) return; dragging = false; fl.style.transition = ''; }
+    fl.addEventListener('touchstart', onStart, {passive:false}); fl.addEventListener('touchmove', onMove, {passive:false}); fl.addEventListener('touchend', onEnd); fl.addEventListener('mousedown', onStart); document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onEnd);
 })();
 
 $('#callFloat').addEventListener('click', function(e) {
-    if (e.target.closest('#callFloatClose')) return;
-    if (_cfMoved) return;
-    var cf = $('#callFloat'); cf.classList.remove('active');
-    cf.style.background = '';
-    var cw = $('#callWindow'); cw.classList.add('active');
-    var type = state.currentCallType;
+    if (e.target.closest('#callFloatClose')) return; if (_cfMoved) return;
+    var cf = $('#callFloat'); cf.classList.remove('active'); cf.style.background = '';
+    var cw = $('#callWindow'); cw.classList.add('active'); var type = state.currentCallType;
     if(type==='voice'){cw.style.background=state.voiceBg?'url('+state.voiceBg+') center/cover':'';}
     if(type==='video'){cw.style.background=state.videoBg?'url('+state.videoBg+') center/cover':'';}
-    cf.style.left = ''; cf.style.top = ''; cf.style.right = '12px'; cf.style.bottom = '80px';
-    updateCallTimer();
+    cf.style.left = ''; cf.style.top = ''; cf.style.right = '12px'; cf.style.bottom = '80px'; updateCallTimer();
 });
 $('#callFloatClose').onclick = function(e) { e.stopPropagation(); endCall('user'); };
 
@@ -906,55 +817,13 @@ function updateAllChatUI() {
     $$('.my-avatar').forEach(function(img) { if (state.myAvatar) { img.src=state.myAvatar; img.style.display=''; } else img.style.display='none'; });
     $('#headerNicknames').textContent = (state.hisNick||'梦角')+'🩷'+(state.myNick||'我'); applyStatus();
     $('#chatInput').placeholder = state.hisNick ? '对'+state.hisNick+'说点什么...' : '对梦角说点什么...';
-    var mc = $('#messagesContainer');
-    var cv = $('#chatView');
-    var ch = $('.chat-header');
-    var cf = $('.chat-footer');
+    var mc = $('#messagesContainer'); var cv = $('#chatView'); var ch = $('.chat-header'); var cf = $('.chat-footer');
     if (state.chatBg) {
-        if (state.chatBgMode === 3) {
-            cv.style.backgroundImage = 'url('+state.chatBg+')';
-            cv.style.backgroundSize = 'cover';
-            mc.style.backgroundImage = 'url('+state.chatBg+')';
-            mc.style.backgroundSize = 'cover';
-            mc.style.backgroundRepeat = 'no-repeat';
-            mc.style.backgroundPosition = 'center';
-            mc.style.backgroundAttachment = 'fixed';
-            ch.style.background = 'transparent';
-            cf.style.background = 'transparent';
-        } else if (state.chatBgMode === 2) {
-            cv.style.backgroundImage = '';
-            mc.style.backgroundImage = 'url('+state.chatBg+')';
-            mc.style.backgroundSize = 'cover';
-            mc.style.backgroundRepeat = 'no-repeat';
-            mc.style.backgroundPosition = 'center';
-            mc.style.backgroundAttachment = 'fixed';
-            ch.style.background = '';
-            cf.style.background = 'transparent';
-        } else if (state.chatBgMode === 1) {
-            cv.style.backgroundImage = '';
-            mc.style.backgroundImage = 'url('+state.chatBg+')';
-            mc.style.backgroundSize = 'cover';
-            mc.style.backgroundRepeat = 'no-repeat';
-            mc.style.backgroundPosition = 'center';
-            mc.style.backgroundAttachment = 'fixed';
-            ch.style.background = 'transparent';
-            cf.style.background = '';
-        } else {
-            cv.style.backgroundImage = '';
-            mc.style.backgroundImage = 'url('+state.chatBg+')';
-            mc.style.backgroundSize = 'cover';
-            mc.style.backgroundRepeat = 'no-repeat';
-            mc.style.backgroundPosition = 'center';
-            mc.style.backgroundAttachment = 'fixed';
-            ch.style.background = '';
-            cf.style.background = '';
-        }
-    } else {
-        cv.style.backgroundImage = '';
-        mc.style.backgroundImage = '';
-        ch.style.background = '';
-        cf.style.background = '';
-    }
+        if (state.chatBgMode === 3) { cv.style.backgroundImage = 'url('+state.chatBg+')'; cv.style.backgroundSize = 'cover'; mc.style.backgroundImage = 'url('+state.chatBg+')'; mc.style.backgroundSize = 'cover'; mc.style.backgroundRepeat = 'no-repeat'; mc.style.backgroundPosition = 'center'; mc.style.backgroundAttachment = 'fixed'; ch.style.background = 'transparent'; cf.style.background = 'transparent'; }
+        else if (state.chatBgMode === 2) { cv.style.backgroundImage = ''; mc.style.backgroundImage = 'url('+state.chatBg+')'; mc.style.backgroundSize = 'cover'; mc.style.backgroundRepeat = 'no-repeat'; mc.style.backgroundPosition = 'center'; mc.style.backgroundAttachment = 'fixed'; ch.style.background = ''; cf.style.background = 'transparent'; }
+        else if (state.chatBgMode === 1) { cv.style.backgroundImage = ''; mc.style.backgroundImage = 'url('+state.chatBg+')'; mc.style.backgroundSize = 'cover'; mc.style.backgroundRepeat = 'no-repeat'; mc.style.backgroundPosition = 'center'; mc.style.backgroundAttachment = 'fixed'; ch.style.background = 'transparent'; cf.style.background = ''; }
+        else { cv.style.backgroundImage = ''; mc.style.backgroundImage = 'url('+state.chatBg+')'; mc.style.backgroundSize = 'cover'; mc.style.backgroundRepeat = 'no-repeat'; mc.style.backgroundPosition = 'center'; mc.style.backgroundAttachment = 'fixed'; ch.style.background = ''; cf.style.background = ''; }
+    } else { cv.style.backgroundImage = ''; mc.style.backgroundImage = ''; ch.style.background = ''; cf.style.background = ''; }
     var bp = $('#bgPreview'); if (bp && state.chatBg) bp.style.backgroundImage='url('+state.chatBg+')'; else if (bp) bp.style.backgroundImage='';
     var vp = $('#voiceBgPreview'); if (vp && state.voiceBg) vp.style.backgroundImage='url('+state.voiceBg+')'; else if (vp) vp.style.backgroundImage='';
     var vbp = $('#videoBgPreview'); if (vbp && state.videoBg) vbp.style.backgroundImage='url('+state.videoBg+')'; else if (vbp) vbp.style.backgroundImage='';
@@ -962,16 +831,13 @@ function updateAllChatUI() {
 }
 function syncReshape() {
     if (!$('#reshapeDreamName')) return;
-    $('#reshapeDreamName').value=state.hisName; $('#reshapeHisNick').value=state.hisNick;
-    $('#reshapeCallMe').value=state.myNick; $('#reshapeSignature').value=state.hisSignature;
-    $('#reshapeMyName').value=state.myName;
+    $('#reshapeDreamName').value=state.hisName; $('#reshapeHisNick').value=state.hisNick; $('#reshapeCallMe').value=state.myNick; $('#reshapeSignature').value=state.hisSignature; $('#reshapeMyName').value=state.myName;
     if (state.hisAvatar) { $('#reshapeHisAvatar').src=state.hisAvatar; $('#reshapeHisAvatar').style.display=''; }
     if (state.myAvatar) { $('#reshapeMyAvatar').src=state.myAvatar; $('#reshapeMyAvatar').style.display=''; }
     if (state.chatBg) $('#bgPreview').style.backgroundImage='url('+state.chatBg+')'; else $('#bgPreview').style.backgroundImage='';
     if (state.voiceBg) $('#voiceBgPreview').style.backgroundImage='url('+state.voiceBg+')'; else $('#voiceBgPreview').style.backgroundImage='';
     if (state.videoBg) $('#videoBgPreview').style.backgroundImage='url('+state.videoBg+')'; else $('#videoBgPreview').style.backgroundImage='';
-    var toggleBtn = $('#btnToggleChatBg');
-    if (toggleBtn) toggleBtn.textContent = CHAT_BG_MODES[state.chatBgMode] || '仅消息区';
+    var toggleBtn = $('#btnToggleChatBg'); if (toggleBtn) toggleBtn.textContent = CHAT_BG_MODES[state.chatBgMode] || '仅消息区';
 }
 
 function showToast(text, showCancel, onConfirm, onCancel) { $('#toastText').textContent = text; $('#toastPopup').classList.add('active'); $('#toastOverlay').classList.add('active'); var cb = $('#toastCancelBtn'); if (showCancel) { cb.style.display='inline-block'; cb.onclick=function(){closeToast();if(onCancel)onCancel();}; $('#toastConfirmBtn').onclick=function(){closeToast();if(onConfirm)onConfirm();}; } else { cb.style.display='none'; $('#toastConfirmBtn').onclick=function(){closeToast();if(onConfirm)onConfirm();}; } }
@@ -998,10 +864,8 @@ function openStatsPage() { closeMorePage(); $('#statsPage').classList.add('activ
 function renderCallRecordsPage() { var container = $('#callRecordsContent'); container.innerHTML = ''; dbGetAll('messages').then(function(msgs){ var calls = msgs.filter(function(m){return m.type==='call';}).reverse(); if(calls.length===0){ container.innerHTML='<div class="settings-dev">还没有通话记录</div>'; return; } calls.forEach(function(c){ var item = document.createElement('div'); item.className = 'call-record-item'; var icon = c.callType==='video'?'📹':'📞'; var durText = c.duration ? formatDuration(c.duration) : '未接通'; item.innerHTML = '<span class="call-record-icon">'+icon+'</span><div class="call-record-info"><div class="call-record-type">'+(c.callType==='video'?'视频通话':'语音通话')+'</div><div class="call-record-detail">'+formatTime(c.timestamp)+' · '+durText+'</div></div>'; container.appendChild(item); }); }); }
 
 function renderDecidePage() {
-    var container = $('#decideContent');
-    if (!container) return;
-    var nick = state.hisNick || '梦角';
-    container.innerHTML = '';
+    var container = $('#decideContent'); if (!container) return;
+    var nick = state.hisNick || '梦角'; container.innerHTML = '';
     var s1 = document.createElement('div'); s1.className = 'reshape-title'; s1.textContent = '—— 🔮 是/否/半对 ——'; container.appendChild(s1);
     var inp1 = document.createElement('input'); inp1.className = 'reshape-input'; inp1.id = 'decideYesNoInput'; inp1.placeholder = '输入你的纠结...'; inp1.style.marginBottom = '10px'; container.appendChild(inp1);
     var btn1 = document.createElement('button'); btn1.className = 'btn-save-reshape'; btn1.textContent = '让' + nick + '决定'; btn1.onclick = function() { doYesNoDecide(); }; container.appendChild(btn1);
@@ -1010,20 +874,15 @@ function renderDecidePage() {
     var toggleRow = document.createElement('div'); toggleRow.style.display = 'flex'; toggleRow.style.alignItems = 'center'; toggleRow.style.gap = '8px'; toggleRow.style.marginBottom = '10px';
     var toggleLabel = document.createElement('span'); toggleLabel.textContent = '单选'; toggleLabel.style.fontSize = '13px'; toggleLabel.style.color = 'var(--light-ink)'; toggleLabel.style.fontFamily = 'var(--font-serif)'; toggleLabel.id = 'decideToggleLabel';
     var toggleBtn = document.createElement('button'); toggleBtn.style.cssText = 'font-size:13px;color:var(--light-ink);cursor:pointer;background:none;border:none;'; toggleBtn.textContent = '🟢'; toggleBtn.id = 'decideToggleBtn';
-    toggleBtn.onclick = function() { toggleDecideMode(); };
-    toggleRow.appendChild(toggleLabel); toggleRow.appendChild(toggleBtn); container.appendChild(toggleRow);
+    toggleBtn.onclick = function() { toggleDecideMode(); }; toggleRow.appendChild(toggleLabel); toggleRow.appendChild(toggleBtn); container.appendChild(toggleRow);
     var optionsContainer = document.createElement('div'); optionsContainer.id = 'decideOptionsContainer'; container.appendChild(optionsContainer);
     var addBtn = document.createElement('button'); addBtn.className = 'btn-change-avatar'; addBtn.textContent = '+ 添加选项'; addBtn.style.marginBottom = '10px'; addBtn.onclick = function() { addDecideOption(); }; container.appendChild(addBtn);
     var btn2 = document.createElement('button'); btn2.className = 'btn-save-reshape'; btn2.id = 'decideExtractBtn'; btn2.textContent = '让' + nick + '抽取'; btn2.onclick = function() { doCustomDecide(); }; container.appendChild(btn2);
-    state.decideMulti = false;
-    state.decideOptions = ['', '', '', ''];
-    renderDecideOptionsList();
+    state.decideMulti = false; state.decideOptions = ['', '', '', '']; renderDecideOptionsList();
 }
 function toggleDecideMode() { state.decideMulti = !state.decideMulti; $('#decideToggleLabel').textContent = state.decideMulti ? '多选' : '单选'; }
 function renderDecideOptionsList() {
-    var container = $('#decideOptionsContainer');
-    if (!container) return;
-    container.innerHTML = '';
+    var container = $('#decideOptionsContainer'); if (!container) return; container.innerHTML = '';
     state.decideOptions.forEach(function(opt, i) {
         var label = String.fromCharCode(65+i);
         var row = document.createElement('div'); row.style.display = 'flex'; row.style.alignItems = 'center'; row.style.gap = '6px'; row.style.marginBottom = '6px';
@@ -1042,39 +901,24 @@ async function doYesNoDecide() {
     if (r < 1/3) { answer = '是'; reply = yesReplies[Math.floor(Math.random() * yesReplies.length)]; }
     else if (r < 2/3) { answer = '否'; reply = noReplies[Math.floor(Math.random() * noReplies.length)]; }
     else { answer = '半对'; reply = halfReplies[Math.floor(Math.random() * halfReplies.length)]; }
-    closeDecidePage();
-    await sendMessage(text, 'text');
-    await sleep(600);
+    closeDecidePage(); await sendMessage(text, 'text'); await sleep(600);
     var hisMsg = { sender:'him', content:'我的决定是：'+answer+'，'+reply, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] };
-    dbAdd('messages', hisMsg).then(function(id) { hisMsg.id = id; state.messagesLoaded++; appendMsg(hisMsg); });
-    input.value = '';
+    dbAdd('messages', hisMsg).then(function(id) { hisMsg.id = id; state.messagesLoaded++; appendMsg(hisMsg); }); input.value = '';
 }
 async function doCustomDecide() {
-    var question = $('#decideQuestionInput').value.trim();
-    if (!question) { showToast('请输入你的问题'); return; }
-    var validOptions = state.decideOptions.filter(function(o) { return o.trim(); });
-    if (validOptions.length < 2) { showToast('至少需要两个选项'); return; }
+    var question = $('#decideQuestionInput').value.trim(); if (!question) { showToast('请输入你的问题'); return; }
+    var validOptions = state.decideOptions.filter(function(o) { return o.trim(); }); if (validOptions.length < 2) { showToast('至少需要两个选项'); return; }
     if (state.decideMulti && validOptions.length < 3) { showToast('多选至少需要三个选项'); return; }
-    var optionsWithLabels = validOptions.map(function(o, i) { return String.fromCharCode(65+i) + '.' + o; });
-    var myQuestion = question + ' ' + optionsWithLabels.join(' ');
-    var result = '';
+    var optionsWithLabels = validOptions.map(function(o, i) { return String.fromCharCode(65+i) + '.' + o; }); var myQuestion = question + ' ' + optionsWithLabels.join(' '); var result = '';
     if (state.decideMulti) {
-        var allCombos = [];
-        function genCombos(arr, start, current) { if (current.length >= 2) allCombos.push(current.slice()); for (var i = start; i < arr.length; i++) { current.push(i); genCombos(arr, i+1, current); current.pop(); } }
-        genCombos(validOptions, 0, []);
-        var combo = allCombos[Math.floor(Math.random() * allCombos.length)];
+        var allCombos = []; function genCombos(arr, start, current) { if (current.length >= 2) allCombos.push(current.slice()); for (var i = start; i < arr.length; i++) { current.push(i); genCombos(arr, i+1, current); current.pop(); } }
+        genCombos(validOptions, 0, []); var combo = allCombos[Math.floor(Math.random() * allCombos.length)];
         var selectedLabels = combo.map(function(i) { return String.fromCharCode(65+i) + '.' + validOptions[i]; });
         result = '我选' + selectedLabels.join(' ') + '，' + multiPickReplies[Math.floor(Math.random() * multiPickReplies.length)];
-    } else {
-        var idx = Math.floor(Math.random() * validOptions.length);
-        result = '我选' + String.fromCharCode(65+idx) + '.' + validOptions[idx] + '，' + singlePickReplies[Math.floor(Math.random() * singlePickReplies.length)];
-    }
-    closeDecidePage();
-    await sendMessage(myQuestion, 'text');
-    await sleep(600);
+    } else { var idx = Math.floor(Math.random() * validOptions.length); result = '我选' + String.fromCharCode(65+idx) + '.' + validOptions[idx] + '，' + singlePickReplies[Math.floor(Math.random() * singlePickReplies.length)]; }
+    closeDecidePage(); await sendMessage(myQuestion, 'text'); await sleep(600);
     var hisMsg = { sender:'him', content:result, type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] };
-    dbAdd('messages', hisMsg).then(function(id) { hisMsg.id = id; state.messagesLoaded++; appendMsg(hisMsg); });
-    $('#decideQuestionInput').value = '';
+    dbAdd('messages', hisMsg).then(function(id) { hisMsg.id = id; state.messagesLoaded++; appendMsg(hisMsg); }); $('#decideQuestionInput').value = '';
 }
 $('#btnCallRecordsBack').onclick = closeCallRecordsPage;
 
@@ -1116,16 +960,8 @@ function changeVoiceBg(){ var inp=document.createElement('input');inp.type='file
 function changeVideoBg(){ var inp=document.createElement('input');inp.type='file';inp.accept='image/*'; inp.onchange=function(e){var f=e.target.files[0];if(!f)return;var reader=new FileReader(); reader.onload=function(ev){ state.bgConfirmImage = ev.target.result; state.bgConfirmTarget = 'video'; $('#bgConfirmPreview').style.backgroundImage = 'url('+state.bgConfirmImage+')'; $('#bgConfirmOverlay').classList.add('active'); };reader.readAsDataURL(f); };inp.click(); }
 $('#bgConfirmBtn').onclick = function() {
     if (state.bgConfirmImage) {
-        if (state.bgConfirmTarget === 'voice' || state.bgConfirmTarget === 'video') {
-            if (state.bgConfirmTarget === 'voice') { state.voiceBg = state.bgConfirmImage; }
-            else { state.videoBg = state.bgConfirmImage; }
-            saveAllSettings(); updateAllChatUI(); showToast('背景已更新');
-            $('#bgConfirmOverlay').classList.remove('active'); state.bgConfirmImage = '';
-        } else {
-            state.chatBg = state.bgConfirmImage;
-            saveAllSettings(); updateAllChatUI(); showToast('背景已更新');
-            $('#bgConfirmOverlay').classList.remove('active'); state.bgConfirmImage = '';
-        }
+        if (state.bgConfirmTarget === 'voice' || state.bgConfirmTarget === 'video') { if (state.bgConfirmTarget === 'voice') { state.voiceBg = state.bgConfirmImage; } else { state.videoBg = state.bgConfirmImage; } saveAllSettings(); updateAllChatUI(); showToast('背景已更新'); $('#bgConfirmOverlay').classList.remove('active'); state.bgConfirmImage = ''; }
+        else { state.chatBg = state.bgConfirmImage; saveAllSettings(); updateAllChatUI(); showToast('背景已更新'); $('#bgConfirmOverlay').classList.remove('active'); state.bgConfirmImage = ''; }
     }
 };
 $('#bgReselectBtn').onclick = function() { $('#bgConfirmOverlay').classList.remove('active'); state.bgConfirmImage = ''; if(state.bgConfirmTarget==='voice')changeVoiceBg(); else if(state.bgConfirmTarget==='video')changeVideoBg(); else changeChatBg(); };
@@ -1141,38 +977,19 @@ function showMovePopup(options,cb){var popup=$('#movePopup');popup.innerHTML='';
 function closeMovePopup(){$('#movePopup').classList.remove('active');$('#moveOverlay').classList.remove('active');}
 $('#moveOverlay').onclick=closeMovePopup;
 
-function initAudio() {
-    if (state.audioEl) return;
-    state.audioEl = new Audio();
-    state.audioEl.addEventListener('timeupdate', updatePlayerUI);
-    state.audioEl.addEventListener('ended', function() { nextSong(); });
-    state.audioEl.addEventListener('play', function() { state.isPlaying = true; updatePlayerUI(); updateMusicFloat(); });
-    state.audioEl.addEventListener('pause', function() { state.isPlaying = false; updatePlayerUI(); updateMusicFloat(); });
-}
+function initAudio() { if (state.audioEl) return; state.audioEl = new Audio(); state.audioEl.addEventListener('timeupdate', updatePlayerUI); state.audioEl.addEventListener('ended', function() { nextSong(); }); state.audioEl.addEventListener('play', function() { state.isPlaying = true; updatePlayerUI(); updateMusicFloat(); }); state.audioEl.addEventListener('pause', function() { state.isPlaying = false; updatePlayerUI(); updateMusicFloat(); }); }
 function getSongList() { var cards = getSongCards(); return cards.map(function(c) { return toStr(c); }).filter(function(s) { return s.indexOf('｜') !== -1; }); }
 function parseSong(raw) { var parts = raw.split('｜'); return { name: (parts[0]||'').trim(), id: (parts[1]||'').trim() }; }
 function playSong(index) {
-    initAudio();
-    var list = getSongList();
-    if (list.length === 0) { showToast('歌单池还没有歌曲'); return; }
-    if (index < 0 || index >= list.length) index = 0;
-    state.currentSongIndex = index;
-    state.currentSongList = list;
-    var song = parseSong(list[index]);
-    if (!song.id) { showToast('歌曲ID无效'); nextSong(); return; }
+    initAudio(); var list = getSongList(); if (list.length === 0) { showToast('歌单池还没有歌曲'); return; }
+    if (index < 0 || index >= list.length) index = 0; state.currentSongIndex = index; state.currentSongList = list;
+    var song = parseSong(list[index]); if (!song.id) { showToast('歌曲ID无效'); nextSong(); return; }
     state.audioEl.src = 'https://music.163.com/song/media/outer/url?id=' + song.id + '.mp3';
     state.audioEl.play().catch(function() { showToast('这首歌暂时无法播放'); nextSong(); });
-    recordListen(song.name);
-    updatePlayerUI();
-    updateMusicFloat();
-    $('#musicFloat').classList.add('active');
+    recordListen(song.name); updatePlayerUI(); updateMusicFloat(); $('#musicFloat').classList.add('active');
 }
 function togglePlay() {
-    if (!state.audioEl || !state.audioEl.src || state.audioEl.src === window.location.href) {
-        if (state.currentSongList.length > 0 && state.currentSongIndex >= 0) { playSong(state.currentSongIndex); }
-        else { var list = getSongList(); if (list.length > 0) playSong(0); }
-        return;
-    }
+    if (!state.audioEl || !state.audioEl.src || state.audioEl.src === window.location.href) { if (state.currentSongList.length > 0 && state.currentSongIndex >= 0) { playSong(state.currentSongIndex); } else { var list = getSongList(); if (list.length > 0) playSong(0); } return; }
     if (state.isPlaying) { state.audioEl.pause(); } else { state.audioEl.play(); }
 }
 function prevSong() { var list = state.currentSongList.length > 0 ? state.currentSongList : getSongList(); if (list.length === 0) return; var index = state.currentSongIndex - 1; if (index < 0) index = list.length - 1; playSong(index); }
@@ -1189,98 +1006,52 @@ function updateMusicFloat() {
     var mf = $('#musicFloat'); var nameEl = $('#musicFloatName'); var barInner = $('#musicFloatBarInner'); var playBtn = $('#musicFloatPlay');
     var isActive = state.isPlaying || (state.audioEl && state.audioEl.src && !state.audioEl.paused);
     if (!isActive && (!state.audioEl || !state.audioEl.src || state.audioEl.paused || state.audioEl.ended)) { if (mf) mf.classList.remove('active'); return; }
-    if (mf) mf.classList.add('active');
-    if (nameEl && state.currentSongIndex >= 0 && state.currentSongList.length > 0) { var song = parseSong(state.currentSongList[state.currentSongIndex]); nameEl.textContent = song.name || '未在播放'; }
+    if (mf) mf.classList.add('active'); if (nameEl && state.currentSongIndex >= 0 && state.currentSongList.length > 0) { var song = parseSong(state.currentSongList[state.currentSongIndex]); nameEl.textContent = song.name || '未在播放'; }
     if (barInner && state.audioEl && state.audioEl.duration && isFinite(state.audioEl.duration)) { var pct = (state.audioEl.currentTime / state.audioEl.duration) * 100; barInner.style.width = Math.min(pct, 100) + '%'; }
     if (playBtn) { playBtn.textContent = state.isPlaying ? '⏸️' : '▶️'; }
 }
 
 function renderListenPage() {
-    var slider = $('#songSlider'); if (!slider) return;
-    if (slider.children.length > 0) return;
+    var slider = $('#songSlider'); if (!slider) return; if (slider.children.length > 0) return;
     var pages = [
-        { icon:'🎼', label:'我的歌单', render: renderMySongPage },
-        { icon:'🎵', label:'他推荐', render: renderHisRecommendPage },
-        { icon:'📋', label:'今日歌单', render: renderTodaySongPage },
-        { icon:'💕', label:'双人歌单', render: renderDualSongPage },
-        { icon:'✅', label:'听歌打卡', render: renderListenRecordsPage },
-        { icon:'🌙', label:'安眠曲', render: renderSleepSongPage }
+        { icon:'🎼', label:'我的歌单', render: renderMySongPage }, { icon:'🎵', label:'他推荐', render: renderHisRecommendPage },
+        { icon:'📋', label:'今日歌单', render: renderTodaySongPage }, { icon:'💕', label:'双人歌单', render: renderDualSongPage },
+        { icon:'✅', label:'听歌打卡', render: renderListenRecordsPage }, { icon:'🌙', label:'安眠曲', render: renderSleepSongPage }
     ];
-    pages.forEach(function(p, idx) {
-        var page = document.createElement('div'); page.className = 'song-page'; page.id = 'songPage' + idx;
-        page.innerHTML = '<div class="reshape-title">—— ' + p.icon + ' ' + p.label + ' ——</div>';
-        slider.appendChild(page);
-        setTimeout(function() { var container = $('#songPage'+idx); if (container) p.render(container); }, 100 + idx * 50);
-    });
+    pages.forEach(function(p, idx) { var page = document.createElement('div'); page.className = 'song-page'; page.id = 'songPage' + idx; page.innerHTML = '<div class="reshape-title">—— ' + p.icon + ' ' + p.label + ' ——</div>'; slider.appendChild(page); setTimeout(function() { var container = $('#songPage'+idx); if (container) p.render(container); }, 100 + idx * 50); });
 }
 function renderMySongPage(container) {
-    if (!container) return;
-    if (container.querySelector('.player-area')) return;
-    initAudio();
+    if (!container || container.querySelector('.player-area')) return; initAudio();
     var playerArea = document.createElement('div'); playerArea.className = 'player-area';
     playerArea.innerHTML = '<div class="player-song-name">未在播放</div><div class="player-progress" id="playerProgress"><div class="player-progress-inner" id="playerProgressInner"></div></div><div class="player-btns"><button class="player-btn" id="playerPrevBtn">⏮️</button><button class="player-btn play-btn" id="playerPlayBtn">▶️</button><button class="player-btn" id="playerNextBtn">⏭️</button></div>';
-    container.appendChild(playerArea);
-    var songListDiv = document.createElement('div'); songListDiv.id = 'songListDiv'; container.appendChild(songListDiv);
-    setTimeout(function() {
-        var pb = $('#playerPrevBtn'); if (pb) pb.onclick = prevSong;
-        var pl = $('#playerPlayBtn'); if (pl) pl.onclick = togglePlay;
-        var pn = $('#playerNextBtn'); if (pn) pn.onclick = nextSong;
-        var progressEl = $('#playerProgress');
-        if (progressEl) { progressEl.addEventListener('click', function(e) { if (!state.audioEl || !state.audioEl.duration || !isFinite(state.audioEl.duration)) return; var rect = progressEl.getBoundingClientRect(); var pct = (e.clientX - rect.left) / rect.width; state.audioEl.currentTime = pct * state.audioEl.duration; }); }
-    }, 200);
+    container.appendChild(playerArea); var songListDiv = document.createElement('div'); songListDiv.id = 'songListDiv'; container.appendChild(songListDiv);
+    setTimeout(function() { var pb = $('#playerPrevBtn'); if (pb) pb.onclick = prevSong; var pl = $('#playerPlayBtn'); if (pl) pl.onclick = togglePlay; var pn = $('#playerNextBtn'); if (pn) pn.onclick = nextSong; var progressEl = $('#playerProgress'); if (progressEl) { progressEl.addEventListener('click', function(e) { if (!state.audioEl || !state.audioEl.duration || !isFinite(state.audioEl.duration)) return; var rect = progressEl.getBoundingClientRect(); var pct = (e.clientX - rect.left) / rect.width; state.audioEl.currentTime = pct * state.audioEl.duration; }); } }, 200);
     renderSongList(songListDiv); updatePlayerUI();
 }
 function renderSongList(container) {
-    if (!container) return;
-    var list = getSongList();
+    if (!container) return; var list = getSongList();
     if (list.length === 0) { container.innerHTML = '<div class="settings-dev">歌单池还没有歌曲<br>去字卡库的歌单池添加吧</div>'; return; }
-    container.innerHTML = '';
-    list.forEach(function(raw, i) { var song = parseSong(raw); var item = document.createElement('div'); item.className = 'song-list-item'; if (i === state.currentSongIndex) item.classList.add('playing'); item.innerHTML = '<span class="song-note">🎵</span><span class="song-name">' + escHTML(song.name) + '</span>'; item.onclick = function() { playSong(i); }; container.appendChild(item); });
+    container.innerHTML = ''; list.forEach(function(raw, i) { var song = parseSong(raw); var item = document.createElement('div'); item.className = 'song-list-item'; if (i === state.currentSongIndex) item.classList.add('playing'); item.innerHTML = '<span class="song-note">🎵</span><span class="song-name">' + escHTML(song.name) + '</span>'; item.onclick = function() { playSong(i); }; container.appendChild(item); });
 }
-function renderHisRecommendPage(container) {
-    if (!container) return;
-    if (state.songRecommendRecords.length === 0) { container.innerHTML += '<div class="settings-dev">还没有推荐记录<br>他会主动推荐歌曲给你</div>'; return; }
-    state.songRecommendRecords.slice().reverse().forEach(function(r) { var song = parseSong(r.song); var item = document.createElement('div'); item.className = 'listen-record-item'; item.innerHTML = '<span>🎵</span><span style="flex:1;">' + escHTML(song.name) + '</span><span class="lr-time">' + formatTime(r.time) + '</span>'; container.appendChild(item); });
-}
-function renderTodaySongPage(container) {
-    if (!container) return;
-    checkTodaySong();
-    if (state.todaySongList.length === 0) { container.innerHTML += '<div class="settings-dev">今日歌单还没有生成</div>'; return; }
-    state.todaySongList.forEach(function(raw) { var song = parseSong(raw); var item = document.createElement('div'); item.className = 'listen-record-item'; item.innerHTML = '<span>🎵</span><span style="flex:1;">' + escHTML(song.name) + '</span>'; container.appendChild(item); });
-}
+function renderHisRecommendPage(container) { if (!container) return; if (state.songRecommendRecords.length === 0) { container.innerHTML += '<div class="settings-dev">还没有推荐记录<br>他会主动推荐歌曲给你</div>'; return; } state.songRecommendRecords.slice().reverse().forEach(function(r) { var song = parseSong(r.song); var item = document.createElement('div'); item.className = 'listen-record-item'; item.innerHTML = '<span>🎵</span><span style="flex:1;">' + escHTML(song.name) + '</span><span class="lr-time">' + formatTime(r.time) + '</span>'; container.appendChild(item); }); }
+function renderTodaySongPage(container) { if (!container) return; checkTodaySong(); if (state.todaySongList.length === 0) { container.innerHTML += '<div class="settings-dev">今日歌单还没有生成</div>'; return; } state.todaySongList.forEach(function(raw) { var song = parseSong(raw); var item = document.createElement('div'); item.className = 'listen-record-item'; item.innerHTML = '<span>🎵</span><span style="flex:1;">' + escHTML(song.name) + '</span>'; container.appendChild(item); }); }
 function checkTodaySong() {
-    var today = getDateStr();
-    if (state.todaySongDate !== today) {
-        var list = getSongList();
-        if (list.length > 0) { var count = 1 + Math.floor(Math.random() * 3); var shuffled = list.slice().sort(function() { return Math.random() - 0.5; }); state.todaySongList = shuffled.slice(0, Math.min(count, shuffled.length)); }
-        else { state.todaySongList = []; }
-        state.todaySongDate = today; saveAllSettings();
-        if (state.todaySongList.length > 0) { var songNames = state.todaySongList.map(function(s) { return '《' + parseSong(s).name + '》'; }).join('、'); var msg = { sender:'him', content:'📋 今日歌单：' + songNames + '，一起听吧🩷', type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] }; dbAdd('messages', msg).then(function(id) { msg.id = id; state.messagesLoaded++; appendMsg(msg); }); }
-    }
+    var today = getDateStr(); if (state.todaySongDate !== today) { var list = getSongList(); if (list.length > 0) { var count = 1 + Math.floor(Math.random() * 3); var shuffled = list.slice().sort(function() { return Math.random() - 0.5; }); state.todaySongList = shuffled.slice(0, Math.min(count, shuffled.length)); } else { state.todaySongList = []; } state.todaySongDate = today; saveAllSettings(); if (state.todaySongList.length > 0) { var songNames = state.todaySongList.map(function(s) { return '《' + parseSong(s).name + '》'; }).join('、'); var msg = { sender:'him', content:'📋 今日歌单：' + songNames + '，一起听吧🩷', type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] }; dbAdd('messages', msg).then(function(id) { msg.id = id; state.messagesLoaded++; appendMsg(msg); }); } }
 }
 function renderDualSongPage(container) {
-    if (!container) return;
-    var today = getDateStr(); if (state.dualDate !== today) { state.dualMyPick = null; state.dualHisPick = null; state.dualDate = today; saveAllSettings(); }
+    if (!container) return; var today = getDateStr(); if (state.dualDate !== today) { state.dualMyPick = null; state.dualHisPick = null; state.dualDate = today; saveAllSettings(); }
     var infoDiv = document.createElement('div');
     if (state.dualMyPick && state.dualHisPick) { var mySong = parseSong(state.dualMyPick); var hisSong = parseSong(state.dualHisPick); infoDiv.innerHTML = '<div class="reshape-title">🩷 你的选择：' + escHTML(mySong.name) + '</div><div class="reshape-title">🩷 他的选择：' + escHTML(hisSong.name) + '</div>'; container.appendChild(infoDiv); }
     else if (state.dualMyPick) { var ms = parseSong(state.dualMyPick); infoDiv.innerHTML = '<div class="reshape-title">🩷 你的选择：' + escHTML(ms.name) + '</div><div class="reshape-title">等待他的选择...</div>'; container.appendChild(infoDiv); }
     else { infoDiv.innerHTML = '<div class="reshape-title">今天还没选歌</div>'; container.appendChild(infoDiv); }
-    var songListDiv = document.createElement('div'); songListDiv.style.marginTop = '10px'; container.appendChild(songListDiv);
-    var list = getSongList();
-    if (list.length === 0) { songListDiv.innerHTML = '<div class="settings-dev">歌单池还没有歌曲</div>'; } else {
-        list.forEach(function(raw) { var song = parseSong(raw); var item = document.createElement('div'); item.className = 'song-list-item'; if (state.dualMyPick === raw) item.classList.add('playing'); item.innerHTML = '<span class="song-note">🎵</span><span class="song-name">' + escHTML(song.name) + '</span>'; item.onclick = function() { state.dualMyPick = raw; var hisList = list.filter(function(s) { return s !== raw; }); if (hisList.length > 0) { state.dualHisPick = hisList[Math.floor(Math.random() * hisList.length)]; } saveAllSettings(); container.innerHTML = ''; renderDualSongPage(container); var hisSongName = parseSong(state.dualHisPick).name; var mySongName = song.name; var msg = { sender:'him', content:'💕 双人歌单：你选了《' + mySongName + '》，我选了《' + hisSongName + '》，一起听吧🩷', type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] }; dbAdd('messages', msg).then(function(id) { msg.id = id; state.messagesLoaded++; appendMsg(msg); }); }; songListDiv.appendChild(item); });
-    }
+    var songListDiv = document.createElement('div'); songListDiv.style.marginTop = '10px'; container.appendChild(songListDiv); var list = getSongList();
+    if (list.length === 0) { songListDiv.innerHTML = '<div class="settings-dev">歌单池还没有歌曲</div>'; } else { list.forEach(function(raw) { var song = parseSong(raw); var item = document.createElement('div'); item.className = 'song-list-item'; if (state.dualMyPick === raw) item.classList.add('playing'); item.innerHTML = '<span class="song-note">🎵</span><span class="song-name">' + escHTML(song.name) + '</span>'; item.onclick = function() { state.dualMyPick = raw; var hisList = list.filter(function(s) { return s !== raw; }); if (hisList.length > 0) { state.dualHisPick = hisList[Math.floor(Math.random() * hisList.length)]; } saveAllSettings(); container.innerHTML = ''; renderDualSongPage(container); var hisSongName = parseSong(state.dualHisPick).name; var mySongName = song.name; var msg = { sender:'him', content:'💕 双人歌单：你选了《' + mySongName + '》，我选了《' + hisSongName + '》，一起听吧🩷', type:'text', timestamp:Date.now(), quoteId:null, quoteText:'', quotedBy:[] }; dbAdd('messages', msg).then(function(id) { msg.id = id; state.messagesLoaded++; appendMsg(msg); }); }; songListDiv.appendChild(item); }); }
     if (state.dualMyPick && state.dualHisPick) { var resetBtn = document.createElement('button'); resetBtn.className = 'btn-save-reshape'; resetBtn.style.marginTop = '10px'; resetBtn.textContent = '重新选择'; resetBtn.onclick = function() { state.dualMyPick = null; state.dualHisPick = null; saveAllSettings(); container.innerHTML = ''; renderDualSongPage(container); }; container.appendChild(resetBtn); }
 }
-function renderListenRecordsPage(container) {
-    if (!container) return;
-    if (state.listenRecords.length === 0) { container.innerHTML += '<div class="settings-dev">还没有听歌记录<br>播放歌曲后自动记录</div>'; return; }
-    state.listenRecords.slice().reverse().forEach(function(r) { var item = document.createElement('div'); item.className = 'listen-record-item'; item.innerHTML = '<span>🎵</span><span style="flex:1;">' + escHTML(r.song) + '</span><span class="lr-time">' + formatTime(r.time) + '</span>'; container.appendChild(item); });
-}
+function renderListenRecordsPage(container) { if (!container) return; if (state.listenRecords.length === 0) { container.innerHTML += '<div class="settings-dev">还没有听歌记录<br>播放歌曲后自动记录</div>'; return; } state.listenRecords.slice().reverse().forEach(function(r) { var item = document.createElement('div'); item.className = 'listen-record-item'; item.innerHTML = '<span>🎵</span><span style="flex:1;">' + escHTML(r.song) + '</span><span class="lr-time">' + formatTime(r.time) + '</span>'; container.appendChild(item); }); }
 function renderSleepSongPage(container) { if (container) container.innerHTML += '<div class="settings-dev">陪睡模式下会自动推荐安眠曲<br>记录会显示在这里</div>'; }
 function renderStatsPage() {
-    var container = $('#statsContent'); if (!container) return;
-    container.innerHTML = '<div class="settings-dev">加载中...</div>';
+    var container = $('#statsContent'); if (!container) return; container.innerHTML = '<div class="settings-dev">加载中...</div>';
     var myNick = state.myNick || '我'; var hisNick = state.hisNick || '梦角';
     dbGetAll('messages').then(function(msgs) {
         container.innerHTML = ''; var myCount = 0, hisCount = 0; var myWords = {}, hisWords = {};
@@ -1329,8 +1100,7 @@ function bindPatTriggers() { $('#headerHisAvatar').onclick = openPatPopup; $('#h
 function bindLongPress(){var lt=null,ltg=null,mc=$('#messagesContainer'); mc.addEventListener('touchstart',function(e){var b=e.target.closest('.message-bubble');if(!b)return;ltg=b.closest('.message-row');lt=setTimeout(function(){if(ltg){state.quotingId=parseInt(ltg.dataset.msgId);state.quotingText=ltg.querySelector('.message-bubble').textContent;$('#chatInput').focus();showToast('已引用消息，输入回复即可');}ltg=null;},600);},{passive:false}); mc.addEventListener('touchend',function(){clearTimeout(lt);});mc.addEventListener('touchmove',function(){clearTimeout(lt);});}
 
 function bindMusicFloatDrag() {
-    var mf = $('#musicFloat'); if (!mf) return;
-    var _mfMoved = false, dragging = false, startX, startY, startLeft, startTop;
+    var mf = $('#musicFloat'); if (!mf) return; var _mfMoved = false, dragging = false, startX, startY, startLeft, startTop;
     function onStart(e) { if (e.target.closest('#musicFloatClose') || e.target.closest('#musicFloatPrev') || e.target.closest('#musicFloatPlay') || e.target.closest('#musicFloatNext')) return; _mfMoved = false; dragging = true; mf.style.transition = 'none'; var touch = e.touches ? e.touches[0] : e; startX = touch.clientX; startY = touch.clientY; var rect = mf.getBoundingClientRect(); startLeft = rect.left; startTop = rect.top; }
     function onMove(e) { if (!dragging) return; var touch = e.touches ? e.touches[0] : e; var dx = touch.clientX - startX, dy = touch.clientY - startY; if (Math.abs(dx) > 3 || Math.abs(dy) > 3) _mfMoved = true; mf.style.left = (startLeft + dx) + 'px'; mf.style.top = (startTop + dy) + 'px'; mf.style.right = 'auto'; mf.style.bottom = 'auto'; }
     function onEnd() { if (!dragging) return; dragging = false; mf.style.transition = ''; if (!_mfMoved) { openListenPage(); mf.classList.remove('active'); mf.style.left = ''; mf.style.top = ''; mf.style.right = '12px'; mf.style.bottom = '136px'; } }
@@ -1429,34 +1199,14 @@ function renderTeachPage(){
 
 async function initApp(){
     try {
-        console.log('开始初始化...');
-        await openDB();
-        console.log('数据库就绪');
-        await cleanActionCards();
-        console.log('清理完成');
-        loadAllSettings();
-        console.log('设置加载完成');
-        await loadEmojis();
-        console.log('表情加载完成');
-        await loadMessages();
-        console.log('消息加载完成');
-        await loadWordcardData();
-        console.log('字卡加载完成');
-        updateAllChatUI();
-        console.log('UI更新完成');
-        bindEvents();
-        console.log('事件绑定完成');
-        startStatusCycle();
-        startActiveChat();
+        await openDB(); await cleanActionCards(); loadAllSettings(); await loadEmojis(); await loadMessages(); await loadWordcardData();
+        updateAllChatUI(); bindEvents(); startStatusCycle(); startActiveChat();
         if (state.messagesLoaded === 0) $('#messagesContainer').innerHTML = '';
-        buildMoreGrid();
-        setTimeout(bindWordcardActions, 800);
+        buildMoreGrid(); setTimeout(bindWordcardActions, 800);
         console.log('易遇🩷雾凉 v1.7.0 就绪');
     } catch(e) {
         console.error('初始化失败', e);
-        var errMsg = '初始化失败：' + e.message + '\n位置：' + (e.stack ? e.stack.split('\n')[1] : '未知') + '\n请刷新页面重试';
-        alert(errMsg);
-        showToast(errMsg);
+        alert('初始化失败：' + e.message + '\n位置：' + (e.stack ? e.stack.split('\n').slice(0,3).join('\n') : '未知') + '\n请刷新页面重试');
     }
 }
 initApp();
