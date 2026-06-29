@@ -40,8 +40,8 @@
         .status-area { padding:0 16px; text-align:center; flex-shrink:0; min-height:0; transition:all 0.3s ease; }
         .his-status { font-size:12px; line-height:1.5; display:inline-block; max-width:100%; white-space:nowrap; }
         .his-signature { font-size:11px; line-height:1.4; margin-top:2px; }
-        .messages-container { flex:1; overflow-y:auto; padding:10px 16px; -webkit-overflow-scrolling:touch; }
-        .message-row { display:flex; align-items:flex-start; gap:8px; max-width:100%; margin-bottom:18px; }
+        .messages-container { flex:1; overflow-y:auto; padding:10px 16px; display:flex; flex-direction:column; gap:18px; -webkit-overflow-scrolling:touch; }
+        .message-row { display:flex; align-items:flex-start; gap:8px; max-width:100%; }
         .message-row.mine { flex-direction:row-reverse; }
         .message-avatar { width:var(--avatar-size); height:var(--avatar-size); border-radius:7px; object-fit:cover; flex-shrink:0; background:var(--moonlight-warm); box-shadow:0 1px 2px var(--shadow-color); cursor:pointer; }
         .message-content { max-width:72%; display:flex; flex-direction:column; }
@@ -61,13 +61,13 @@
         .msg-pat-time,.msg-call-time { font-size:10px; color:var(--lighter-ink); opacity:0.7; }
         .typing-indicator { text-align:center; font-size:11px; color:var(--lighter-ink); padding:6px; opacity:0; transition:opacity 0.35s ease; flex-shrink:0; font-family:var(--font-serif); font-style:italic; }
         .typing-indicator.visible { opacity:0.7; }
-        .chat-footer { padding:8px 12px 14px; display:flex; align-items:center; gap:6px; flex-shrink:0; background:var(--paper-white); position:relative; }
-        .input-wrapper { flex:1; background:var(--moonlight-cool); border-radius:var(--radius-md); box-shadow:inset 0 1px 2px var(--shadow-color); display:flex; flex-direction:column; padding:0; }
-        .quote-preview { display:none; padding:6px 12px 2px; font-size:12px; color:var(--lighter-ink); font-family:var(--font-serif); align-items:center; gap:6px; }
-        .quote-preview.active { display:flex; }
-        .quote-preview-text { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .quote-preview-close { cursor:pointer; font-size:14px; color:var(--light-ink); flex-shrink:0; }
-        .input-row { display:flex; align-items:center; padding:0 12px; height:var(--input-height); }
+        .quote-preview-bar { display:flex; align-items:center; gap:8px; padding:8px 16px; background:var(--moonlight-warm); border-bottom:1px solid rgba(0,0,0,0.04); flex-shrink:0; z-index:3; animation:slideDown 0.2s ease; }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+        .quote-preview-content { flex:1; font-size:13px; color:var(--light-ink); font-family:var(--font-serif); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.4; }
+        .quote-preview-close { width:24px; height:24px; border-radius:50%; border:none; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; background:transparent; color:var(--lighter-ink); flex-shrink:0; transition:background 0.15s; }
+        .quote-preview-close:active { background:rgba(0,0,0,0.05); }
+        .chat-footer { padding:8px 12px 14px; display:flex; align-items:center; gap:6px; flex-shrink:0; background:var(--paper-white); }
+        .input-wrapper { flex:1; background:var(--moonlight-cool); border-radius:var(--radius-md); box-shadow:inset 0 1px 2px var(--shadow-color); height:var(--input-height); display:flex; align-items:center; padding:0 12px; }
         .chat-input { flex:1; border:none; background:transparent; font-family:var(--font-serif); font-size:15px; color:var(--ink-gray); outline:none; height:100%; -webkit-user-select:text; user-select:text; }
         .chat-input::placeholder { color:var(--lighter-ink); font-size:13.5px; font-style:italic; }
         .btn-smile { width:var(--btn-icon-size); height:var(--btn-icon-size); border:1.5px solid var(--lighter-ink); border-radius:50%; background:transparent; cursor:pointer; flex-shrink:0; position:relative; display:flex; align-items:center; justify-content:center; }
@@ -351,7 +351,8 @@
     <div class="status-area" id="statusArea" style="display:none;"><div class="his-status" id="hisStatus"></div><div class="his-signature" id="hisSignature"></div></div>
     <div class="messages-container" id="messagesContainer"></div>
     <div class="typing-indicator" id="typingIndicator">他正在输入中...</div>
-    <div class="chat-footer"><div class="input-wrapper"><div class="quote-preview" id="quotePreview"><span class="quote-preview-text" id="quotePreviewText"></span><span class="quote-preview-close" id="quotePreviewClose">✕</span></div><div class="input-row"><input type="text" class="chat-input" id="chatInput" placeholder="对梦角说点什么..." autocomplete="off"></div></div><button class="btn-smile" id="btnSmile" aria-label="表情"><div class="smile-face"><div class="smile-mouth"></div></div></button><button class="btn-plus" id="btnPlus" aria-label="更多">⊕</button><button class="btn-send" id="btnSend">发送</button></div>
+    <div class="quote-preview-bar" id="quotePreviewBar" style="display:none;"><div class="quote-preview-content" id="quotePreviewContent"></div><button class="quote-preview-close" id="quotePreviewClose">✕</button></div>
+    <div class="chat-footer"><div class="input-wrapper"><input type="text" class="chat-input" id="chatInput" placeholder="对梦角说点什么..." autocomplete="off"></div><button class="btn-smile" id="btnSmile" aria-label="表情"><div class="smile-face"><div class="smile-mouth"></div></div></button><button class="btn-plus" id="btnPlus" aria-label="更多">⊕</button><button class="btn-send" id="btnSend">发送</button></div>
 </div>
 <div class="call-window voice" id="callWindow"><div class="call-window-avatar-wrap"><img class="call-window-avatar his-avatar" id="callWindowAvatar" src="" alt="他" onerror="this.style.display='none'"></div><div class="call-window-nickname" id="callWindowNickname">老公</div><div class="call-window-status" id="callWindowStatus">等待接受邀请...</div><div class="call-window-timer" id="callWindowTimer"></div><div class="call-window-btns" id="callWindowBtns"><button class="call-window-btn companionmode" id="callCompanionBtn" style="display:none;">陪伴</button><button class="call-window-btn sleepmode" id="callSleepBtn" style="display:none;">陪睡</button><button class="call-window-btn minimize" id="callMinimizeBtn">缩小</button><button class="call-window-btn hangup" id="callHangupBtn">挂断</button></div></div>
 <div class="call-float" id="callFloat"><img class="call-float-avatar his-avatar" id="callFloatAvatar" src="" alt="他" onerror="this.style.display='none'"><span class="call-float-timer" id="callFloatTimer">00:00</span><span class="call-float-dot"></span><button class="call-float-close" id="callFloatClose">✕</button></div>
@@ -525,23 +526,18 @@ function renderOneMessage(msg, container) {
 }
 function renderSystemMsg(msg, container, cls) { var div = document.createElement('div'); div.className = 'msg-'+cls; div.innerHTML = '<span>' + escHTML(msg.content) + '</span><span class="'+cls+'-icon">' + (msg.icon||'') + '</span><div class="msg-'+cls+'-time">' + formatTime(msg.timestamp) + '</div>'; container.appendChild(div); }
 function renderCallMsg(msg, container) { var div = document.createElement('div'); div.className = 'msg-call'; var icon = msg.callType==='video'?'📹':'📞'; var durText = msg.duration ? ' · '+formatDuration(msg.duration) : ''; div.innerHTML = '<span>' + escHTML(msg.content) + '</span><span class="call-icon">'+icon+'</span><span>'+durText+'</span><div class="msg-call-time">' + formatTime(msg.timestamp) + '</div>'; container.appendChild(div); }
-function appendMsg(msg) { renderOneMessage(msg, $('#messagesContainer')); requestAnimationFrame(function() { $('#messagesContainer').scrollTop = $('#messagesContainer').scrollHeight; }); }
+function appendMsg(msg) { renderOneMessage(msg, $('#messagesContainer')); $('#messagesContainer').scrollTop = $('#messagesContainer').scrollHeight; }
 
-function showQuotePreview() {
-    if (state.quotingId && state.quotingText) {
-        $('#quotePreviewText').textContent = state.quotingText;
-        $('#quotePreview').classList.add('active');
-    }
+function showQuotePreview(text) {
+    var bar = $('#quotePreviewBar'); var content = $('#quotePreviewContent');
+    content.textContent = '引用: ' + (text.length > 50 ? text.slice(0, 50) + '...' : text);
+    bar.style.display = 'flex';
 }
-function hideQuotePreview() {
-    $('#quotePreview').classList.remove('active');
-    state.quotingId = null;
-    state.quotingText = '';
-}
+function hideQuotePreview() { $('#quotePreviewBar').style.display = 'none'; state.quotingId = null; state.quotingText = null; }
 
 async function sendMessage(content, type, quoteId, quoteText) {
-    var qId = state.quotingId || quoteId || null, qText = state.quotingText || quoteText || ''; 
-    state.quotingId = null; state.quotingText = ''; hideQuotePreview();
+    var qId = state.quotingId || quoteId || null, qText = state.quotingText || quoteText || ''; state.quotingId = null; state.quotingText = null;
+    hideQuotePreview();
     var msg = { sender:'me', content:content, type:type||'text', timestamp:Date.now(), read:false, quoteId:qId, quoteText:qText, quotedBy:[] };
     var id = await dbAdd('messages', msg); msg.id = id; state.messagesLoaded++; state.lastUserMessageTime = Date.now(); appendMsg(msg);
     if (qId) { await updateQuotedBy(qId, id); }
@@ -685,7 +681,7 @@ function openAnnivPage() { closeMorePage(); $('#annivPage').classList.add('activ
 function openCallRecordsPage() { closeMorePage(); $('#callRecordsPage').classList.add('active'); $('#chatView').classList.remove('active'); renderCallRecordsPage(); } function closeCallRecordsPage() { $('#callRecordsPage').classList.remove('active'); $('#chatView').classList.add('active'); }
 function openDecidePage() { closeMorePage(); $('#decidePage').classList.add('active'); $('#chatView').classList.remove('active'); renderDecidePage(); } function closeDecidePage() { $('#decidePage').classList.remove('active'); $('#chatView').classList.add('active'); }
 function openMusicPage() { closeMorePage(); loadMusicPlaylist(); $('#musicPage').classList.add('active'); $('#chatView').classList.remove('active'); if (!state.musicAudio) { initMusicAudio(); } updateMusicUI(); scheduleMusicFeel(); scheduleMusicRecommend(); } function closeMusicPage() { $('#musicPage').classList.remove('active'); $('#chatView').classList.add('active'); if (state.musicIsPlaying) { showMusicFloat(); } }
-function renderCallRecordsPage() { var container = $('#callRecordsContent'); container.innerHTML = ''; dbGetAll('messages').then(function(msgs){ var calls = msgs.filter(function(m){return m.type==='call';}).reverse(); if(calls.length===0){ container.innerHTML='<div class="settings-dev">还没有通话记录</div>'; return; } calls.forEach(function(c){ var item = document.createElement('div'); item.className = 'call-record-item'; var icon = c.callType==='video'?'📹':'📞'; var durText = c.duration ? formatDuration(c.duration) : '未接通'; item.innerHTML = '<span class="call-record-icon">'+icon+'</span><div class="call-record-info"><div class="call-record-type">'+(c.callType==='video'?'视频通话':'语音通话')+'</div><div class="call-record-detail">'+formatTime(c.timestamp)+' · '+durText+'</div></div>'; container.appendChild(item); }); }); }
+   function renderCallRecordsPage() { var container = $('#callRecordsContent'); container.innerHTML = ''; dbGetAll('messages').then(function(msgs){ var calls = msgs.filter(function(m){return m.type==='call';}).reverse(); if(calls.length===0){ container.innerHTML='<div class="settings-dev">还没有通话记录</div>'; return; } calls.forEach(function(c){ var item = document.createElement('div'); item.className = 'call-record-item'; var icon = c.callType==='video'?'📹':'📞'; var durText = c.duration ? formatDuration(c.duration) : '未接通'; item.innerHTML = '<span class="call-record-icon">'+icon+'</span><div class="call-record-info"><div class="call-record-type">'+(c.callType==='video'?'视频通话':'语音通话')+'</div><div class="call-record-detail">'+formatTime(c.timestamp)+' · '+durText+'</div></div>'; container.appendChild(item); }); }); }
 function renderDecidePage() { var container = $('#decideContent'); if (!container) return; var nick = state.hisNick || '梦角'; container.innerHTML = ''; var s1 = document.createElement('div'); s1.className = 'reshape-title'; s1.textContent = '—— 🔮 是/否/半对 ——'; container.appendChild(s1); var inp1 = document.createElement('input'); inp1.className = 'reshape-input'; inp1.id = 'decideYesNoInput'; inp1.placeholder = '输入你的纠结...'; inp1.style.marginBottom = '10px'; container.appendChild(inp1); var btn1 = document.createElement('button'); btn1.className = 'btn-save-reshape'; btn1.textContent = '让' + nick + '决定'; btn1.onclick = function() { doYesNoDecide(); }; container.appendChild(btn1); var sep = document.createElement('div'); sep.className = 'reshape-title'; sep.style.marginTop = '20px'; sep.textContent = '—— 🎲 自定义选项 ——'; container.appendChild(sep); var inp2 = document.createElement('input'); inp2.className = 'reshape-input'; inp2.id = 'decideQuestionInput'; inp2.placeholder = '输入你的问题...'; inp2.style.marginBottom = '6px'; container.appendChild(inp2); var toggleRow = document.createElement('div'); toggleRow.style.display = 'flex'; toggleRow.style.alignItems = 'center'; toggleRow.style.gap = '8px'; toggleRow.style.marginBottom = '10px'; var toggleLabel = document.createElement('span'); toggleLabel.textContent = '单选'; toggleLabel.style.fontSize = '13px'; toggleLabel.style.color = 'var(--light-ink)'; toggleLabel.style.fontFamily = 'var(--font-serif)'; toggleLabel.id = 'decideToggleLabel'; var toggleBtn = document.createElement('button'); toggleBtn.className = 'btn-change-avatar'; toggleBtn.textContent = '🟢'; toggleBtn.id = 'decideToggleBtn'; toggleBtn.style.textDecoration = 'none'; toggleBtn.onclick = function() { toggleDecideMode(); }; toggleRow.appendChild(toggleLabel); toggleRow.appendChild(toggleBtn); container.appendChild(toggleRow); var optionsContainer = document.createElement('div'); optionsContainer.id = 'decideOptionsContainer'; container.appendChild(optionsContainer); var addBtn = document.createElement('button'); addBtn.className = 'btn-change-avatar'; addBtn.textContent = '+ 添加选项'; addBtn.style.marginBottom = '10px'; addBtn.onclick = function() { addDecideOption(); }; container.appendChild(addBtn); var btn2 = document.createElement('button'); btn2.className = 'btn-save-reshape'; btn2.id = 'decideExtractBtn'; btn2.textContent = '让' + nick + '抽取'; btn2.onclick = function() { doCustomDecide(); }; container.appendChild(btn2); state.decideMulti = false; state.decideOptions = ['', '', '', '']; renderDecideOptionsList(); }
 function toggleDecideMode() { state.decideMulti = !state.decideMulti; $('#decideToggleLabel').textContent = state.decideMulti ? '多选' : '单选'; $('#decideToggleBtn').textContent = state.decideMulti ? '🟢' : '🟢'; }
 function renderDecideOptionsList() { var container = $('#decideOptionsContainer'); if (!container) return; container.innerHTML = ''; state.decideOptions.forEach(function(opt, i) { var label = String.fromCharCode(65+i); var row = document.createElement('div'); row.style.display = 'flex'; row.style.alignItems = 'center'; row.style.gap = '6px'; row.style.marginBottom = '6px'; var lbl = document.createElement('span'); lbl.textContent = '选项' + label; lbl.style.fontSize = '13px'; lbl.style.color = 'var(--light-ink)'; lbl.style.fontFamily = 'var(--font-serif)'; lbl.style.width = '36px'; lbl.style.flexShrink = '0'; var inp = document.createElement('input'); inp.className = 'reshape-input'; inp.value = opt; inp.placeholder = '选项' + label; inp.style.flex = '1'; inp.dataset.idx = i; inp.oninput = function() { state.decideOptions[parseInt(this.dataset.idx)] = this.value; }; var del = document.createElement('button'); del.className = 'btn-change-avatar'; del.textContent = '✕'; del.style.color = '#8b6b6b'; del.style.textDecoration = 'none'; del.onclick = function(idx) { return function() { state.decideOptions.splice(idx, 1); if (state.decideOptions.length < 2) state.decideOptions.push(''); renderDecideOptionsList(); }; }(i); row.appendChild(lbl); row.appendChild(inp); row.appendChild(del); container.appendChild(row); }); }
@@ -766,6 +762,7 @@ function changeVideoBg(){ var inp=document.createElement('input');inp.type='file
 $('#bgConfirmBtn').onclick = function() { if (state.bgConfirmImage) { if (state.bgConfirmTarget === 'voice' || state.bgConfirmTarget === 'video') { if (state.bgConfirmTarget === 'voice') { state.voiceBg = state.bgConfirmImage; } else { state.videoBg = state.bgConfirmImage; } saveAllSettings(); updateAllChatUI(); showToast('背景已更新'); $('#bgConfirmOverlay').classList.remove('active'); state.bgConfirmImage = ''; } else { state.chatBg = state.bgConfirmImage; saveAllSettings(); updateAllChatUI(); showToast('背景已更新'); $('#bgConfirmOverlay').classList.remove('active'); state.bgConfirmImage = ''; } } };
 $('#bgReselectBtn').onclick = function() { $('#bgConfirmOverlay').classList.remove('active'); state.bgConfirmImage = ''; if(state.bgConfirmTarget==='voice')changeVoiceBg(); else if(state.bgConfirmTarget==='video')changeVideoBg(); else changeChatBg(); };
 function saveReshape(){state.hisName=$('#reshapeDreamName').value||'易遇';state.hisNick=$('#reshapeHisNick').value||'老公';state.myNick=$('#reshapeCallMe').value||'乖宝';state.hisSignature=$('#reshapeSignature').value||'';state.myName=$('#reshapeMyName').value||'雾凉';saveAllSettings();updateAllChatUI();showToast('铭刻于心底\n已保存');}
+
 var editCallback=null;
 function showEditPopup(currentValue,cb){$('#editInput').value=currentValue||'';$('#editPopup').classList.add('active');$('#editOverlay').classList.add('active');editCallback=cb;$('#editInput').focus();}
 function closeEditPopup(){$('#editPopup').classList.remove('active');$('#editOverlay').classList.remove('active');editCallback=null;}
@@ -791,12 +788,12 @@ function bindEvents(){
     $('#btnChangeChatBg').onclick=changeChatBg;$('#btnChangeVoiceBg').onclick=changeVoiceBg;$('#btnChangeVideoBg').onclick=changeVideoBg;
     $('#btnToggleChatBg').onclick = function() { state.chatBgMode = (state.chatBgMode + 1) % 4; saveAllSettings(); updateAllChatUI(); syncReshape(); };
     $('#btnSaveReshape1').onclick=saveReshape;$('#btnSaveReshape2').onclick=saveReshape;
+    $('#quotePreviewClose').onclick = hideQuotePreview;
     bindLongPress();bindWordcardActions();bindGroupEvents();bindPatTriggers();
     $('#patOverlay').onclick=closePatPopup;buildPatGrid();
-    $('#quotePreviewClose').onclick = function(e) { e.stopPropagation(); hideQuotePreview(); };
 }
 function bindPatTriggers() { $('#headerHisAvatar').onclick = openPatPopup; $('#headerMyAvatar').onclick = openPatPopup; $('#headerNicknames').onclick = openPatPopup; $('#messagesContainer').addEventListener('click', function(e) { var av = e.target.closest('.message-avatar'); if (av) { openPatPopup(); } }); }
-function bindLongPress(){var lt=null,ltg=null,mc=$('#messagesContainer'); mc.addEventListener('touchstart',function(e){var b=e.target.closest('.message-bubble');if(!b)return;ltg=b.closest('.message-row');lt=setTimeout(function(){if(ltg){state.quotingId=parseInt(ltg.dataset.msgId);state.quotingText=ltg.querySelector('.message-bubble').textContent;showQuotePreview();$('#chatInput').focus();}ltg=null;},600);},{passive:false}); mc.addEventListener('touchend',function(){clearTimeout(lt);});mc.addEventListener('touchmove',function(){clearTimeout(lt);});}
+function bindLongPress(){var lt=null,ltg=null,mc=$('#messagesContainer'); mc.addEventListener('touchstart',function(e){var b=e.target.closest('.message-bubble');if(!b)return;ltg=b.closest('.message-row');lt=setTimeout(function(){if(ltg){state.quotingId=parseInt(ltg.dataset.msgId);state.quotingText=ltg.querySelector('.message-bubble').textContent;showQuotePreview(state.quotingText);$('#chatInput').focus();}ltg=null;},600);},{passive:false}); mc.addEventListener('touchend',function(){clearTimeout(lt);});mc.addEventListener('touchmove',function(){clearTimeout(lt);});}
 async function loadWordcardData(){var cards=await dbGetAll('wordcards');state.wordcardData={}; cards.forEach(function(c){var pk=c.poolKey||'weather',sk=c.subpoolKey||'default',gk=c.groupKey||'_nogroup'; if(!state.wordcardData[pk])state.wordcardData[pk]={};if(!state.wordcardData[pk][sk])state.wordcardData[pk][sk]={};if(!state.wordcardData[pk][sk][gk])state.wordcardData[pk][sk][gk]=[]; state.wordcardData[pk][sk][gk].push({id:c.id,content:c.content,groupKey:gk,category:c.category||'speak'});});}
 var POOL_CONFIG = {
     tabs: [{ key: 'status', icon: '☀️', label: '系统状态池' },{ key: 'content', icon: '💬', label: '内容回复池' },{ key: 'search', icon: '🔍', label: '搜索' },{ key: 'export', icon: '📤', label: '导出字卡' },{ key: 'exclusive', icon: '🩷', label: '易遇专属回复池' }],
@@ -833,7 +830,77 @@ function renderSearchResults(){var list=$('#wcList'),info=$('#searchResultInfo')
 function renderExportList(info){var list=$('#exportList');if(info.poolKey!=='export')return;list.innerHTML='';list.style.display='block';var allPools=[{label:'☀️ 系统状态池',pools:[{key:'weather',icon:'⛅',label:'天气池'},{key:'daily',icon:'🍀',label:'日常池'},{key:'mood',icon:'🌸',label:'心情池'}]},{label:'💬 内容回复池',pools:[{key:'emoji',icon:'😊',label:'Emoji池'},{key:'reply',icon:'💭',label:'回复池'},{key:'song',icon:'🎵',label:'歌单池'}]},{label:'🩷 易遇专属回复池',special:'exclusive'}];var html='';allPools.forEach(function(g){html+='<div class="settings-section-title">—— '+g.label+' ——</div>';if(g.special==='exclusive'){html+='<div class="export-item"><span class="exp-label">🩷 易遇专属回复池（'+state.exclusiveCards.length+'）</span><button class="exp-btn" data-export="exclusive">导出</button></div>';}else{g.pools.forEach(function(p){var rc=0;['status','content'].forEach(function(pk){if(state.wordcardData[pk]&&state.wordcardData[pk][p.key])Object.values(state.wordcardData[pk][p.key]).forEach(function(arr){rc+=arr.length;});});html+='<div class="export-item"><span class="exp-label">'+p.icon+' '+p.label+'（'+rc+'）</span><button class="exp-btn" data-export="'+p.key+'">导出</button></div>';});}});html+='<button class="export-all-btn" id="exportAllPools">一键导出全部池子</button>';list.innerHTML=html;list.querySelectorAll('.exp-btn').forEach(function(b){b.onclick=function(){var k=b.dataset.export;if(k==='exclusive'){downloadJSON({exclusiveCards:state.exclusiveCards,exportTime:new Date().toISOString()},'字卡_专属回复池_'+getDateStr()+'.json');showToast('📤 已导出');}else exportSubpool(k);};});var eab=$('#exportAllPools');if(eab)eab.onclick=exportAllPools;}
 function exportSubpool(sk){var cards=[];['status','content'].forEach(function(pk){if(state.wordcardData[pk]&&state.wordcardData[pk][sk])Object.values(state.wordcardData[pk][sk]).forEach(function(arr){cards=cards.concat(arr.map(function(c){return c.content;}));});});downloadJSON({subpool:sk,wordCards:cards,exportTime:new Date().toISOString()},'字卡_'+sk+'_'+getDateStr()+'.json');showToast('📤 已导出 '+cards.length+' 条');}
 function exportAllPools(){var ad={};Object.keys(state.wordcardData).forEach(function(pk){ad[pk]={};Object.keys(state.wordcardData[pk]).forEach(function(sk){ad[pk][sk]={};Object.keys(state.wordcardData[pk][sk]).forEach(function(gk){ad[pk][sk][gk]=state.wordcardData[pk][sk][gk].map(function(c){return c.content;});});});});ad.exclusive=state.exclusiveCards.map(function(c){return toStr(c);});ad.teachPairs=state.teachPairs;downloadJSON({version:'1.8.3',exportTime:new Date().toISOString(),allPools:ad},'字卡_全部池子_'+getDateStr()+'.json');showToast('📤 全部池子已导出');}
-function renderExclusiveList(list){if(state.exclusiveCards.length===0){list.innerHTML='<div class="settings-dev">易遇还没有学到的字卡<br>他会从对话中学习</div>';return;}checkExclusiveDeleteChance();var today=new Date().toDateString(),used=state.exclusiveDeleteChance.date===today&&state.exclusiveDeleteChance.used;var id=document.createElement('div');id.className='exclusive-info';id.textContent='今日删除申请：'+(used?'已使用':'1/1')+' · 明天刷新';list.appendChild(id);if(!used){var ab=document.createElement('button');ab.className='wordcard-add-btn';ab.textContent='申请删除一条字卡（今天1/1）';ab.style.marginBottom='10px';ab.onclick=function(){applyDeleteExclusive();};list.appendChild(ab);}var categoryTabs=document.createElement('div');categoryTabs.className='teach-tabs';categoryTabs.style.marginBottom='8px';var allTabs=TEACH_CATEGORIES.slice();allTabs.push({key:'decide',label:'决策',isDecide:true});allTabs.forEach(function(cat,i){var tab=document.createElement('div');tab.className='teach-tab'+(state.wcCurrentSubpool===i?' active':'');tab.textContent=cat.label;tab.onclick=function(){state.wcCurrentSubpool=i;renderWordcardPage();};categoryTabs.appendChild(tab);});list.appendChild(categoryTabs);var currentCatTab=allTabs[state.wcCurrentSubpool];if(currentCatTab&&currentCatTab.isDecide){var subtabsEl=document.createElement('div');subtabsEl.className='teach-decide-subtabs';TEACH_DECIDE_SUBTABS.forEach(function(st,j){var stab=document.createElement('div');stab.className='teach-decide-subtab';stab.textContent=st.label;stab.onclick=function(e){e.stopPropagation();state.wcCurrentSubpool=allTabs.length+j;renderWordcardPage();};subtabsEl.appendChild(stab);});list.appendChild(subtabsEl);var subIdx=state.wcCurrentSubpool-allTabs.length;var currentSub=TEACH_DECIDE_SUBTABS[subIdx>=0?subIdx:0];var filtered=state.exclusiveCards.filter(function(c){return(c.category||'speak')===currentSub.key;});if(filtered.length===0){var empty=document.createElement('div');empty.className='settings-dev';empty.textContent='该分类还没有学到的字卡';list.appendChild(empty);}else{filtered.forEach(function(card){var content=toStr(card);var source=typeof card==='string'?'':(card.source||'');var item=document.createElement('div');item.className='wordcard-item';item.innerHTML='<div class="wc-content">'+escHTML(content)+'<div class="search-result-meta">来源：'+(source||'学习')+' · 权重：'+(card.weight||1)+'</div></div>';list.appendChild(item);});}}else{var currentCatKey=currentCatTab?currentCatTab.key:'speak';var filtered=state.exclusiveCards.filter(function(c){return(c.category||'speak')===currentCatKey;});if(filtered.length===0){var empty=document.createElement('div');empty.className='settings-dev';empty.textContent='该分类还没有学到的字卡';list.appendChild(empty);}else{filtered.forEach(function(card){var content=toStr(card);var source=typeof card==='string'?'':(card.source||'');var item=document.createElement('div');item.className='wordcard-item';item.innerHTML='<div class="wc-content">'+escHTML(content)+'<div class="search-result-meta">来源：'+(source||'学习')+' · 权重：'+(card.weight||1)+'</div></div>';list.appendChild(item);});}}
+function renderExclusiveList(list){
+    if(state.exclusiveCards.length===0){
+        list.innerHTML='<div class="settings-dev">易遇还没有学到的字卡<br>他会从对话中学习</div>';
+        return;
+    }
+    checkExclusiveDeleteChance();
+    var today=new Date().toDateString(),used=state.exclusiveDeleteChance.date===today&&state.exclusiveDeleteChance.used;
+    var id=document.createElement('div');id.className='exclusive-info';id.textContent='今日删除申请：'+(used?'已使用':'1/1')+' · 明天刷新';list.appendChild(id);
+    if(!used){
+        var ab=document.createElement('button');ab.className='wordcard-add-btn';ab.textContent='申请删除一条字卡（今天1/1）';ab.style.marginBottom='10px';ab.onclick=function(){applyDeleteExclusive();};list.appendChild(ab);
+    }
+    var categoryTabs=document.createElement('div');categoryTabs.className='teach-tabs';categoryTabs.style.marginBottom='8px';
+    TEACH_CATEGORIES.forEach(function(cat,i){
+        var tab=document.createElement('div');
+        tab.className='teach-tab'+(state.wcCurrentSubpool===i && (state._wcCurrentGroup || cat.key)!=='decide'?' active':'');
+        tab.textContent=cat.label;
+        tab.onclick=function(){
+            state.wcCurrentSubpool=i;
+            state._wcCurrentGroup=null;
+            renderWordcardPage();
+        };
+        categoryTabs.appendChild(tab);
+    });
+    list.appendChild(categoryTabs);
+
+    var currentCat=TEACH_CATEGORIES[state.wcCurrentSubpool];
+    if(currentCat && currentCat.isDecide){
+        var subtabsEl=document.createElement('div');
+        subtabsEl.className='teach-decide-subtabs';
+        subtabsEl.style.marginBottom='10px';
+        TEACH_DECIDE_SUBTABS.forEach(function(st,i){
+            var stab=document.createElement('div');
+            stab.className='teach-decide-subtab'+(state._wcCurrentGroup===i?' active':'');
+            stab.textContent=st.label;
+            stab.onclick=function(){
+                state._wcCurrentGroup=i;
+                renderWordcardPage();
+            };
+            subtabsEl.appendChild(stab);
+        });
+        list.appendChild(subtabsEl);
+
+        var currentSub=TEACH_DECIDE_SUBTABS[state._wcCurrentGroup||0];
+        var catKey='decide_'+currentSub.type;
+        var filtered=state.exclusiveCards.filter(function(c){return(c.category||'speak')===catKey;});
+        if(filtered.length===0){
+            var empty=document.createElement('div');empty.className='settings-dev';empty.textContent='该分类还没有学到的字卡';list.appendChild(empty);
+        }else{
+            filtered.forEach(function(card){
+                var content=toStr(card);var source=typeof card==='string'?'':(card.source||'');
+                var item=document.createElement('div');item.className='wordcard-item';
+                item.innerHTML='<div class="wc-content">'+escHTML(content)+'<div class="search-result-meta">来源：'+(source||'学习')+' · 权重：'+(card.weight||1)+'</div></div>';
+                list.appendChild(item);
+            });
+        }
+    }else{
+        var allCats=TEACH_CATEGORIES.map(function(c){return c.key;});
+        var currentCatKey=allCats[state.wcCurrentSubpool]||'speak';
+        var filtered=state.exclusiveCards.filter(function(c){return(c.category||'speak')===currentCatKey;});
+        if(filtered.length===0){
+            var empty=document.createElement('div');empty.className='settings-dev';empty.textContent='该分类还没有学到的字卡';list.appendChild(empty);
+        }else{
+            filtered.forEach(function(card){
+                var content=toStr(card);var source=typeof card==='string'?'':(card.source||'');
+                var item=document.createElement('div');item.className='wordcard-item';
+                item.innerHTML='<div class="wc-content">'+escHTML(content)+'<div class="search-result-meta">来源：'+(source||'学习')+' · 权重：'+(card.weight||1)+'</div></div>';
+                list.appendChild(item);
+            });
+        }
+    }
+}
 function checkExclusiveDeleteChance(){var today=new Date().toDateString();if(state.exclusiveDeleteChance.date!==today){state.exclusiveDeleteChance={used:false,date:today};saveAllSettings();}}
 function applyDeleteExclusive(){if(state.exclusiveCards.length===0){showToast('专属池为空');return;}var card=state.exclusiveCards[Math.floor(Math.random()*state.exclusiveCards.length)],content=toStr(card),agree=Math.random()<0.5;state.exclusiveDeleteChance.used=true;saveAllSettings();if(agree){state.exclusiveCards=state.exclusiveCards.filter(function(c){return toStr(c)!==content;});saveAllSettings();renderWordcardPage();showToast('好，听你的。\n已删除');}else{renderWordcardPage();showToast('这条我还想说…\n让我留着吧。');}}
 function renderTeachPage(){
@@ -866,4 +933,4 @@ initApp();
 })();
 </script>
 </body>
-</html>
+</html> 
