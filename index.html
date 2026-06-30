@@ -577,6 +577,12 @@ function getModeConfig() {
     return configs[mode] || configs.normal;
 }
 
+function startStatusCycle() { applyStatus(); scheduleStatusChange(); }
+function scheduleStatusChange() { clearTimeout(state.statusChangeTimeout); state.statusChangeTimeout = setTimeout(function() { applyStatus(); scheduleStatusChange(); }, 3600000 + Math.random() * 14400000); }
+function applyStatus() { var weatherCards = getSubpoolCards('weather'), dailyCards = getSubpoolCards('daily'), moodCards = getSubpoolCards('mood'); var combos = []; if (weatherCards.length>0 && dailyCards.length>0 && moodCards.length>0) combos.push([weatherCards,dailyCards,moodCards]); if (weatherCards.length>0 && dailyCards.length>0) combos.push([weatherCards,dailyCards]); if (weatherCards.length>0 && moodCards.length>0) combos.push([weatherCards,moodCards]); if (dailyCards.length>0 && moodCards.length>0) combos.push([dailyCards,moodCards]); var statusText = ''; if (combos.length>0) { var combo = combos[Math.floor(Math.random()*combos.length)]; var parts = combo.map(function(p) { return p[Math.floor(Math.random()*p.length)]; }); statusText = parts.join(' '); } if (!statusText && state.hisStatus) statusText = state.hisStatus; if (statusText) { $('#hisStatus').textContent = statusText; applyRandomGradient($('#hisStatus')); } else { $('#hisStatus').textContent = ''; } var sigText = state.hisSignature || ''; if (sigText) { $('#hisSignature').textContent = sigText; applyRandomGradient($('#hisSignature')); $('#hisSignature').style.display = ''; } else { $('#hisSignature').style.display = 'none'; } if (statusText || sigText) { $('#statusArea').style.display = ''; } else { $('#statusArea').style.display = 'none'; } }
+function getSubpoolCards(sk) { var data = state.wordcardData, cards = []; ['status','content'].forEach(function(pk) { if (data[pk] && data[pk][sk]) { Object.values(data[pk][sk]).forEach(function(arr) { if (Array.isArray(arr)) cards = cards.concat(arr.map(function(c){return toStr(c);})); }); } }); return cards; }
+function applyRandomGradient(el) { var h1=Math.floor(Math.random()*360), h2=(h1+Math.floor(Math.random()*60)+20)%360; el.style.background = 'linear-gradient(135deg, hsl('+h1+',15%,82%), hsl('+h2+',15%,88%))'; el.style.webkitBackgroundClip='text'; el.style.webkitTextFillColor='transparent'; el.style.backgroundClip='text'; }
+
 function injectTemplateCSS(key) {
     var old = document.getElementById('template-style');
     if (old) old.textContent = '';
@@ -1047,39 +1053,6 @@ function bindDeleteEvents() {
             $('#editInput').attr('placeholder', '输入"确定清除"');
         });
     };
-}
-
-function buildBubbleHTML_OLD() {
-    var currentTheme = bubbleThemes.find(function(t) { return t.key === currentBubbleTheme; }) || bubbleThemes[0];
-    var presetsHTML = '';
-    for (var i = 0; i < bubbleThemes.length; i++) {
-        var t = bubbleThemes[i];
-        presetsHTML += '<div class="settings-card bubble-preset-card" data-theme="' + t.key + '" style="margin-bottom:6px;cursor:pointer;">';
-        presetsHTML += '<span class="s-icon" style="color:#e8b4b8 !important;">' + (currentBubbleTheme === t.key ? '●' : '○') + '</span>';
-        presetsHTML += '<span style="flex:1;">' + t.label + '</span>';
-        presetsHTML += '<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:' + t.mine + ';margin-right:4px;border:1px solid #ddd;"></span>';
-        presetsHTML += '<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:' + t.theirs + ';border:1px solid #ddd;"></span>';
-        presetsHTML += '</div>';
-    }
-    var html = '';
-    html += '<div class="settings-section-title">—— 预览 ——</div>';
-    html += '<div style="display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--paper-white);border-radius:8px;margin-bottom:10px;" id="bubblePreview">';
-    html += '  <div style="display:flex;align-items:flex-start;gap:8px;">';
-    html += '    <div class="bubble-preview-msg mine" style="max-width:70%;margin-left:auto;"><div class="bubble-preview-bubble mine-bubble" style="padding:10px 14px;border-radius:8px;background:' + currentTheme.mine + ';font-size:13px;color:var(--ink-gray);position:relative;overflow:visible;">这是我发送的消息～</div></div>';
-    html += '  </div>';
-    html += '  <div style="display:flex;align-items:flex-start;gap:8px;">';
-    html += '    <div class="bubble-preview-msg theirs" style="max-width:70%;"><div class="bubble-preview-bubble theirs-bubble" style="padding:10px 14px;border-radius:8px;background:' + currentTheme.theirs + ';font-size:13px;color:var(--ink-gray);position:relative;overflow:visible;">这是他回复的消息～</div></div>';
-    html += '  </div>';
-    html += '</div>';
-    html += '<div class="settings-section-title">—— 预设配色 ——</div>';
-    html += presetsHTML;
-    return html;
-}
-function updateBubblePreview_OLD(theme) {
-    var mb = document.querySelector('.bubble-preview-bubble.mine-bubble');
-    var tb = document.querySelector('.bubble-preview-bubble.theirs-bubble');
-    if (mb) { mb.style.background = theme.mine; mb.style.color = 'var(--ink-gray)'; }
-    if (tb) { tb.style.background = theme.theirs; tb.style.color = 'var(--ink-gray)'; }
 }
 
 function bindDataEvents() { var ef=$('#exportFull'),el=$('#exportLight'),ec=$('#exportChat'),imf=$('#importFull'),iwc=$('#importWordCards'); if(ef)ef.onclick=exportFullBackup; if(el)el.onclick=exportLightBackup; if(ec)ec.onclick=exportChatRecords; if(imf)imf.onclick=importFullBackup; if(iwc)iwc.onclick=importWordCardsJSON; }
